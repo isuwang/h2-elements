@@ -1,10 +1,21 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!--下拉单选、多选-->
-<link rel="import" href="../../o-resource.html"/>
 <dom-module id="h-input-select2">
     <style>
         :host {
             display: inline-block;
             text-align: left;
+        }
+
+        :host * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
         }
 
         :host label {
@@ -67,11 +78,6 @@
             white-space: normal;
         }
 
-        /*/!*标签*!/*/
-        /*div.tags-input span.tag:last-child{*/
-        /*margin-right: 0px;*/
-        /*}*/
-
         div.tags-input span.tag span.tag-name {
             font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
         }
@@ -105,7 +111,6 @@
 
         :host iron-collapse {
             position: absolute;
-            z-index: 10000;
             width: 170px;
             text-align: left;
         }
@@ -146,7 +151,7 @@
             border-top: none;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
-        @apply(- -shadow-elevation-2dp);
+            @apply(- -shadow-elevation-2dp);
         }
 
         :host iron-collapse iron-selector {
@@ -190,6 +195,12 @@
         :host .place-holder {
             float: left;
             opacity: 0.5;
+        }
+
+        .btn-group {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle
         }
 
     </style>
