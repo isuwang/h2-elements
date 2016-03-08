@@ -43,7 +43,7 @@
     "tag": "v1.0.0",
     "commit": "8bb2b1972158d3a28ca3a350003b8ca78c147b53"
   },
-  "_source": "https://github.com/isuwang/h2-elements/tree/master/h-input-select.git",
+  "_source": "git://github.com/isuwang/h2-elements/tree/master/h-input-select.git",
   "_target": "~1.0.6",
   "_originalSource": "isuwang/h2-elements/tree/master/h-input-select",
   "moduleType": []
