@@ -1,11 +1,11 @@
+<!--下拉单选、多选-->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<!--下拉单选、多选-->
-<dom-module id="h-input-select2">
+<dom-module id="h-input-select">
     <style>
         :host {
             display: inline-block;
@@ -151,7 +151,7 @@
             border-top: none;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
-            @apply(- -shadow-elevation-2dp);
+        @apply(- -shadow-elevation-2dp);
         }
 
         :host iron-collapse iron-selector {
@@ -220,6 +220,7 @@
                     </template>
                 </span>
                 <input id="tags-input" class="tags-input" is="iron-input"
+                       disabled="{{noSearch}}"
                        style="width: 5px"
                        bind-value="{{keyword}}"
                        on-keydown="_updatePressed"
@@ -239,11 +240,12 @@
     </template>
     <script>
         Polymer({
-            is: "h-input-select2",
+            is: "h-input-select",
             properties: {
                 /**
+                 *
                  * 标签名字
-                 * eg：下拉选择
+                 * eg：1
                  *
                  * @attribute label
                  * @type {String}
@@ -251,9 +253,6 @@
                 label: {
                     type: String
                 },
-                /**
-                 * 标签输入框宽度
-                 */
                 width: {
                     type: String,
                     value: "170px"
@@ -265,7 +264,7 @@
                 /**
                  *
                  * 初始选择项和selectItems的value值相对应
-                 * eg：1，多选的时候值为1,2,3.用逗号分隔
+                 * eg：1
                  *
                  * @attribute selected
                  * @type {String}
@@ -302,27 +301,17 @@
                 /**
                  * 模式 常量：'Edit','View'
                  * View 模式下不可编辑
-                 * @attribute mode
-                 * @type {String}
                  */
                 mode: {
                     type: String,
                     value: 'Edit',
                     observer: '_modeChange'
                 },
-                /**
-                 * 输入的关键字
-                 * @attribute mode
-                 * @type {String}
-                 */
                 keyword: {
                     type: String,
                     notify: true,
                     observer: '_keywordChange'
                 },
-                /**
-                 * 本地展示数据
-                 */
                 selectItemsLocal: {
                     type: Array,
                     value: function () {
@@ -330,13 +319,10 @@
                     },
                     notify: true
                 },
-                /**
-                 * 禁用输入框
-                 */
-                disabledInput: {
+                noSearch: {
                     type: Boolean,
-                    notify: true,
-                    observer: '_disabledInputChange'
+                    value: false,
+                    notify: true
                 }
             },
             observers: [
@@ -344,20 +330,6 @@
                 '_selectedDataChange(selectedData,selectItems)'
             ],
 
-            /**
-             * 隐藏和展示input输入框。默认展示
-             */
-            _disabledInputChange:function(disabledInput){
-                if(disabledInput){
-                    this.$['tags-input'].style.display = 'none';
-                }else{
-                    this.$['tags-input'].style.display = 'inline-block';
-                }
-            },
-
-            /**
-             * 动态计算输入框宽度
-             */
             _keywordChange: function (newKey) {
                 if (!!newKey && newKey.length > 0) {
                     this.$['tags-input'].style.width = this._getStrWidth(newKey);
@@ -388,9 +360,6 @@
                     this._bodyClickFunc = null;
                 }
             },
-            /**
-             * body 点击事件
-             */
             _bodyClick: function (e) {
                 var tagsInput = this.querySelectorAll(".tags-input");
                 var warp = e.target;

@@ -1,5 +1,5 @@
 {
-  "name": "h-input-select2",
+  "name": "h-input-select",
   "version": "1.0.18",
   "description": "Material design text fields",
   "authors": [
@@ -11,15 +11,15 @@
     "input"
   ],
   "main": [
-    "h-input-select2.html"
+    "h-input-select.html"
   ],
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/PolymerElements/h-input-select2.git"
+    "url": "git://github.com/PolymerElements/h-input-select.git"
   },
   "license": "http://polymer.github.io/LICENSE.txt",
-  "homepage": "https://github.com/PolymerElements/h-input-select2",
+  "homepage": "https://github.com/PolymerElements/h-input-select",
   "ignore": [],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.2.0",
@@ -35,7 +35,7 @@
     "tag": "v1.0.0",
     "commit": "8bb2b1972158d3a28ca3a350003b8ca78c147b53"
   },
-  "_source": "git://github.com/PolymerElements/h-input-select2.git",
+  "_source": "https://github.com/isuwang/h2-elements/tree/master/h-input-select.git",
   "_target": "~1.0.6",
-  "_originalSource": "PolymerElements/h-input-select2"
+  "_originalSource": "isuwang/h2-elements/tree/master/h-input-select"
 }
