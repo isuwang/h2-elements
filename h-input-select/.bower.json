@@ -1,7 +1,7 @@
 {
   "name": "h-input-select",
   "version": "1.0.18",
-  "description": "下拉组件",
+  "description": "h-input-select",
   "authors": [
     "The Polymer Authors"
   ],
@@ -26,8 +26,8 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "iron-input": "PolymerElements/iron-input#^1.0.0",
     "iron-collapse": "PolymerElements/iron-collapse#^1.0.0",
-    "iron-collapse": "PolymerElements/iron-icons#^1.0.0",
-    "iron-collapse": "PolymerElements/iron-icon#^1.0.0"
+    "iron-icons": "PolymerElements/iron-icons#^1.0.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.0"
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
