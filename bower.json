@@ -25,6 +25,7 @@
     "tests"
   ],
   "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.0",
     "hydrolysis": "Polymer/hydrolysis#^1.18",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^1.0.0",
     "iron-a11y-keys": "PolymerElements/iron-a11y-keys#~1.0.2",
@@ -65,6 +66,9 @@
     "paper-slider": "PolymerElements/paper-slider#~1.0.3",
     "paper-toast": "PolymerElements/paper-toast#~1.0.0",
     "paper-tabs": "PolymerElements/paper-tabs#~1.0.0",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#~1.0.5"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#~1.0.5",
+    "iron-collapse": "PolymerElements/iron-collapse#^1.0.0",
+    "iron-icons": "PolymerElements/iron-icons#^1.0.0",
+    "iron-icon": "PolymerElements/iron-icon#^1.0.0"
   }
 }
