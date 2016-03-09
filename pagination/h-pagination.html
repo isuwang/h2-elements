@@ -1,0 +1,210 @@
+<!-- 分页组件 -->
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/iron-input/iron-input.html">
+<dom-module id="h-pagination">
+    <style>
+        :host {
+            display: inline-block;
+        }
+
+        :host .pagination {
+            display: inline-block;
+            padding-left: 0;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        :host .pagination > li {
+            display: inline;
+        }
+
+        :host .pagination > li > a,
+        :host .pagination > li > span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        :host .pagination > li:first-child > a,
+        :host .pagination > li:first-child > span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        :host .pagination > li:last-child > a,
+        :host .pagination > li:last-child > span {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        :host .pagination > li > a:hover,
+        :host .pagination > li > span:hover,
+        :host .pagination > li > a:focus,
+        :host .pagination > li > span:focus {
+            color: #23527c;
+            background-color: #eee;
+            border-color: #ddd;
+        }
+
+        :host .pagination-lg > li > a,
+        :host .pagination-lg > li > span {
+
+            padding: 10px 16px;
+            font-size: 18px;
+        }
+
+        :host .pagination-lg > li:first-child > a,
+        :host .pagination-lg > li:first-child > span {
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+        }
+
+        :host .pagination-lg > li:last-child > a,
+        :host .pagination-lg > li:last-child > span {
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+        }
+
+        :host .pagination-sm > li > a,
+        :host .pagination-sm > li > span {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        :host .pagination-sm > li:first-child > a,
+        :host .pagination-sm > li:first-child > span {
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+
+        :host .pagination-sm > li:last-child > a,
+        :host .pagination-sm > li:last-child > span {
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+
+        :host .pagination-right {
+            text-align: right;
+        }
+
+        :host .h-pagination-input {
+            line-height: 17px;
+            padding: 0;
+        }
+
+        :host .pagination li a {
+            height: 19px;
+            line-height: 19px;
+        }
+    </style>
+    <template>
+        <ul class="pagination-sm pagination pagination-right pe-paging">
+            <li><a href="javascript:void(0)" id="first"><span>第一页</span></a></li>
+            <li><a href="javascript:void(0)" id="prev">上一页</a></li>
+            <li><a href="javascript:void(0)" class="h-pagination-input">第
+                <input type="number" is="iron-input" bind-value="{{paging.pageIndex}}"
+                       style="width:50px; padding: 0px;"/>
+                页/ 总共<span>{{_pageSize(paging.results)}}</span>页 , 每页 <span>{{paging.limit}}</span>条</a></li>
+            <li><a href="javascript:void(0)" id="next"><span>下一页</span></a></li>
+            <li><a href="javascript:void(0)" id="last"><span>最后一页</span></a></li>
+            <li><a href="javascript:void(0)">共<span>{{paging.results}}</span>条记录</a></li>
+        </ul>
+    </template>
+    <script>
+        Polymer({
+
+            is: "h-pagination",
+            properties: {
+                /**
+                 * 分页对象
+                 * eg：{ start: 0,limit: 10,results: 300,pageIndex: 1}
+                 * @attribute paging
+                 * @type {Object}
+                 */
+                paging: {
+                    type: Object,
+                    value: {
+                        limit: 15,
+                        start: 0,
+                        pageIndex: 1,
+                        results: 0
+                    },
+                    notify: true,
+                    reflectToAttribute: true
+                }
+            },
+            listeners: {
+                'first.tap': 'first',
+                'prev.tap': 'prev',
+                'next.tap': 'next',
+                'last.tap': 'last'
+            },
+            observers: [
+                'pagingPageChanged(paging.pageIndex)'
+            ],
+            /**
+             * 监听页码变化，并广播一个事件
+             * @param pageIndex
+             */
+            pagingPageChanged: function (pageIndex) {
+                if (pageIndex > 0) {
+                    this.set("paging.start", (pageIndex - 1) * this.paging.limit);
+                    this.fire('select-page', {'page': pageIndex})
+                } else {
+                    this.set("paging.pageIndex", 1);
+                }
+            },
+            /**
+             * 页面大小计算
+             * @param results
+             * @returns {number}
+             * @private
+             */
+            _pageSize: function (results) {
+                return Math.ceil(results / this.paging.limit);
+            },
+            /**
+             * 第一页
+             */
+            first: function () {
+                if (this.paging.pageIndex > 1) {
+                    this.set("paging.pageIndex", 1);
+                }
+            },
+            /**
+             * 上一页
+             */
+            prev: function () {
+                if (this.paging.pageIndex > 1) {
+                    var curPage = parseInt(this.paging.pageIndex) - 1;
+                    this.set("paging.pageIndex", curPage);
+                }
+            },
+            /**
+             * 下一页
+             */
+            next: function () {
+                if (this.paging.pageIndex < this._pageSize(this.paging.results)) {
+                    var curPage = parseInt(this.paging.pageIndex) + 1;
+                    this.set("paging.pageIndex", curPage);
+                }
+            },
+            /**
+             * 最后一页
+             */
+            last: function () {
+                if (this.paging.pageIndex < this._pageSize(this.paging.results)) {
+                    var curPage = this._pageSize(this.paging.results);
+                    this.set("paging.pageIndex", curPage);
+                }
+            }
+        })
+    </script>
+</dom-module>
