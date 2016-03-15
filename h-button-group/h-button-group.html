@@ -14,6 +14,39 @@
             display: inline-block;
         }
 
+        .btn-group, .btn-group-vertical {
+            position: relative;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        :host .btn {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: normal;
+            text-align: center;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            white-space: nowrap;
+            /* padding: 6px 12px; */
+            font-size: 14px;
+            line-height: 1.42857143;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :host .btn-default {
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+        }
+
         :host .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
             -moz-border-bottom-right-radius: 0;
             -webkit-border-bottom-right-radius: 0;
@@ -44,12 +77,29 @@
         }
 
         /*下拉按钮箭头*/
-        :host .btn .caret {
-            margin-left: 0;
-            margin-top: 5px;
-            position: static;
-            top: 8px;
-            right: 12px;
+        .caret {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-left: 20px;
+            margin-top: 2px;
+            vertical-align: middle;
+            border-top: 4px solid;
+            border-right: 4px solid transparent;
+            border-left: 4px solid transparent;
+        }
+
+        .btn .caret:before {
+            content: "";
+            display: inline-block;
+            border-left: 1px solid rgb(204, 204, 204);
+            height: 34px;
+            line-height: 0px;
+            font-size: 0px;
+            margin: 0px;
+            top: 0;
+            position: absolute;
+            right: 25px;
         }
 
         :host iron-selector > * {
@@ -73,7 +123,7 @@
         /*下拉列表*/
         :host .dropdown-menu1 {
             position: absolute;
-            top: 100%;
+            top: 0;
             left: 0;
             z-index: 1000;
             float: left;
@@ -107,7 +157,7 @@
             display: block;
             padding: 5px;
             border: 1px solid #dedede;
-            border-top: none;
+            /*border-top: none;*/
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
         @apply(- -shadow-elevation-2dp);
@@ -160,15 +210,66 @@
         :host > .btn-group button.btn-sm {
             padding: 5px 10px 6px 10px;
         }
+
+        .group-outer {
+            position: relative;
+        }
+
+        .btn-row {
+            display: block;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-row:hover {
+            color: #000000;
+        }
+
+        iron-selector > * {
+            margin: 0px;
+            padding: 0px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        iron-selector .iron-selected {
+            background-color: #0099FF;
+            color: #fff;
+        }
+
+        iron-collapse iron-selector .item {
+            text-align: center;
+        }
+
+        .dropdown-menu1 iron-selector .item {
+            cursor: pointer;
+            display: block;
+            line-height: 20px;
+            height: 20px;
+            padding: 0 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .dropdown-menu1 iron-selector .item:hover {
+            color: #0099FF;
+        }
+
+        .dropdown-menu1 iron-selector span.item.iron-selected:hover {
+            background-color: #0099FF;
+            color: #fff;
+        }
     </style>
     <template>
         <div class="btn-group">
             <paper-button id="but-1" class="v-m button-label-size btn btn-default selectButton1"
-                          on-click="_onButtonClick"><span class="selectButton1">[[label]]</span>
+                          on-click="_onButtonClick" style="display: inline-block;">
+                <span class="selectButton1">[[label]]</span>
+                <span class="caret selectButton1"></span>
             </paper-button>
-            <iron-icon id="caret" class="tags-input" icon="icons:arrow-drop-down" on-click="_onButtonClick"></iron-icon>
         </div>
-        <div class="btn-group">
+        <div class="group-outer">
             <iron-collapse class="dropdown-menu1" id="button-collapse" on-click="_onButtonDropdownClick">
                 <iron-selector class="selector-panel" selected="{{selectedData}}" attr-for-selected="radioItem">
                     <template is="dom-repeat" items="[[selectItems]]" filter="_hasPermission">
