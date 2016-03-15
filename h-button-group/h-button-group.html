@@ -1,0 +1,329 @@
+<!--下拉按钮组-->
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/iron-input/iron-input.html">
+<link rel="import" href="/bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+
+<dom-module id="h-button-group">
+    <style>
+
+        :host {
+            display: inline-block;
+        }
+
+        :host .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+            -moz-border-bottom-right-radius: 0;
+            -webkit-border-bottom-right-radius: 0;
+            border-bottom-right-radius: 0;
+            -webkit-border-top-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        :host .btn-group > .btn:first-child {
+            margin-left: 0;
+        }
+
+        :host .btn-group > .dropdown-toggle:not(:first-child) {
+            -moz-border-bottom-left-radius: 0;
+            -webkit-border-bottom-left-radius: 0;
+            border-bottom-left-radius: 0;
+            -webkit-border-top-left-radius: 0;
+            border-top-left-radius: 0;
+        }
+
+        :host .btn-group > .btn + .dropdown-toggle {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        :host .btn-group .btn + .btn {
+            margin-left: -1px;
+        }
+
+        /*下拉按钮箭头*/
+        :host .btn .caret {
+            margin-left: 0;
+            margin-top: 5px;
+            position: static;
+            top: 8px;
+            right: 12px;
+        }
+
+        :host iron-selector > * {
+            margin: 0px;
+            padding: 0px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        :host iron-selector {
+            text-align: center;
+            width: auto;
+            border-radius: 4px;
+            border: solid 1px #dddddd;
+        }
+
+        :host .paper-button {
+            display: inline;
+        }
+
+        /*下拉列表*/
+        :host .dropdown-menu1 {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            float: left;
+            min-width: 100px;
+            margin: 2px 0 0;
+            list-style: none;
+            font-size: 14px;
+            text-align: left;
+            background-color: #fff;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            background-clip: padding-box;
+        }
+
+        :host iron-collapse {
+            position: absolute;
+            z-index: 99999;
+        }
+
+        :host .v-m {
+            vertical-align: middle;
+        }
+
+        :host .selector-panel {
+            max-height: 300px;
+            overflow: auto;
+            display: block;
+            padding: 5px;
+            border: 1px solid #dedede;
+            border-top: none;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        @apply(- -shadow-elevation-2dp);
+        }
+
+        :host .open > .dropdown-menu1 {
+            display: block;
+        }
+
+        :host .dropdown-menu1 iron-selector .item {
+            cursor: pointer;
+            display: block;
+            line-height: 20px;
+            height: 20px;
+            padding: 0 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /*hover*/
+        :host .dropdown-menu1 iron-selector .item:hover {
+            color: #0099FF;
+        }
+
+        /*选中*/
+        :host iron-selector .iron-selected {
+            background-color: #0099FF;
+            color: #fff;
+        }
+
+        /*选中hover*/
+        :host .dropdown-menu1 iron-selector span.item.iron-selected:hover {
+            background-color: #0099FF;
+            color: #fff;
+        }
+
+        :host iron-collapse iron-selector {
+            vertical-align: middle;
+        }
+
+        :host iron-collapse iron-selector .item {
+            text-align: center;
+        }
+
+        :host > .btn-group paper-button.btn {
+            font-size: 12px;
+        }
+
+        :host > .btn-group button.btn-sm {
+            padding: 5px 10px 6px 10px;
+        }
+    </style>
+    <template>
+        <div class="btn-group">
+            <paper-button id="but-1" class="v-m button-label-size btn btn-default selectButton1"
+                          on-click="_onButtonClick"><span class="selectButton1">[[label]]</span>
+            </paper-button>
+            <iron-icon id="caret" class="tags-input" icon="icons:arrow-drop-down" on-click="_onButtonClick"></iron-icon>
+        </div>
+        <div class="btn-group">
+            <iron-collapse class="dropdown-menu1" id="button-collapse" on-click="_onButtonDropdownClick">
+                <iron-selector class="selector-panel" selected="{{selectedData}}" attr-for-selected="radioItem">
+                    <template is="dom-repeat" items="[[selectItems]]" filter="_hasPermission">
+                        <span class="btn-row item" radio-item="{{item}}">{{item.label}}</span>
+                    </template>
+                </iron-selector>
+            </iron-collapse>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "h-button-group",
+            properties: {
+                /**
+                 *
+                 * 标签名字
+                 * eg：1
+                 *
+                 * @attribute label
+                 * @type {String}
+                 */
+                label: {
+                    type: String
+                },
+                /**
+                 *
+                 * 初始选择项和selectItems的value值相对应
+                 * eg：1
+                 *
+                 * @attribute selected
+                 * @type {String}
+                 */
+                selectedData: {
+                    type: String,
+                    reflectToAttribute: true,
+                    notify: true
+                },
+                /**
+                 *
+                 * 需要展示的数据项
+                 * eg：[{value:1,label:"全部",permission:true}]
+                 * 当permission属性不存在时默认permission=true
+                 *  @attribute selectItems
+                 * @type {Array}
+                 */
+                selectItems: {
+                    type: Array,
+                    value: []
+                },
+                /**
+                 * 是否显示自身
+                 */
+                hasShow: {
+                    type: String,
+                    value: "true"
+                },
+                /**
+                 * 组件皮肤
+                 * value可选值
+                 * 默认-灰白色:btn-default
+                 * 突出使用-蓝色:btn-primary
+                 * 危险-红色:btn-danger
+                 * 成功-绿色:btn-success
+                 * 警告-黄色:btn-warning
+                 */
+                skin: {
+                    type: String,
+                    value: "",
+                    observer: '_skinChange'
+                },
+                show: Boolean
+            },
+            observers: ['_hasShow(hasShow,selectItems)'],
+            _hasShow: function (hasShow, selectItems) {
+                var flag = (hasShow == "true") && selectItems.length > 0;
+                if (flag) {
+                    //如果selectItems里面的每一项都是false,那么整个按钮组影藏
+                    flag = !selectItems.every(function (e) {
+                        return ("permission" in e) && !e.permission;
+                    });
+                }
+                this.async(function () {
+                    if (!flag) {
+                        this.style.display = 'none';
+                    } else {
+                        this.style.display = 'inline-block';
+                    }
+                }.bind(this), 100);
+                this.show = flag;
+            },
+            /**
+             * 是否有权限
+             * @param item
+             * @returns {*}
+             * @private
+             */
+            _hasPermission: function (item) {
+                var b = "permission" in item;
+                return !b || (b && item["permission"]);
+            },
+            /**
+             * collapse 开关
+             */
+            _collapseToggle: function (collapse) {
+                collapse.toggle();
+            },
+            /**
+             * button点击事件
+             */
+            _onButtonClick: function (event) {
+                var self = this;
+                var collapse = this.querySelector('#button-collapse');
+                var selectButton1 = this.querySelectorAll(".selectButton1");
+                this._collapseToggle(collapse);
+                /*
+                 * 在选择面板打开的时候给body注册click监听事件。以防止多个实例的时候body click事件和实例自身引用错乱的问题。
+                 */
+                var bodyClick = function (e) {
+                    var warp = e.target;
+                    var flag = false;
+                    for (var i = 0; i < selectButton1.length; i++) {
+                        if (warp == selectButton1[i]) {
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        self._collapseToggle(collapse);
+                        document.body.removeEventListener("click", bodyClick, false);
+                    }
+                };
+                document.body.addEventListener("click", bodyClick, false);
+            },
+            /**
+             * 按钮组点击事件
+             * @param event
+             * @private
+             */
+            _onButtonDropdownClick: function (event) {
+                var en = this.fire("button-selected", {"selectedData": this.selectedData}, {bubbles: false});
+            },
+            /**
+             * 组件皮肤
+             * @private
+             */
+            _skinChange: function (newSkin, oldSkin) {
+                if (newSkin) {
+                    this.querySelector('#but-1').classList.toggle(newSkin);
+                    this.querySelector('#selectButton2').classList.toggle(newSkin);
+                }
+                if (oldSkin) {
+                    this.querySelector('#but-1').classList.toggle(oldSkin);
+                    this.querySelector('#selectButton2').classList.toggle(oldSkin);
+                }
+            }
+        });
+
+    </script>
+</dom-module>

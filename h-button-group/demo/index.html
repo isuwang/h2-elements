@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>h-button-group test</title>
+    <link rel="import" href="../h-button-group.html">
+</head>
+<body>
+<template is="dom-bind">
+    <h-button-group label="二氧化碳" selected-data="{{selectedData}}" select-items="[[selectItems]]"></h-button-group>
+    <div>
+        <label>被选中的项:</label>
+        <label>{{selectedData}}</label>
+    </div>
+</template>
+<script>
+    document.querySelector('template[is=dom-bind]').selectItems = [{
+        label: '碳元素',
+        value: 'C'
+    }, {
+        label: '氢元素',
+        value: 'H'
+    }, {
+        label: '氧元素',
+        value: 'O'
+    }];
+    document.querySelector('template[is=dom-bind]').selectedData = "C";
+</script>
+</body>
+
+</html>
