@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+    A component for tip.
+```javascript
+<h2-tip></h2-dialog>
+```
+-->
+<dom-module id="h2-tip">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-tip`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-tip/index.html
+     */
+    class H2Tip extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() { return "h2-tip"; }
+    }
+    window.customElements.define(H2Tip.is, H2Tip);
+  </script>
+</dom-module>

@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+    A component for grid.
+
+```javascript
+
+<h2-grid></h2-grid>
+```
+-->
+<dom-module id="h2-grid">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-grid`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-grid/index.html
+     */
+    class H2Grid extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() { return "h2-grid"; }
+    }
+    window.customElements.define(H2Grid.is, H2Grid);
+  </script>
+</dom-module>
