@@ -1,12 +1,14 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <!--
-    A component for tip.
+
 ```javascript
-<h2-tip></h2-tip>
+
+<h2-fetch></h2-fetch>
 ```
 -->
-<dom-module id="h2-tip">
+
+<dom-module id="h2-fetch">
   <template>
     <style>
 
@@ -14,21 +16,23 @@
   </template>
   <script>
     /**
-     * `h2-tip`
+     * `h2-fetch`
      *
      * @customElement
      * @polymer
-     * @demo demo/h2-tip/index.html
+     * @demo demo/h2-fetch/index.html
      */
-    class H2Tip extends Polymer.Element {
+    class H2Fetch extends Polymer.Element {
       static get properties() {
         return {
 
         };
       }
 
-      static get is() { return "h2-tip"; }
+      static get is() {
+        return "h2-fetch";
+      }
     }
-    window.customElements.define(H2Tip.is, H2Tip);
+    window.customElements.define(H2Fetch.is, H2Fetch);
   </script>
 </dom-module>
