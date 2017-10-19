@@ -19,6 +19,7 @@ if (args.length < 1 || args[0] === '-h') {
 const [component, targetPath] = args;
 
 const componentPattern = /\w+-\w+/g;
+
 if (!componentPattern.test(component)) {
   console.error(`Component name must be like "some-elem"`);
   return;
@@ -47,16 +48,17 @@ const fixDir = function (targetDir) {
   }, path.sep);
 };
 
-console.log(`Start... component[${component}], path[${path}]`);
+const absoluteTargetPath = path.resolve(targetPath || '', '.');
+console.log(`Start creating component[${component}], path[${absoluteTargetPath}]`);
 
 const template = fs.readFileSync('dom-tmpl.html', 'utf8');
 const componentCode = template.replace(/\$\{1\}/g, component).replace(/\$\{2\}/g, dash2Camel(upperFirst(component)));
 
-console.log('============================================');
-console.log(componentCode);
-console.log('============================================');
+// console.log('============================================');
+// console.log(componentCode);
+// console.log('============================================');
 
-const collectPath = fixPath(path.resolve(targetPath || '', '.'));
+const collectPath = fixPath(absoluteTargetPath);
 const fileTo = `${collectPath}${component}.html`;
 
 fs.writeFileSync(fileTo, componentCode, 'utf8');
@@ -65,6 +67,7 @@ console.log(`Done. => ${fileTo}`);
 
 const demoIndexPath = `${collectPath}demo${path.sep}${component}`;
 
+console.log(`Start creating demo`);
 fixDir(demoIndexPath);
 
 const demoTemplate = fs.readFileSync('demo-tmpl.html', 'utf8');
@@ -72,4 +75,7 @@ const demoCode = demoTemplate.replace(/\$\{1\}/g, component);
 
 fs.writeFileSync(`${fixPath(demoIndexPath)}index.html`, demoCode, 'utf8');
 
-console.warn(`You'd better manually append \`<link rel="import" href="${component}.html">\` to all-import.html!`);
+console.log(`Done. => ${fixPath(demoIndexPath)}index.html`);
+
+console.log(`You'd better manually append \`<link rel="import" href="${component}.html">\` to \`all-imports.html\` !`);
+console.log(`Because I don't want to do that for you.`);
