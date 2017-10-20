@@ -1,0 +1,7 @@
+{
+  "name": "h2-elements",
+  "short_name": "h2-elements",
+  "description": "h2-elements",
+  "start_url": "/",
+  "display": "standalone"
+}
