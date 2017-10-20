@@ -1,9 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const args = process.argv.slice(2);
-
-if (args.length < 1 || args[0] === '-h') {
+const showTutorial = function () {
   console.log("Usage: ");
   console.log(`$ node dommodule.js <component> [path]`);
   console.log("\nExample: ");
@@ -13,10 +11,16 @@ if (args.length < 1 || args[0] === '-h') {
   console.log(`   $ node dommodule.js h2-dialog ..`);
   console.log("\n3. 目录中 /Users/wahsonleung/test 中创建h2-dialog.html 和 demo/h2-dialog/index.html");
   console.log(`   $ node dommodule.js h2-dialog /Users/wahsonleung/test`);
+};
+
+const args = process.argv.slice(2);
+
+if (args.length < 1 || args[0] === '-h') {
+  showTutorial();
   return;
 }
 
-const [component, targetPath] = args;
+const [component, targetPath = ""] = args;
 
 const componentPattern = /\w+-\w+/g;
 
@@ -48,7 +52,7 @@ const fixDir = function (targetDir) {
   }, path.sep);
 };
 
-const absoluteTargetPath = path.resolve(targetPath || '', '.');
+const absoluteTargetPath = path.resolve(targetPath, '.');
 console.log(`Start creating component[${component}], path[${absoluteTargetPath}]`);
 
 const template = fs.readFileSync('dom-tmpl.html', 'utf8');
@@ -68,14 +72,13 @@ console.log(`Done. => ${fileTo}`);
 const demoIndexPath = `${collectPath}demo${path.sep}${component}`;
 
 console.log(`Start creating demo`);
-fixDir(demoIndexPath);
 
 const demoTemplate = fs.readFileSync('demo-tmpl.html', 'utf8');
 const demoCode = demoTemplate.replace(/\$\{1\}/g, component);
 
+fixDir(demoIndexPath);
 fs.writeFileSync(`${fixPath(demoIndexPath)}index.html`, demoCode, 'utf8');
 
 console.log(`Done. => ${fixPath(demoIndexPath)}index.html`);
-
-console.log(`You'd better manually append \`<link rel="import" href="${component}.html">\` to \`all-imports.html\` !`);
+console.log(`You'd better manually append \`<link rel="import" href="${component}.html">\` to \`all-imports.html\`!`);
 console.log(`Because I don't want to do that for you.`);
