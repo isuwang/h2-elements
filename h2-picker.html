@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-picker></h2-picker>
+```
+-->
+
+<dom-module id="h2-picker">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-picker`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-picker/index.html
+     */
+    class H2Picker extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-picker";
+      }
+    }
+    window.customElements.define(H2Picker.is, H2Picker);
+  </script>
+</dom-module>

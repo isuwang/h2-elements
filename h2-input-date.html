@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-input-date></h2-input-date>
+```
+-->
+
+<dom-module id="h2-input-date">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-input-date`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-input-date/index.html
+     */
+    class H2InputDate extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-input-date";
+      }
+    }
+    window.customElements.define(H2InputDate.is, H2InputDate);
+  </script>
+</dom-module>

@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-input></h2-input>
+```
+-->
+
+<dom-module id="h2-input">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-input`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-input/index.html
+     */
+    class H2Input extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-input";
+      }
+    }
+    window.customElements.define(H2Input.is, H2Input);
+  </script>
+</dom-module>

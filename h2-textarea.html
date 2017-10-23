@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-textarea></h2-textarea>
+```
+-->
+
+<dom-module id="h2-textarea">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-textarea`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-textarea/index.html
+     */
+    class H2Textarea extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-textarea";
+      }
+    }
+    window.customElements.define(H2Textarea.is, H2Textarea);
+  </script>
+</dom-module>

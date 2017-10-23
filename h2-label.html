@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-label></h2-label>
+```
+-->
+
+<dom-module id="h2-label">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-label`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-label/index.html
+     */
+    class H2Label extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-label";
+      }
+    }
+    window.customElements.define(H2Label.is, H2Label);
+  </script>
+</dom-module>

@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-image-view></h2-image-view>
+```
+-->
+
+<dom-module id="h2-image-view">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-image-view`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-image-view/index.html
+     */
+    class H2ImageView extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-image-view";
+      }
+    }
+    window.customElements.define(H2ImageView.is, H2ImageView);
+  </script>
+</dom-module>

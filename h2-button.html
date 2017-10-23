@@ -1,0 +1,38 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-button></h2-button>
+```
+-->
+
+<dom-module id="h2-button">
+  <template>
+    <style>
+
+    </style>
+  </template>
+  <script>
+    /**
+     * `h2-button`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-button/index.html
+     */
+    class H2Button extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-button";
+      }
+    }
+    window.customElements.define(H2Button.is, H2Button);
+  </script>
+</dom-module>
