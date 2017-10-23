@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -11,29 +11,72 @@
     <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../h2-grid.html">
-
+    <link rel="import" href="../../h2-grid-header.html">
+    <link rel="import" href="../../h2-grid-header-cell.html">
+    <link rel="import" href="../../h2-grid-body.html">
+    <link rel="import" href="../../h2-grid-row.html">
+    <link rel="import" href="../../h2-grid-cell.html">
     <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-        .centered {
-          min-width: 800px;
-        }
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
 
-        demo-snippet {
-          --demo-snippet-code: {
-            max-height: 500px;
-          }
-        }
-      </style>
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+            .wid-100{
+                width:100px;
+            }
+        </style>
     </custom-style>
-  </head>
-  <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic h2-grid demo</h3>
-      <demo-snippet>
+</head>
+<body>
+<div class="vertical-section-container centered">
+    <h3>Basic h2-grid demo</h3>
+    <demo-snippet>
         <template>
-          <h2-grid></h2-grid>
+            <h2-grid no-paging>
+                <h2-grid-header>
+                    <h2-grid-header-cell >
+                        name
+                    </h2-grid-header-cell>
+                    <h2-grid-header-cell >
+                        age
+                    </h2-grid-header-cell>
+                    <h2-grid-header-cell >
+                        sex
+                    </h2-grid-header-cell>
+                </h2-grid-header>
+                <h2-grid-body>
+                    <h2-grid-row>
+                        <h2-grid-cell >
+                            zhang san
+                        </h2-grid-cell>
+                        <h2-grid-cell >
+                            25
+                        </h2-grid-cell>
+                        <h2-grid-cell >
+                            man
+                        </h2-grid-cell>
+                    </h2-grid-row>
+                    <h2-grid-row>
+                        <h2-grid-cell >
+                            li si
+                        </h2-grid-cell>
+                        <h2-grid-cell >
+                            26
+                        </h2-grid-cell>
+                        <h2-grid-cell >
+                            woman
+                        </h2-grid-cell>
+                    </h2-grid-row>
+                </h2-grid-body>
+            </h2-grid>
         </template>
-      </demo-snippet>
-    </div>
-  </body>
+    </demo-snippet>
+</div>
+</body>
 </html>

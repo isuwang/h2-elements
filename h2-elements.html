@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="h2-elements">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `h2-elements`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class H2Elements extends Polymer.Element {
+      static get is() { return 'h2-elements'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'h2-elements'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(H2Elements.is, H2Elements);
+  </script>
+</dom-module>

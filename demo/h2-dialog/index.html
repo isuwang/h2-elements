@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-tip demo</title>
+  <title>h2-dialog demo</title>
 
   <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-tip.html">
+  <link rel="import" href="../../h2-dialog.html">
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -28,10 +28,25 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-tip demo</h3>
+  <h3>Basic h2-dialog demo</h3>
   <demo-snippet>
     <template>
-      <h2-tip></h2-tip>
+      <style is="custom-style">
+        div[slot=container] {
+          font-size: 20px;
+        }
+      </style>
+      <h2-dialog id="dialog" stop-auto-dismiss width="200px" height="300px">
+        <div slot="container">
+          Put your Content here inside an element which with [slot=container]
+        </div>
+      </h2-dialog>
+      <button id="btn">Click to open the Dialog</button>
+      <script>
+          btn["onclick"] = () => {
+              dialog.open();
+          }
+      </script>
     </template>
   </demo-snippet>
 </div>

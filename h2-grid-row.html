@@ -1,0 +1,175 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+
+<!--
+
+```javascript
+
+<h2-grid-row></h2-grid-row>
+```
+-->
+
+<dom-module id="h2-grid-row">
+    <template>
+        <style>
+            :host {
+                display: block;
+                /*去掉影响偶数行的背景颜色*/
+            }
+
+            :host .row:hover {
+                background: #CAF1FF;
+            }
+
+            .row {
+                padding: 0;
+                margin: 0;
+                border-bottom: 1px solid #ddd;
+                line-height: 40px;
+            }
+
+            .flex-box {
+                display: -webkit-flex; /* Safari */
+                display: flex;
+            }
+        </style>
+        <div class="row flex-box">
+            <slot></slot>
+        </div>
+        <iron-collapse id="sub-row"></iron-collapse>
+    </template>
+    <script>
+        /**
+         * `h2-grid-row`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-grid-row/index.html
+         */
+        class H2GridRow extends Polymer.Element {
+            static get properties() {
+                return {
+                    subItem: String,
+                    subParam: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    open: {
+                        type: Boolean,
+                        value: false
+                    },
+                    subItemDoc: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    openSubItem: {
+                        type: Object,
+                        value: function () {
+                            var counter = 0;
+                            var self = this;
+                            return {
+                                open: function () {
+                                    if (self.loadItem) {
+                                        if (self.subItem) {
+                                            var warp = document.createElement(self.subItem);
+                                            self.subItemDoc = warp;
+                                            Polymer.dom(self.$["sub-row"]).appendChild(warp);
+                                        }
+                                        self.addSubItems(self.subItemDoc, self.subParam);
+                                        self.set("loadItem", false);
+                                        warp.fire("sub-open", {"openCounter": ++counter}, {bubbles: false});
+                                    } else {
+                                        let firstElement = self.$["sub-row"].firstElementChild;
+                                        firstElement.fire("sub-open", {"openCounter": ++counter}, {bubbles: false});
+                                    }
+                                    var span = self.querySelector('h2-grid-row a span');
+                                    if (span.classList.contains("fa-plus")) {//小符号改变
+                                        span.classList.remove("fa-plus");
+                                        span.classList.add("fa-minus");
+                                    } else {
+                                        span.classList.add("fa-plus");
+                                        span.classList.remove("fa-minus");
+                                    }
+                                    self.async(self.openChangeItem, 100);
+                                }
+                            }
+                        }
+                    },
+                    loadItem: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+            }
+
+            static get observers() {
+                return [
+                    'addSubItems(subItemDoc, subParam)',
+                    'openItems(open)'
+                ];
+            }
+
+            static get is() {
+                return "h2-grid-row";
+            }
+
+            /**
+             * 默认是否显示子菜单
+             * @param value
+             */
+            openItems(value) {
+                let self = this;
+                let openItem = function () {
+                    let span = self.querySelector('h2-grid-row a span');
+                    if (span) {
+                        if (value) {//小符号改变
+                            span.classList.remove("fa-plus");
+                            span.classList.add("fa-minus");
+                            if (self.loadItem) {
+                                if (self.subItem) {
+                                    let warp = document.createElement(self.subItem);
+                                    self.subItemDoc = warp;
+                                    Polymer.dom(self.$["sub-row"]).appendChild(warp);
+                                }
+                                self.addSubItems(self.subItemDoc, self.subParam);
+                                self.set("loadItem", false);
+                            }
+                            self.async(self.openChangeItem, 100);//只有在显示时调用子菜单切换事件
+                        } else {
+                            span.classList.add("fa-plus");
+                            span.classList.remove("fa-minus");
+                        }
+
+                    }
+                };
+                this.async(openItem, 100);
+            }
+
+            openChangeItem() {
+                this.$["sub-row"].toggle();
+            }
+
+            addSubItems(subItemDoc, subParam) {
+                if (!this.isEmptyObject(subItemDoc) && !this.isEmptyObject(subParam)) {
+                    this.set("subItemDoc.subParam", this.subParam)
+                }
+            }
+
+            isEmptyObject(obj) {
+                if (typeof obj == "object") {
+                    for (let n in obj) {
+                        return false
+                    }
+                } else {
+                    return !obj;
+                }
+                return true;
+            }
+        }
+        window.customElements.define(H2GridRow.is, H2GridRow);
+    </script>
+</dom-module>

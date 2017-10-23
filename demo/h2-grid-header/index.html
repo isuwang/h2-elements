@@ -4,13 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-tip demo</title>
+  <title>h2-grid-header demo</title>
 
   <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-tip.html">
+  <link rel="import" href="../../h2-grid-header.html">
+  <link rel="import" href="../../h2-grid-header-cell.html">
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -23,15 +24,26 @@
           max-height: 500px;
         }
       }
+
+      .wid-100{
+        width:100px;
+      }
     </style>
   </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-tip demo</h3>
+  <h3>Basic h2-grid-header demo</h3>
   <demo-snippet>
     <template>
-      <h2-tip></h2-tip>
+      <h2-grid-header>
+        <h2-grid-header-cell class="wid-100">
+          name
+        </h2-grid-header-cell>
+        <h2-grid-header-cell class="wid-100">
+          age
+        </h2-grid-header-cell>
+      </h2-grid-header>
     </template>
   </demo-snippet>
 </div>

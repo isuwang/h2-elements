@@ -1,0 +1,53 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-grid-header></h2-grid-header>
+```
+-->
+
+<dom-module id="h2-grid-header">
+  <template>
+    <style>
+      .flex-box {
+        display: -webkit-flex; /* Safari */
+        display: flex;
+      }
+      .header {
+        height: 37px;
+        line-height: 34px;
+        background-color: #595959;
+        box-sizing:border-box;
+        font-weight : bold;
+        padding-left: 5px;
+        border-bottom:3px solid #dddddd;
+      }
+    </style>
+    <div class="header flex-box">
+      <slot></slot>
+    </div>
+  </template>
+  <script>
+    /**
+     * `h2-grid-header`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-grid-header/index.html
+     */
+    class H2GridHeader extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-grid-header";
+      }
+    }
+    window.customElements.define(H2GridHeader.is, H2GridHeader);
+  </script>
+</dom-module>
