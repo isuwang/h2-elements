@@ -1,0 +1,56 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-grid-body></h2-grid-body>
+```
+-->
+
+<dom-module id="h2-grid-body">
+  <template>
+    <style>
+      :host ::slotted h2-grid-row .row:hover{
+        background-color: #CAF1FF;
+      }
+      /*定义奇数行背景*/
+      :host ::slotted(h2-grid-row:nth-child(odd)){
+        background: #ffffff;
+      }
+      /*定义偶数行背景*/
+      :host ::slotted(h2-grid-row:nth-child(even)){
+        background: #efefef;
+      }
+      :host .body {
+        border-top: 1px solid #dddddd;
+        border-left:1px solid #dddddd;
+        border-right:1px solid #dddddd;
+      }
+    </style>
+    <div class="body" style="overflow: visible;">
+      <slot></slot>
+    </div>
+  </template>
+  <script>
+    /**
+     * `h2-grid-body`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-grid-body/index.html
+     */
+    class H2GridBody extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-grid-body";
+      }
+    }
+    window.customElements.define(H2GridBody.is, H2GridBody);
+  </script>
+</dom-module>

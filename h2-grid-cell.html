@@ -1,0 +1,77 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!--
+
+```javascript
+
+<h2-grid-cell></h2-grid-cell>
+```
+-->
+
+<dom-module id="h2-grid-cell">
+    <template>
+        <style>
+            .row-cell {
+                float: left;
+                height: 40px;
+                line-height: 40px;
+                width: 150px;
+                min-height: 10px;
+            }
+
+            .ellipsis-box {
+                display: table;
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .ellipsis {
+                white-space: normal;
+            }
+
+            .content {
+                margin: 0 3px;
+            }
+
+            .display-table-cell {
+                display: table-cell;
+            }
+        </style>
+        <div id="row-cell-div-1" class="row-cell inline-block ellipsis-box ellipsis">
+            <div id="row-cell-div-2" class="content ellipsis display-table-cell">
+                <slot></slot>
+            </div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-grid-cell`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-grid-cell/index.html
+         */
+        class H2GridCell extends Polymer.Element {
+            static get properties() {
+                return {
+                    isOption: {
+                        type: Boolean,
+                        observer: '_optionChange'
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-grid-cell";
+            }
+
+            _optionChange(newValue) {
+                if (newValue) {
+                    this.$['row-cell-div-1'].classList.remove('ellipsis');
+                    this.$['row-cell-div-2'].classList.remove('ellipsis');
+                }
+            }
+        }
+        window.customElements.define(H2GridCell.is, H2GridCell);
+    </script>
+</dom-module>
