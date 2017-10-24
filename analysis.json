@@ -626,6 +626,183 @@
             }
           },
           "inheritedFrom": "Polymer.PropertyEffects"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "description": "组件返回的时间字符串，默认格式yyyy-MM-dd",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 51,
+              "column": 20
+            },
+            "end": {
+              "line": 55,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_valueChange\""
+            }
+          }
+        },
+        {
+          "name": "time",
+          "type": "number",
+          "description": "根据时间字符串返回的时间戳,long型",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 59,
+              "column": 20
+            },
+            "end": {
+              "line": 63,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_timeChange\""
+            }
+          }
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "组件标签名",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 67,
+              "column": 20
+            },
+            "end": {
+              "line": 69,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "description": "是否必填",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 73,
+              "column": 20
+            },
+            "end": {
+              "line": 75,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "pattern",
+          "type": "string",
+          "description": "校验正则",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 79,
+              "column": 20
+            },
+            "end": {
+              "line": 81,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "description": "正则校验错误的提示语",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 85,
+              "column": 20
+            },
+            "end": {
+              "line": 87,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "min",
+          "type": "string",
+          "description": "最小输入值(数字或日期时间)",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 91,
+              "column": 20
+            },
+            "end": {
+              "line": 93,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "max",
+          "type": "string",
+          "description": "最大输入值(数字或日期时间)",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 97,
+              "column": 20
+            },
+            "end": {
+              "line": 99,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "readonly",
+          "type": "boolean",
+          "description": "是否只读",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 103,
+              "column": 20
+            },
+            "end": {
+              "line": 105,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
         }
       ],
       "methods": [
@@ -2529,6 +2706,48 @@
             "desc": "Rewritten URL relative to base"
           },
           "inheritedFrom": "Polymer.ElementMixin"
+        },
+        {
+          "name": "_valueChange",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 113,
+              "column": 12
+            },
+            "end": {
+              "line": 120,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "value"
+            }
+          ]
+        },
+        {
+          "name": "_timeChange",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 122,
+              "column": 12
+            },
+            "end": {
+              "line": 130,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "time"
+            }
+          ]
         }
       ],
       "staticMethods": [
@@ -3236,19 +3455,177 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 24,
-          "column": 4
+          "line": 45,
+          "column": 8
         },
         "end": {
-          "line": 34,
-          "column": 5
+          "line": 131,
+          "column": 9
         }
       },
       "privacy": "public",
       "superclass": "HTMLElement",
       "name": "H2InputDate",
-      "attributes": [],
-      "events": [],
+      "attributes": [
+        {
+          "name": "value",
+          "description": "组件返回的时间字符串，默认格式yyyy-MM-dd",
+          "sourceRange": {
+            "start": {
+              "line": 51,
+              "column": 20
+            },
+            "end": {
+              "line": 55,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "time",
+          "description": "根据时间字符串返回的时间戳,long型",
+          "sourceRange": {
+            "start": {
+              "line": 59,
+              "column": 20
+            },
+            "end": {
+              "line": 63,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "label",
+          "description": "组件标签名",
+          "sourceRange": {
+            "start": {
+              "line": 67,
+              "column": 20
+            },
+            "end": {
+              "line": 69,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "required",
+          "description": "是否必填",
+          "sourceRange": {
+            "start": {
+              "line": 73,
+              "column": 20
+            },
+            "end": {
+              "line": 75,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "pattern",
+          "description": "校验正则",
+          "sourceRange": {
+            "start": {
+              "line": 79,
+              "column": 20
+            },
+            "end": {
+              "line": 81,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "prompt",
+          "description": "正则校验错误的提示语",
+          "sourceRange": {
+            "start": {
+              "line": 85,
+              "column": 20
+            },
+            "end": {
+              "line": 87,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "min",
+          "description": "最小输入值(数字或日期时间)",
+          "sourceRange": {
+            "start": {
+              "line": 91,
+              "column": 20
+            },
+            "end": {
+              "line": 93,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "max",
+          "description": "最大输入值(数字或日期时间)",
+          "sourceRange": {
+            "start": {
+              "line": 97,
+              "column": 20
+            },
+            "end": {
+              "line": 99,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "readonly",
+          "description": "是否只读",
+          "sourceRange": {
+            "start": {
+              "line": 103,
+              "column": 20
+            },
+            "end": {
+              "line": 105,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "value-changed",
+          "description": "Fired when the `value` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "time-changed",
+          "description": "Fired when the `time` property changes.",
+          "metadata": {}
+        }
+      ],
       "styling": {
         "cssVariables": [],
         "selectors": []
@@ -7136,6 +7513,374 @@
             }
           },
           "inheritedFrom": "Polymer.PropertyEffects"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "description": "input 前面的标签名字",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 181,
+              "column": 20
+            },
+            "end": {
+              "line": 185,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_labelChange\""
+            }
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "clazz",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 186,
+              "column": 20
+            },
+            "end": {
+              "line": 189,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"input-size\""
+        },
+        {
+          "name": "dataClass",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 190,
+              "column": 20
+            },
+            "end": {
+              "line": 193,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"input-size input-view\""
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "description": "input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input和chrome一致",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 200,
+              "column": 20
+            },
+            "end": {
+              "line": 203,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"text\""
+        },
+        {
+          "name": "allowedPattern",
+          "type": "string",
+          "description": "匹配的正则表达式",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 207,
+              "column": 20
+            },
+            "end": {
+              "line": 209,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "preventInvalidInput",
+          "type": "boolean",
+          "description": "判断是否用正则匹配校验输入",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 213,
+              "column": 20
+            },
+            "end": {
+              "line": 216,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "bindData",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 217,
+              "column": 20
+            },
+            "end": {
+              "line": 225,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_bindDataChange\""
+            }
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "bindValue",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 226,
+              "column": 20
+            },
+            "end": {
+              "line": 230,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_bindValueChange\""
+            }
+          }
+        },
+        {
+          "name": "aUnit",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 231,
+              "column": 20
+            },
+            "end": {
+              "line": 234,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "bUnit",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 235,
+              "column": 20
+            },
+            "end": {
+              "line": 238,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "description": "模式 常量：'Edit','View'",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 242,
+              "column": 20
+            },
+            "end": {
+              "line": 246,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_modeChange\""
+            }
+          },
+          "defaultValue": "\"Edit\""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "description": "是否必填字段",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 250,
+              "column": 20
+            },
+            "end": {
+              "line": 252,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "isEdit",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 253,
+              "column": 20
+            },
+            "end": {
+              "line": 253,
+              "column": 35
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "isView",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 254,
+              "column": 20
+            },
+            "end": {
+              "line": 254,
+              "column": 35
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "isB",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 255,
+              "column": 20
+            },
+            "end": {
+              "line": 258,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_bUnitChange\""
+            }
+          }
+        },
+        {
+          "name": "isA",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 259,
+              "column": 20
+            },
+            "end": {
+              "line": 262,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_aUnitChange\""
+            }
+          }
+        },
+        {
+          "name": "unitType",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 263,
+              "column": 20
+            },
+            "end": {
+              "line": 266,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "maxlength",
+          "type": "number",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 267,
+              "column": 20
+            },
+            "end": {
+              "line": 270,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "10"
         }
       ],
       "methods": [
@@ -9039,6 +9784,220 @@
             "desc": "Rewritten URL relative to base"
           },
           "inheritedFrom": "Polymer.ElementMixin"
+        },
+        {
+          "name": "_requiredAndBindDataObs",
+          "description": "必填项样式处理",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 288,
+              "column": 12
+            },
+            "end": {
+              "line": 308,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "required",
+              "type": "Object"
+            },
+            {
+              "name": "isEdit",
+              "type": "Object"
+            },
+            {
+              "name": "bindData",
+              "type": "Object"
+            }
+          ]
+        },
+        {
+          "name": "_modeChange",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 310,
+              "column": 12
+            },
+            "end": {
+              "line": 318,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newVal"
+            }
+          ]
+        },
+        {
+          "name": "_bindDataChange",
+          "description": "bindData监听bindData 变化",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 325,
+              "column": 12
+            },
+            "end": {
+              "line": 330,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "bindData"
+            }
+          ]
+        },
+        {
+          "name": "_bindValueChange",
+          "description": "根据input类型调整bind-data的类型",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 338,
+              "column": 12
+            },
+            "end": {
+              "line": 351,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "bindValue"
+            }
+          ],
+          "return": {
+            "type": "number"
+          }
+        },
+        {
+          "name": "_labelChange",
+          "description": "监听标签名改变",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 358,
+              "column": 12
+            },
+            "end": {
+              "line": 367,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "label",
+              "description": "标签名"
+            }
+          ]
+        },
+        {
+          "name": "_bUnitChange",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 369,
+              "column": 12
+            },
+            "end": {
+              "line": 373,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newVal"
+            },
+            {
+              "name": "oldVal"
+            }
+          ]
+        },
+        {
+          "name": "_aUnitChange",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 375,
+              "column": 12
+            },
+            "end": {
+              "line": 379,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newVal"
+            },
+            {
+              "name": "oldVal"
+            }
+          ]
+        },
+        {
+          "name": "_unitTypeChange",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 381,
+              "column": 12
+            },
+            "end": {
+              "line": 390,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newVal"
+            },
+            {
+              "name": "mode"
+            }
+          ]
+        },
+        {
+          "name": "_getType",
+          "description": "默认number的类型为text类型",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 398,
+              "column": 12
+            },
+            "end": {
+              "line": 404,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "type"
+            }
+          ],
+          "return": {
+            "type": "*"
+          }
         }
       ],
       "staticMethods": [
@@ -9746,19 +10705,333 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 25,
-          "column": 4
+          "line": 172,
+          "column": 8
         },
         "end": {
-          "line": 35,
-          "column": 5
+          "line": 405,
+          "column": 9
         }
       },
       "privacy": "public",
       "superclass": "HTMLElement",
       "name": "H2Input",
-      "attributes": [],
-      "events": [],
+      "attributes": [
+        {
+          "name": "label",
+          "description": "input 前面的标签名字",
+          "sourceRange": {
+            "start": {
+              "line": 181,
+              "column": 20
+            },
+            "end": {
+              "line": 185,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "clazz",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 186,
+              "column": 20
+            },
+            "end": {
+              "line": 189,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "data-class",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 190,
+              "column": 20
+            },
+            "end": {
+              "line": 193,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "description": "input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input和chrome一致",
+          "sourceRange": {
+            "start": {
+              "line": 200,
+              "column": 20
+            },
+            "end": {
+              "line": 203,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "allowed-pattern",
+          "description": "匹配的正则表达式",
+          "sourceRange": {
+            "start": {
+              "line": 207,
+              "column": 20
+            },
+            "end": {
+              "line": 209,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "prevent-invalid-input",
+          "description": "判断是否用正则匹配校验输入",
+          "sourceRange": {
+            "start": {
+              "line": 213,
+              "column": 20
+            },
+            "end": {
+              "line": 216,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "bind-data",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 217,
+              "column": 20
+            },
+            "end": {
+              "line": 225,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "bind-value",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 226,
+              "column": 20
+            },
+            "end": {
+              "line": 230,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "a-unit",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 231,
+              "column": 20
+            },
+            "end": {
+              "line": 234,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "b-unit",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 235,
+              "column": 20
+            },
+            "end": {
+              "line": 238,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "mode",
+          "description": "模式 常量：'Edit','View'",
+          "sourceRange": {
+            "start": {
+              "line": 242,
+              "column": 20
+            },
+            "end": {
+              "line": 246,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "required",
+          "description": "是否必填字段",
+          "sourceRange": {
+            "start": {
+              "line": 250,
+              "column": 20
+            },
+            "end": {
+              "line": 252,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "is-edit",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 253,
+              "column": 20
+            },
+            "end": {
+              "line": 253,
+              "column": 35
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "is-view",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 254,
+              "column": 20
+            },
+            "end": {
+              "line": 254,
+              "column": 35
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "is-b",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 255,
+              "column": 20
+            },
+            "end": {
+              "line": 258,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "is-a",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 259,
+              "column": 20
+            },
+            "end": {
+              "line": 262,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "unit-type",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 263,
+              "column": 20
+            },
+            "end": {
+              "line": 266,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "maxlength",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 267,
+              "column": 20
+            },
+            "end": {
+              "line": 270,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "bind-data-changed",
+          "description": "Fired when the `bindData` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "bind-value-changed",
+          "description": "Fired when the `bindValue` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "a-unit-changed",
+          "description": "Fired when the `aUnit` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "b-unit-changed",
+          "description": "Fired when the `bUnit` property changes.",
+          "metadata": {}
+        }
+      ],
       "styling": {
         "cssVariables": [],
         "selectors": []

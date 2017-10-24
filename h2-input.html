@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-input/iron-input.html">
 
 <!--
 
@@ -10,30 +11,400 @@
 -->
 
 <dom-module id="h2-input">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host {
+                text-align: left;
+                display: inline-block;
+                font-size: 0;
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-input`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-input/index.html
-     */
-    class H2Input extends Polymer.Element {
-      static get properties() {
-        return {
+            :host label {
+                text-align: right;
+                line-height: 34px;
+                font-size: 14px;
+            }
 
-        };
-      }
+            :host input {
+                position: relative;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+                font-size: 14px;
+                height: 34px;
+                padding: 6px 12px;
+                width: 100%;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            }
 
-      static get is() {
-        return "h2-input";
-      }
-    }
-    window.customElements.define(H2Input.is, H2Input);
-  </script>
+            :host input:focus {
+                border-color: #66afe9;
+                outline: 0;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            }
+
+            :host input::-moz-placeholder {
+                color: #999;
+                opacity: 1;
+            }
+
+            :host input:-ms-input-placeholder {
+                color: #999;
+            }
+
+            :host input::-webkit-input-placeholder {
+                color: #999;
+            }
+
+            /*必填*/
+            :host .require-input {
+                border: solid 1px red;
+                border-radius: 4px;
+            }
+
+            :host span.input-view {
+                text-align: left;
+                font-size: 14px;
+                vertical-align: top;
+            }
+
+            :host span.input-view {
+                line-height: 34px;
+                white-space: normal;
+                width: auto;
+            }
+
+            /*单位在前front*/
+            :host span.unit-in-f {
+                background-color: #eeeeee;
+                display: inline-block;
+                height: 34px;
+                line-height: 22px;
+                padding: 6px 10px;
+                border: 1px solid #ccc;
+                border-right: none;
+                border-radius: 4px;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                font-size: 14px;
+                vertical-align: top;
+            }
+
+            :host span.unit-in-f.unit-view {
+                border: none;
+                background-color: #ffffff;
+                font-size: 14px;
+                padding: 6px 3px;
+            }
+
+            /*单位在后back*/
+            :host span.unit-in-b {
+                line-height: 34px;
+                vertical-align: top;
+                display: inline-block;
+                margin-left: 3px;
+                font-size: 14px;
+            }
+
+            :host input.unit-input {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            :host .input-size {
+                display: inline-block;
+                width: 170px;
+            }
+
+            :host .label-size {
+                width: 80px;
+                display: inline-block;
+                text-align: right;
+            }
+        </style>
+        <label class="label-size"><span>[[label]]</span>：</label>
+        <template is="dom-if" if="{{isEdit}}">
+            <template is="dom-if" if="{{isB}}">
+                <span class="unit-in-f t-lightblue" id="bUnitSpan1">{{bUnit}}</span>
+            </template>
+            <iron-input bind-value="{{bindValue}}" id="input" slot="input" allowed-pattern="{{allowedPattern}}"
+                        maxlength$="[[maxlength]]">
+                <input id="innerInput"
+                       placeholder$="[[label]]"
+                       required$="{{required}}"
+                       type$="[[_getType(type)]]"
+                       class$="[[clazz]]"
+                       step$="any"
+                       prevent-invalid-input$="{{preventInvalidInput}}"
+                       autocomplete$="off">
+            </iron-input>
+        </template>
+        <template is="dom-if" if="{{isView}}">
+            <template is="dom-if" if="{{isB}}">
+                <span class="unit-in-f unit-view t-lightblue" id="bUnitSpan2">{{bUnit}}</span>
+            </template>
+            <span class$="[[dataClass]]" id="inputSpan">{{bindData}}</span>
+        </template>
+        <template is="dom-if" if="{{isA}}">
+            <span class="unit-in-b" id="aUnitSpan">{{aUnit}}</span>
+        </template>
+    </template>
+
+    <script>
+        /**
+         * `h2-input`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-input/index.html
+         */
+        class H2Input extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * input 前面的标签名字
+                     *
+                     * @attribute label
+                     * @type {String}
+                     */
+                    label: {
+                        type: String,
+                        value: "",
+                        observer: '_labelChange'
+                    },
+                    clazz: {
+                        type: String,
+                        value: "input-size",
+                    },
+                    dataClass: {
+                        type: String,
+                        value: "input-size input-view",
+                    },
+                    /**
+                     * input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input和chrome一致
+                     *
+                     * @attribute type
+                     * @type {String}
+                     */
+                    type: {
+                        type: String,
+                        value: "text"
+                    },
+                    /**
+                     * 匹配的正则表达式
+                     */
+                    allowedPattern: {
+                        type: String
+                    },
+                    /**
+                     * 判断是否用正则匹配校验输入
+                     */
+                    preventInvalidInput: {
+                        type: Boolean,
+                        value: false
+                    },
+                    bindData: {
+                        type: Object,
+                        value: function () {
+                            return "";
+                        },
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_bindDataChange'
+                    },
+                    bindValue: {
+                        type: String,
+                        notify: true,
+                        observer: '_bindValueChange'
+                    },
+                    aUnit: {
+                        type: String,
+                        notify: true,
+                    },
+                    bUnit: {
+                        type: String,
+                        notify: true,
+                    },
+                    /**
+                     * 模式 常量：'Edit','View'
+                     */
+                    mode: {
+                        type: String,
+                        value: 'Edit',
+                        observer: '_modeChange'
+                    },
+                    /**
+                     * 是否必填字段
+                     */
+                    required: {
+                        type: Boolean
+                    },
+                    isEdit: Boolean,
+                    isView: Boolean,
+                    isB: {
+                        type: Boolean,
+                        observer: '_bUnitChange',
+                    },
+                    isA: {
+                        type: Boolean,
+                        observer: '_aUnitChange',
+                    },
+                    unitType: {
+                        type: String,
+
+                    },
+                    maxlength: {
+                        type: Number,
+                        value: 10
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-input";
+            }
+
+            static get observers() {
+                return ['_requiredAndBindDataObs(required,isEdit,bindData)', '_unitTypeChange(unitType,mode)']
+            }
+
+            /**
+             * 必填项样式处理
+             * @param {Object} required
+             * @param {Object} isEdit
+             * @param {Object} bindData
+             */
+            _requiredAndBindDataObs(required, isEdit, bindData) {
+                if (required && !bindData && isEdit) {
+                    this.async(function () {
+                        var _input = Polymer.dom(this.root).querySelector("input");
+                        var _inputClass = _input.classList;
+                        if (!_inputClass.contains("require-input")) {
+                            _inputClass.add("require-input");
+                        }
+                    }.bind(this), 100);
+                } else if (required && bindData && isEdit) {
+                    this.async(function () {
+                        if (Polymer.dom(this.root).querySelector("input") != undefined) {
+                            var _input = Polymer.dom(this.root).querySelector("input");
+                            var _inputClass = _input.classList;
+                            if (_inputClass.contains("require-input")) {
+                                _inputClass.remove("require-input");
+                            }
+                        }
+                    }.bind(this), 100);
+                }
+            }
+
+            _modeChange(newVal) {
+                if (newVal == "Edit" || newVal == "Add") {
+                    this.set("isEdit", true);
+                    this.set("isView", false);
+                } else {
+                    this.set("isEdit", false);
+                    this.set("isView", true);
+                }
+            }
+
+            /**
+             * bindData监听bindData 变化
+             * @param bindData
+             * @private
+             */
+            _bindDataChange(bindData) {
+                if (typeof bindData != this.type && this.type == 'number') {
+                    this.bindData = Number(bindData);
+                }
+                this.bindValue = this.bindData;
+            }
+
+            /**
+             * 根据input类型调整bind-data的类型
+             * @param type
+             * @returns {number}
+             * @private
+             */
+            _bindValueChange(bindValue) {
+                if (this.root.querySelector("#innerInput")) {
+                    if (this.type === 'number' && this.root.querySelector("#innerInput").validity.valid) {
+                        var reg = /^-?[0-9]+\.?[0-9]*$/;            //增加对负数的支持
+                        if (reg.test(bindValue)) {//如果填写的是非数字那么把当前值置为0
+                            bindValue = Number(bindValue);
+                        } else {
+                            bindValue = 0;
+                        }
+
+                    }
+                }
+                this.bindData = bindValue;//放到了if外面，因为bind-data初始值为空时无法进去if，导致required初始化失效
+            }
+
+            /**
+             * 监听标签名改变
+             * @param label 标签名
+             * @private
+             */
+            _labelChange(label) {
+                var labelElement = this.root.querySelector(".label-size");
+                if (labelElement) {
+                    if (!label) {
+                        labelElement.style.display = "none";
+                    } else {
+                        labelElement.style.display = "inline-block";
+                    }
+                }
+            }
+
+            _bUnitChange(newVal, oldVal) {
+                if (newVal && this.clazz.indexOf("unit-input") < 0) {
+                    this.set("clazz", "input-size unit-input ");
+                }
+            }
+
+            _aUnitChange(newVal, oldVal) {
+                if (newVal && this.clazz.indexOf("") < 0) {//""写入显示样式
+                    this.set("clazz", "input-size");
+                }
+            }
+
+            _unitTypeChange(newVal, mode) {
+                if (newVal && newVal.trim() == "Money") {
+                    if (this.dataClass.indexOf("t-lightblue") < 0) {
+                        this.set("dataClass", "input-size input-view t-lightblue");
+                    }
+//                else if(mode=="View") {
+//                        this.bindData = numeral(this.bindData).format("0,0.00");
+//                }
+                }
+            }
+
+            /**
+             * 默认number的类型为text类型
+             * @param type
+             * @returns {*}
+             * @private
+             */
+            _getType(type) {
+                if (type === "number") {
+                    return "text";
+                } else {
+                    return type;
+                }
+            }
+        }
+        window.customElements.define(H2Input.is, H2Input);
+    </script>
 </dom-module>

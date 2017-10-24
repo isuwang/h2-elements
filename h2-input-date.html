@@ -11,9 +11,17 @@
 
 <dom-module id="h2-input-date">
     <template>
+        <style>
+            :host {
+                --paper-input-container: {
+                    padding: 0px 0px;
+                }
+            }
+        </style>
         <paper-input
                 id="input"
-                always-float-label
+                no-label-float="true"
+                always-float-label="false"
                 value="{{value}}"
                 label=[[label]]
                 placeholder="[[label]]"
