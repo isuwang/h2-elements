@@ -10,8 +10,10 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../../iron-icons/iron-icons.html">
   <link rel="import" href="../../h2-grid-row.html">
   <link rel="import" href="../../h2-grid-cell.html">
+  <link rel="import" href="h2-test.html">
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -43,6 +45,10 @@
         cursor: pointer;
       }
 
+      .inline-block{
+        display: inline-block;
+      }
+
       .expand-btn .fa {
         margin-left: -5px;
       }
@@ -56,9 +62,6 @@
       a.expand-btn:focus, a.expand-btn:hover {
         color: #D71789;
         text-decoration: underline;
-      }
-      .fa-plus:before {
-        content: "\f067";
       }
     </style>
   </custom-style>
@@ -82,15 +85,13 @@
     </template>
   </demo-snippet>
 </div>
+
 <div class="vertical-section-container centered">
   <h3>h2-grid-row sub-item demo</h3>
   <demo-snippet>
     <template>
-      <h2-grid-row sub-item="sub-item" id="row-have-item" sub-param="{{subParam}}">
-        <h2-grid-cell class="row-cell-itemsOpen" on-click="openSubItem">
-          <a class="expand-btn inline-block">
-            <span class="fa fa-plus"></span>
-          </a>
+      <h2-grid-row sub-item="h2-test" id="rowHavetem" sub-param="{{subParam}}" >
+        <h2-grid-cell class="row-cell-itemsOpen" show-sub-item-icon id="_openSubItem">
         </h2-grid-cell>
         <h2-grid-cell>
           <span>zhang san</span>
@@ -103,15 +104,9 @@
         </h2-grid-cell>
       </h2-grid-row>
       <script>
-          [row-have-item].subParam=[{
-              name:"老李",
-              age:27,
-              sex:"男"
-          },{
-              name:"老三",
-              age:26,
-              sex:"男"
-          }]
+          _openSubItem["onclick"] = () => {
+              _openSubItem.openSubItem();
+          }
       </script>
     </template>
   </demo-snippet>

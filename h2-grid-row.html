@@ -36,7 +36,7 @@
         <div class="row flex-box">
             <slot></slot>
         </div>
-        <iron-collapse id="sub-row"></iron-collapse>
+        <iron-collapse id="sub-row" opened="[[isOpen]]"></iron-collapse>
     </template>
     <script>
         /**
@@ -56,6 +56,10 @@
                             return {};
                         }
                     },
+                    isOpen: {
+                        type: Boolean,
+                        value: false
+                    },
                     open: {
                         type: Boolean,
                         value: false
@@ -64,39 +68,6 @@
                         type: Object,
                         value: function () {
                             return {};
-                        }
-                    },
-                    openSubItem: {
-                        type: Object,
-                        value: function () {
-                            var counter = 0;
-                            var self = this;
-                            return {
-                                open: function () {
-                                    if (self.loadItem) {
-                                        if (self.subItem) {
-                                            var warp = document.createElement(self.subItem);
-                                            self.subItemDoc = warp;
-                                            Polymer.dom(self.$["sub-row"]).appendChild(warp);
-                                        }
-                                        self.addSubItems(self.subItemDoc, self.subParam);
-                                        self.set("loadItem", false);
-                                        warp.fire("sub-open", {"openCounter": ++counter}, {bubbles: false});
-                                    } else {
-                                        let firstElement = self.$["sub-row"].firstElementChild;
-                                        firstElement.fire("sub-open", {"openCounter": ++counter}, {bubbles: false});
-                                    }
-                                    var span = self.querySelector('h2-grid-row a span');
-                                    if (span.classList.contains("fa-plus")) {//小符号改变
-                                        span.classList.remove("fa-plus");
-                                        span.classList.add("fa-minus");
-                                    } else {
-                                        span.classList.add("fa-plus");
-                                        span.classList.remove("fa-minus");
-                                    }
-                                    self.async(self.openChangeItem, 100);
-                                }
-                            }
                         }
                     },
                     loadItem: {
@@ -138,7 +109,7 @@
                                 self.addSubItems(self.subItemDoc, self.subParam);
                                 self.set("loadItem", false);
                             }
-                            self.async(self.openChangeItem, 100);//只有在显示时调用子菜单切换事件
+                            setTimeout(self.openChangeItem, 100);//只有在显示时调用子菜单切换事件
                         } else {
                             span.classList.add("fa-plus");
                             span.classList.remove("fa-minus");
@@ -146,7 +117,7 @@
 
                     }
                 };
-                this.async(openItem, 100);
+                setTimeout(openItem, 100);
             }
 
             openChangeItem() {
@@ -168,6 +139,35 @@
                     return !obj;
                 }
                 return true;
+            }
+
+            openSubItem() {
+                if (this.loadItem) {
+                    if (this.subItem) {
+                        let warp = document.createElement(this.subItem);
+                        this.subItemDoc = warp;
+                        this.$["sub-row"].appendChild(warp);
+                    }
+                    this.addSubItems(this.subItemDoc, this.subParam);
+                    this.set("loadItem", false);
+                }
+                /*let span = this.querySelector('h2-grid-row a span');
+                 if (span.classList.contains("fa-plus")) {//小符号改变
+                 span.classList.remove("fa-plus");
+                 span.classList.add("fa-minus");
+                 } else {
+                 span.classList.add("fa-plus");
+                 span.classList.remove("fa-minus");
+                 }*/
+                setTimeout(this.openChangeItem.bind(this), 100);
+            }
+
+            ready() {
+                super.ready();
+                this.addEventListener('open-sub-item', (e) => {
+                    this.set("isOpen",e.isOpen);
+                    this.openSubItem();
+                });
             }
         }
         window.customElements.define(H2GridRow.is, H2GridRow);

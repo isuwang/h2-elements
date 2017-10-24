@@ -69,6 +69,10 @@
             static get is() {
                 return "h2-grid";
             }
+
+            isShowPaging(noPaging) {
+                return !noPaging;
+            }
         }
         window.customElements.define(H2Grid.is, H2Grid);
     </script>

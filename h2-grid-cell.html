@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 <!--
 
@@ -15,7 +16,7 @@
                 float: left;
                 height: 40px;
                 line-height: 40px;
-                width: 150px;
+                /*width: 150px;*/
                 min-height: 10px;
             }
 
@@ -39,6 +40,10 @@
         </style>
         <div id="row-cell-div-1" class="row-cell inline-block ellipsis-box ellipsis">
             <div id="row-cell-div-2" class="content ellipsis display-table-cell">
+                <template is="dom-if" if="[[showSubItemIcon]]">
+                    <iron-icon icon="[[getIcon(isOpen)]]"></iron-icon>
+                </template>
+
                 <slot></slot>
             </div>
         </div>
@@ -54,9 +59,34 @@
         class H2GridCell extends Polymer.Element {
             static get properties() {
                 return {
+                    /**
+                     * The icon when expanded.
+                     */
+                    expandIcon: {
+                        type: String,
+                        value: 'add-circle-outline'
+                    },
+                    /**
+                     * The icon when collapsed.
+                     */
+                    collapseIcon: {
+                        type: String,
+                        value: 'remove-circle-outline'
+                    },
                     isOption: {
                         type: Boolean,
                         observer: '_optionChange'
+                    },
+                    isOpen: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * show SubItem Iron
+                     */
+                    showSubItemIcon: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -70,6 +100,20 @@
                     this.$['row-cell-div-1'].classList.remove('ellipsis');
                     this.$['row-cell-div-2'].classList.remove('ellipsis');
                 }
+            }
+
+            getIcon(isOpen) {
+                return isOpen ? this.collapseIcon : this.expandIcon;
+            }
+
+            openSubItem() {
+                this.set("isOpen", !this.isOpen);
+                this.dispatchEvent(new CustomEvent('open-sub-item', {
+                    isOpen: this.isOpen,
+                    composed: true,
+                    bubbles: true
+                }))
+
             }
         }
         window.customElements.define(H2GridCell.is, H2GridCell);

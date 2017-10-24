@@ -1,0 +1,46 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<!--
+
+```javascript
+
+<h2-scroll-view></h2-scroll-view>
+```
+-->
+
+<dom-module id="h2-scroll-view">
+  <template>
+    <style>
+      :host .scrollable-container {
+        min-height: 800px;
+      }
+    </style>
+    <paper-dialog-scrollable>
+      <div class="scrollable-container">
+        <slot></slot>
+      </div>
+    </paper-dialog-scrollable>
+  </template>
+  <script>
+    /**
+     * `h2-scroll-view`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-scroll-view/index.html
+     */
+    class H2ScrollView extends Polymer.Element {
+      static get properties() {
+        return {
+
+        };
+      }
+
+      static get is() {
+        return "h2-scroll-view";
+      }
+    }
+    window.customElements.define(H2ScrollView.is, H2ScrollView);
+  </script>
+</dom-module>
