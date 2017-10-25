@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="h2-input.html">
 
 <!--
 
@@ -11,29 +11,17 @@
 
 <dom-module id="h2-input-date">
     <template>
-        <style>
-            :host {
-                --paper-input-container: {
-                    padding: 0px 0px;
-                }
-            }
-        </style>
-        <paper-input
+        <h2-input
                 id="input"
-                no-label-float="true"
-                always-float-label="false"
                 value="{{value}}"
                 label=[[label]]
                 placeholder="[[label]]"
-                auto-validate
                 required=[[required]]
-                error-message="[[prompt]]"
                 min="[[min]]"
                 max="[[max]]"
-                pattern="[[pattern]]"
                 readonly="[[readonly]]"
                 type="date">
-        </paper-input>
+        </h2-input>
     </template>
     <script>
         /**
@@ -75,16 +63,10 @@
                         type: Boolean
                     },
                     /**
-                     * 校验正则
+                     * 是否只读
                      */
-                    pattern: {
-                        type: String
-                    },
-                    /**
-                     * 正则校验错误的提示语
-                     */
-                    prompt: {
-                        type: String
+                    readonly: {
+                        type: Boolean
                     },
                     /**
                      * 最小输入值(数字或日期时间)
@@ -97,12 +79,6 @@
                      */
                     max: {
                         type: String
-                    },
-                    /**
-                     * 是否只读
-                     */
-                    readonly: {
-                        type: Boolean
                     }
                 };
             }
@@ -112,7 +88,7 @@
             }
 
             _valueChange(value) {
-                if (!value) {
+                if (!this.value) {
                     this.set("time", undefined);
                     return;
                 }
@@ -121,7 +97,7 @@
             }
 
             _timeChange(time){
-                if(!value){
+                if(!time){
                     this.set("value","");
                     return;
                 }

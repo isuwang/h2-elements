@@ -7,32 +7,43 @@
 <h2-label></h2-label>
 ```
 -->
-
+<!--标签组件-->
 <dom-module id="h2-label">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host label {
+                min-width: 80px;
+                display: inline-block;
+                text-align: right;
+                line-height: 34px;
+                font-size: 14px;
+            }
+        </style>
+        <template is="dom-if" if="[[value]]">
+            <label><span>[[value]]</span>：</label>
+        </template>
+    </template>
+    <script>
+        /**
+         * `h2-label`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-label/index.html
+         */
+        class H2Label extends Polymer.Element {
+            static get properties() {
+                return {
+                    value: {
+                        type: String
+                    }
+                };
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-label`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-label/index.html
-     */
-    class H2Label extends Polymer.Element {
-      static get properties() {
-        return {
-
-        };
-      }
-
-      static get is() {
-        return "h2-label";
-      }
-    }
-    window.customElements.define(H2Label.is, H2Label);
-  </script>
+            static get is() {
+                return "h2-label";
+            }
+        }
+        window.customElements.define(H2Label.is, H2Label);
+    </script>
 </dom-module>
