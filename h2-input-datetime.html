@@ -5,16 +5,13 @@
 <!--
 
 ```javascript
-日期时间选择框
+
 <h2-input-datetime></h2-input-datetime>
 ```
 -->
-
+<!--日期时间选择框-->
 <dom-module id="h2-input-datetime">
     <template>
-        <style>
-
-        </style>
         <h2-input
                 id="input"
                 value="{{value}}"
@@ -50,6 +47,7 @@
                     },
                     /**
                      * 根据时间字符串返回的时间戳,long型
+                     * （建议用time属性进行初始化赋值和取值）
                      */
                     time: {
                         type: Number,

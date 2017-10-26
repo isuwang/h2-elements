@@ -4,11 +4,11 @@
 <!--
 
 ```javascript
-日期选择框
+
 <h2-input-date></h2-input-date>
 ```
 -->
-
+<!--日期选择框-->
 <dom-module id="h2-input-date">
     <template>
         <h2-input
@@ -44,6 +44,7 @@
                     },
                     /**
                      * 根据时间字符串返回的时间戳,long型
+                     * （建议用time属性进行初始化赋值和取值）
                      */
                     time: {
                         type: Number,
