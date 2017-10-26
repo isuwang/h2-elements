@@ -46,11 +46,12 @@
             }
 
             :host .scrollable-container {
-                min-height: 800px;
+                min-height: 50px;
+                height: auto;
             }
 
         </style>
-        <paper-dialog id="dialog" style="[[dialogStyle]]"
+        <paper-dialog id="dialog"
                       modal
                       entry-animation="scale-up-animation"
                       exit-animation="fade-out-animation">
@@ -78,39 +79,29 @@
                         type: Boolean,
                         value: false
                     },
+                    /**
+                     * set dialog width
+                     */
                     width: {
                         type: String,
-                        value: "50%"
                     },
-                    minWidth: {
-                        type: String,
-                        value: "20%"
-                    },
-                    maxWidth: {
-                        type: String,
-                        value: "80%"
-                    },
+                    /**
+                     * set dialog height
+                     */
                     height: {
                         type: String,
-                        value: "20%"
                     },
-                    minHeight: {
-                        type: String,
-                        value: "20%"
-                    },
-                    maxHeight: {
-                        type: String,
-                        value: "80%"
-                    },
-                    dialogStyle: {
-                        type: String,
-                        computed: 'getDialogStyle(width,minWidth,maxWidth,height,minHeight,maxHeight)'
-                    }
                 };
             }
 
             static get is() {
                 return "h2-dialog";
+            }
+
+            static get observers() {
+                return [
+                    'setDialogWithAndHeight(height,width)'
+                ]
             }
 
             connectedCallback() {
@@ -147,8 +138,13 @@
             /**
              * set paper-dialog style
              */
-            getDialogStyle(width, minWidth, maxWidth, height, minHeight, maxHeight) {
-                return "width:" + width + ";minWidth:" + minWidth + "maxWidth:" + maxWidth + ";height:" + height + ";minHeight:" + minHeight + ";maxHeight:" + maxHeight + ";"
+            setDialogWithAndHeight(height, width) {
+                if (height) {
+                    this.root.querySelector(".scrollable-container").style.height = height;
+                }
+                if (width) {
+                    this.root.querySelector(".scrollable-container").style.width = width;
+                }
             }
 
             /**
