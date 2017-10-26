@@ -10,37 +10,74 @@
 -->
 
 <dom-module id="h2-scroll-view">
-  <template>
-    <style>
-      :host .scrollable-container {
-        min-height: 800px;
-      }
-    </style>
-    <paper-dialog-scrollable>
-      <div class="scrollable-container">
-        <slot></slot>
-      </div>
-    </paper-dialog-scrollable>
-  </template>
-  <script>
-    /**
-     * `h2-scroll-view`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-scroll-view/index.html
-     */
-    class H2ScrollView extends Polymer.Element {
-      static get properties() {
-        return {
+    <template>
+        <style>
+            .scrollable-container {
+                min-height: 20px;
+                height: 100px;
+            }
+        </style>
+        <paper-dialog-scrollable>
+            <div class="scrollable-container">
+                <slot></slot>
+            </div>
+        </paper-dialog-scrollable>
+    </template>
+    <script>
+        /**
+         * `h2-scroll-view`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-scroll-view/index.html
+         */
+        class H2ScrollView extends Polymer.Element {
+            static get properties() {
+                return {
 
-        };
-      }
+                    /**
+                     * set scroll paneled height
+                     * @demo height:100px
+                     */
+                    height: {
+                        type: String
+                    },
 
-      static get is() {
-        return "h2-scroll-view";
-      }
-    }
-    window.customElements.define(H2ScrollView.is, H2ScrollView);
-  </script>
+                    /**
+                     * set scroll paneled width
+                     * @demo width:100px
+                     */
+                    width: {
+                        type: String
+                    },
+                };
+            }
+
+            static get observers() {
+                return [
+                    'setScrollWidthAndHeight(height,width)'
+                ]
+            }
+
+            /**
+             * set scroll height and width
+             * @param height
+             * @param width
+             */
+            setScrollWidthAndHeight(height, width) {
+                if(height){
+                    this.root.querySelector(".scrollable-container").style.height=height;
+                }
+                if(width){
+                    this.root.querySelector(".scrollable-container").style.width=width;
+                }
+
+            }
+
+            static get is() {
+                return "h2-scroll-view";
+            }
+        }
+        window.customElements.define(H2ScrollView.is, H2ScrollView);
+    </script>
 </dom-module>

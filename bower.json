@@ -23,7 +23,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
-    "iron-component-page": "PolymerElements/iron-component-page#^3.0.1"
+    "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",

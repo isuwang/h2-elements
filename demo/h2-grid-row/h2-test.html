@@ -24,7 +24,7 @@
         </style>
         <div class="simple-grid">
             <slot></slot>
-            测试子页面
+            [[subParam.mess]]
 
         </div>
     </template>
@@ -39,6 +39,14 @@
         class H2Test extends Polymer.Element {
             static get properties() {
                 return {
+                    subParam: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                mess: "subItem default mess"
+                            }
+                        }
+                    }
                 };
             }
 

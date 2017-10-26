@@ -43,7 +43,6 @@
                 <template is="dom-if" if="[[showSubItemIcon]]">
                     <iron-icon icon="[[getIcon(isOpen)]]"></iron-icon>
                 </template>
-
                 <slot></slot>
             </div>
         </div>
@@ -73,13 +72,9 @@
                         type: String,
                         value: 'remove-circle-outline'
                     },
-                    isOption: {
-                        type: Boolean,
-                        observer: '_optionChange'
-                    },
                     isOpen: {
                         type: Boolean,
-                        value: false
+                        value: false,
                     },
                     /**
                      * show SubItem Iron
@@ -109,11 +104,14 @@
             openSubItem() {
                 this.set("isOpen", !this.isOpen);
                 this.dispatchEvent(new CustomEvent('open-sub-item', {
-                    isOpen: this.isOpen,
                     composed: true,
                     bubbles: true
                 }))
 
+            }
+
+            ready() {
+                super.ready();
             }
         }
         window.customElements.define(H2GridCell.is, H2GridCell);

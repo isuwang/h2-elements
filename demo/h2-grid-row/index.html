@@ -90,8 +90,21 @@
   <h3>h2-grid-row sub-item demo</h3>
   <demo-snippet>
     <template>
-      <h2-grid-row sub-item="h2-test" id="rowHavetem" sub-param="{{subParam}}" >
+      <h2-grid-row sub-item="h2-test" id="rowHaveItem" sub-param="{{subParam}}" open>
         <h2-grid-cell class="row-cell-itemsOpen" show-sub-item-icon id="_openSubItem">
+        </h2-grid-cell>
+        <h2-grid-cell>
+          <span>zhang san</span>
+        </h2-grid-cell>
+        <h2-grid-cell>
+          <span>li si</span>
+        </h2-grid-cell>
+        <h2-grid-cell>
+          <span>wang wu</span>
+        </h2-grid-cell>
+      </h2-grid-row>
+      <h2-grid-row sub-item="h2-test" id="row" >
+        <h2-grid-cell class="row-cell-itemsOpen" show-sub-item-icon id="_openSubItem2">
         </h2-grid-cell>
         <h2-grid-cell>
           <span>zhang san</span>
@@ -106,6 +119,12 @@
       <script>
           _openSubItem["onclick"] = () => {
               _openSubItem.openSubItem();
+          }
+          _openSubItem2["onclick"] = () => {
+              _openSubItem2.openSubItem();
+          }
+          rowHaveItem.subParam={
+              mess:"subItem accept row Param"
           }
       </script>
     </template>
