@@ -1,38 +1,126 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="behaviors/format-behavior.html">
+<link rel="import" href="h2-input.html">
 
 <!--
 
 ```javascript
-
+日期时间选择框
 <h2-input-datetime></h2-input-datetime>
 ```
 -->
 
 <dom-module id="h2-input-datetime">
-  <template>
-    <style>
+    <template>
+        <style>
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-input-datetime`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-input-datetime/index.html
-     */
-    class H2InputDatetime extends Polymer.Element {
-      static get properties() {
-        return {
+        </style>
+        <h2-input
+                id="input"
+                value="{{value}}"
+                label=[[label]]
+                placeholder="[[label]]"
+                required=[[required]]
+                min="[[min]]"
+                max="[[max]]"
+                readonly="[[readonly]]"
+                width="180px"
+                type="datetime-local">
+        </h2-input>
+    </template>
+    <script>
+        /**
+         * `h2-input-datetime`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-input-datetime/index.html
+         */
 
-        };
-      }
+        class H2InputDatetime extends Polymer.mixinBehaviors([FormatBehavior], Polymer.Element) {
+            static get properties() {
+                return {
+                    /**
+                     * 组件返回的时间字符串，默认格式yyyy-MM-ddTHH:mm，如2017-10-26T12:20
+                     */
+                    value: {
+                        type: String,
+                        notify: true,
+                        observer: "_valueChange"
+                    },
+                    /**
+                     * 根据时间字符串返回的时间戳,long型
+                     */
+                    time: {
+                        type: Number,
+                        notify: true,
+                        observer:"_timeChange"
+                    },
+                    /**
+                     * 组件标签名
+                     */
+                    label: {
+                        type: String
+                    },
+                    /**
+                     * 是否必填
+                     */
+                    required: {
+                        type: Boolean
+                    },
+                    /**
+                     * 是否只读
+                     */
+                    readonly: {
+                        type: Boolean
+                    },
+                    /**
+                     * 最小输入值(数字或日期时间)
+                     */
+                    min: {
+                        type: String
+                    },
+                    /**
+                     * 最大输入值(数字或日期时间)
+                     */
+                    max: {
+                        type: String
+                    }
+                };
+            }
 
-      static get is() {
-        return "h2-input-datetime";
-      }
-    }
-    window.customElements.define(H2InputDatetime.is, H2InputDatetime);
-  </script>
+            static get is() {
+                return "h2-input-datetime";
+            }
+
+            /**
+             * 返回的时间字符串改变时，设置time为对应的long型的时间戳
+             * @param value
+             * @private
+             */
+            _valueChange(value) {
+                if (!this.value) {
+                    this.set("time", undefined);
+                    return;
+                }
+                let time = new Date(value).getTime();
+                this.set("time", time);
+            }
+
+            /**
+             * long型时间戳改变时，设置value为对应的yyyy-MM-ddTHH:mm格式的时间字符串
+             * @param time
+             * @private
+             */
+            _timeChange(time) {
+                if (!time) {
+                    this.set("value", "");
+                    return;
+                }
+                let date = new Date(time);
+                this.set("value", this.formatDate(date, "yyyy-MM-ddTHH:mm"));
+            }
+        }
+        window.customElements.define(H2InputDatetime.is, H2InputDatetime);
+    </script>
 </dom-module>

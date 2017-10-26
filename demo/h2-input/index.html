@@ -1,44 +1,96 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-input demo</title>
+    <title>h2-input demo</title>
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-input.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../h2-input.html">
 
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      .centered {
-        min-width: 800px;
-      }
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
 
-      demo-snippet {
-        --demo-snippet-code: {
-          max-height: 500px;
-        }
-      }
-    </style>
-  </custom-style>
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+        </style>
+    </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-input demo</h3>
-  <demo-snippet>
-    <template>
-      <h2-input label="输入框"></h2-input>
-      <h2-input label="存款" unit="$"></h2-input>
-      <h2-input label="单价" unit="元/吨"></h2-input>
-      <h2-input label="单价" unit="元/吨" readonly></h2-input>
-      <h2-input label="单价" unit="元/吨" required></h2-input>
-      <h2-input label="日期" type="date"></h2-input>
-    </template>
-  </demo-snippet>
+    <h3>支持标签</h3>
+    <demo-snippet>
+        <template>
+            <h2-input value="无标签框"></h2-input>
+            <h2-input label="标签框"></h2-input>
+        </template>
+    </demo-snippet>
+
+    <h3>支持不同类型（H5的input元素所有类型）</h3>
+    <demo-snippet>
+        <template>
+            <h2-input label="文本框"></h2-input>
+            <h2-input label="数字框" type="number"></h2-input>
+            <h2-input label="电话" type="tel" maxlength="11"></h2-input>
+            <h2-input label="密码框" type="password"></h2-input>
+            <h2-input label="文件框" type="file"></h2-input>
+            <h2-input label="颜色框" type="color"></h2-input>
+            <h2-input label="日期框" type="date"></h2-input>
+            <h2-input label="日期时间框" width="180px" type="datetime-local"></h2-input>
+        </template>
+    </demo-snippet>
+
+    <h3>支持增加输入框前缀（单位等）</h3>
+    <demo-snippet>
+        <template>
+            <h2-input label="存款" unit="$"></h2-input>
+            <h2-input label="单价" unit="元/吨"></h2-input>
+            <h2-input label="数量" unit="吨"></h2-input>
+        </template>
+    </demo-snippet>
+
+    <h3>支持必填、只读属性</h3>
+    <demo-snippet>
+        <template>
+            <div>
+                <h2-input label="有值必填框" value="梅西" required></h2-input>
+            </div>
+            <div>
+                <h2-input label="无值必填框" value="" required></h2-input>
+            </div>
+            <div>
+                <h2-input label="只读输入框" value="梅西" readonly></h2-input>
+            </div>
+        </template>
+    </demo-snippet>
+
+    <h3>支持最大值、最小值范围（对日期支持）</h3>
+    <demo-snippet>
+        <template>
+            <h2-input label="日期" type="date" min="2017-10-10"></h2-input>
+            <h2-input label="日期" type="date" max="2017-10-30"></h2-input>
+            <h2-input label="日期" type="date" min="2017-10-10" max="2017-10-30"></h2-input>
+        </template>
+    </demo-snippet>
+
+    <h3>支持最大输入长度</h3>
+    <demo-snippet>
+        <template>
+            <h2-input label="数量" type="number" maxlength="2"></h2-input>
+            <h2-input label="名字" maxlength="5"></h2-input>
+            <h2-input label="URL" type="url" maxlength="10"></h2-input>
+        </template>
+    </demo-snippet>
 </div>
 </body>
 </html>

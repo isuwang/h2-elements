@@ -133,6 +133,18 @@
             :host .t-lightblue {
                 color: #2786F7;
             }
+
+            /*隐藏输入框的上下小箭头Chrome*/
+            :host input::-webkit-outer-spin-button,
+            :host input::-webkit-inner-spin-button {
+                -webkit-appearance: none !important;
+                margin: 0;
+            }
+
+            /*隐藏输入框的上下小箭头Firefox*/
+            :host input {
+                -moz-appearance: textfield;
+            }
         </style>
         <h2-label value="[[label]]"></h2-label>
         <!--可编辑状态-->
@@ -144,9 +156,7 @@
                         maxlength$="[[maxlength]]">
                 <input id="innerInput"
                        placeholder$="[[label]]"
-                       required$="[[required]]"
-                       readonly$="[[readonly]]"
-                       type$="[[_getType(type)]]"
+                       type$="[[type]]"
                        class$="[[clazz]]"
                        step$="any"
                        prevent-invalid-input$="{{preventInvalidInput}}"
@@ -154,7 +164,8 @@
                        minlength$="[[minlength]]"
                        maxlength$="[[maxlength]]"
                        min$="[[min]]"
-                       max$="[[max]]">
+                       max$="[[max]]"
+                       style$="[[_setWidth(width)]]">
             </iron-input>
         </template>
 
@@ -243,7 +254,7 @@
                         type: String
                     },
                     /**
-                     * 输入的最小长度
+                     * 输入的最小长度（暂无实际使用）
                      */
                     minlength: {
                         type: Number
@@ -252,8 +263,7 @@
                      * 输入的最大长度
                      */
                     maxlength: {
-                        type: Number,
-                        value: 20
+                        type: Number
                     },
 
                     /**
@@ -267,6 +277,12 @@
                      */
                     max: {
                         type: String
+                    },
+                    /**
+                     * 自定义输入框宽度
+                     */
+                    width:{
+                        type:String
                     }
                 };
             }
@@ -276,14 +292,14 @@
             }
 
             static get observers() {
-                return ['_requiredValueChange(required,value)', '_unitChange(unit)']
+                return ['_requiredValueChange(required,value)', '_unitChange(unit)', '_valueChange(value)']
             }
 
             /**
              * 当必填字段required=true时，无value就显示红色边框，有则不显示
              * @param {Object} value
              */
-            _requiredValueChange(required,value) {
+            _requiredValueChange(required, value) {
                 if (!required) {
                     return;
                 }
@@ -291,7 +307,21 @@
                     this.set("clazz", this.clazz + " require-input");
                     return;
                 }
-                this.set("clazz", this.clazz.replace(/require-input/g));
+                if (this.clazz.indexOf('require-input') > -1) {
+                    this.set("clazz", this.clazz.replace(/ require-input/g, ""));
+                }
+            }
+
+            /**
+             * 根据maxlength来控制数字框的最大输入长度
+             */
+            _valueChange(value) {
+                if (this.type !== 'number' || value == undefined || value == undefined) {
+                    return;
+                }
+                if (this.maxlength > 0 && this.value.length > this.maxlength) {
+                    this.set('value', this.value.substr(0, this.maxlength));
+                }
             }
 
             /**
@@ -304,17 +334,13 @@
             }
 
             /**
-             * 默认number的类型为text类型
-             * @param type
-             * @returns {*}
+             * 自定义输入框宽度
+             * @param width
+             * @returns {string}
              * @private
              */
-            _getType(type) {
-                if (type === "number") {
-                    return "text";
-                } else {
-                    return type;
-                }
+            _setWidth(width) {
+                return width ? "width:" + width : "";
             }
         }
         window.customElements.define(H2Input.is, H2Input);

@@ -4,7 +4,7 @@
 <!--
 
 ```javascript
-
+日期选择框
 <h2-input-date></h2-input-date>
 ```
 -->
@@ -87,6 +87,11 @@
                 return "h2-input-date";
             }
 
+            /**
+             * 返回的时间字符串改变时，设置time为对应的long型的时间戳
+             * @param value
+             * @private
+             */
             _valueChange(value) {
                 if (!this.value) {
                     this.set("time", undefined);
@@ -96,14 +101,19 @@
                 this.set("time", time);
             }
 
-            _timeChange(time){
-                if(!time){
-                    this.set("value","");
+            /**
+             * long型时间戳改变时，设置value为对应的yyyy-MM-dd格式的时间字符串
+             * @param time
+             * @private
+             */
+            _timeChange(time) {
+                if (!time) {
+                    this.set("value", "");
                     return;
                 }
                 let date = new Date(time);
-                let value = date.toJSON().substr(0,date.toJSON().indexOf('T'));
-                this.set("value",value);
+                let value = date.toJSON().substr(0, date.toJSON().indexOf('T'));
+                this.set("value", value);
             }
         }
         window.customElements.define(H2InputDate.is, H2InputDate);

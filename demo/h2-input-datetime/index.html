@@ -28,10 +28,45 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-input-datetime demo</h3>
+  <h3>基本用法</h3>
   <demo-snippet>
     <template>
-      <h2-input-datetime></h2-input-datetime>
+      <div>
+        <h2-input-datetime label="无默认日期"></h2-input-datetime>
+      </div>
+      <div>
+        <h2-input-datetime label="默认value" value="2017-10-26T12:20"></h2-input-datetime>
+      </div>
+      <div>
+        <h2-input-datetime label="默认time" time="1509008130349"></h2-input-datetime>
+      </div>
+    </template>
+  </demo-snippet>
+
+  <h3>支持必填、只读</h3>
+  <demo-snippet>
+    <template>
+      <div>
+        <h2-input-datetime label="日期必填" required></h2-input-datetime>
+      </div>
+      <div>
+        <h2-input-datetime label="日期只读" value="2017-10-26T12:20" readonly></h2-input-datetime>
+      </div>
+    </template>
+  </demo-snippet>
+
+  <h3>支持最大最小日期范围</h3>
+  <demo-snippet>
+    <template>
+      <div>
+        <h2-input-datetime label="最小值" min="2017-10-10T12:20"></h2-input-datetime>
+      </div>
+      <div>
+        <h2-input-datetime label="最大值" max="2017-10-30T12:20"></h2-input-datetime>
+      </div>
+      <div>
+        <h2-input-datetime label="最大值和最小值" min="2017-10-10T12:20" max="2017-10-30T12:20"></h2-input-datetime>
+      </div>
     </template>
   </demo-snippet>
 </div>
