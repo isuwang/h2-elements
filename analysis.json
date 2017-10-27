@@ -31905,7 +31905,49 @@
       "description": "```javascript\n\n<h2-pagination></h2-pagination>\n```\n\n`h2-pagination`",
       "summary": "",
       "path": "h2-pagination.html",
-      "properties": [],
+      "properties": [
+        {
+          "name": "paging",
+          "type": "Object",
+          "description": "Paging object default = {limit: 15, start: 0, pageIndex: 1}\n```\nstart: the number of the first page index.\nlimit: record size per page.\npageIndex: the number of current page index.\n```",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 194,
+              "column": 20
+            },
+            "end": {
+              "line": 205,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "total",
+          "type": "number",
+          "description": "Total size of records.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 207,
+              "column": 20
+            },
+            "end": {
+              "line": 211,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "0"
+        }
+      ],
       "methods": [
         {
           "name": "_stampTemplate",
@@ -33807,6 +33849,116 @@
             "desc": "Rewritten URL relative to base"
           },
           "inheritedFrom": "Polymer.ElementMixin"
+        },
+        {
+          "name": "_pagingChanged",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 221,
+              "column": 12
+            },
+            "end": {
+              "line": 229,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "pageIndex"
+            }
+          ]
+        },
+        {
+          "name": "_pageSize",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 231,
+              "column": 12
+            },
+            "end": {
+              "line": 233,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "results"
+            }
+          ]
+        },
+        {
+          "name": "first",
+          "description": "Go to the first page.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 238,
+              "column": 12
+            },
+            "end": {
+              "line": 243,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "prev",
+          "description": "Go to previous page.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 248,
+              "column": 12
+            },
+            "end": {
+              "line": 253,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "next",
+          "description": "Go to next page.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 258,
+              "column": 12
+            },
+            "end": {
+              "line": 263,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "last",
+          "description": "Go to the last page.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 268,
+              "column": 12
+            },
+            "end": {
+              "line": 273,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
         }
       ],
       "staticMethods": [
@@ -34587,19 +34739,59 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 24,
-          "column": 4
+          "line": 178,
+          "column": 8
         },
         "end": {
-          "line": 34,
-          "column": 5
+          "line": 274,
+          "column": 9
         }
       },
       "privacy": "public",
       "superclass": "HTMLElement",
       "name": "H2Pagination",
-      "attributes": [],
-      "events": [],
+      "attributes": [
+        {
+          "name": "paging",
+          "description": "Paging object default = {limit: 15, start: 0, pageIndex: 1}\n```\nstart: the number of the first page index.\nlimit: record size per page.\npageIndex: the number of current page index.\n```",
+          "sourceRange": {
+            "start": {
+              "line": 194,
+              "column": 20
+            },
+            "end": {
+              "line": 205,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "total",
+          "description": "Total size of records.",
+          "sourceRange": {
+            "start": {
+              "line": 207,
+              "column": 20
+            },
+            "end": {
+              "line": 211,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "paging-changed",
+          "description": "Fired when the `paging` property changes.",
+          "metadata": {}
+        }
+      ],
       "styling": {
         "cssVariables": [],
         "selectors": []
@@ -37508,38 +37700,36 @@
         {
           "name": "message",
           "type": "string",
-          "description": "",
+          "description": "提示框提示信息,默认为hello",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 126,
-              "column": 16
+              "line": 130,
+              "column": 20
             },
             "end": {
-              "line": 130,
-              "column": 17
+              "line": 133,
+              "column": 21
             }
           },
           "metadata": {
-            "polymer": {
-              "observer": "\"_watcherMessage\""
-            }
+            "polymer": {}
           },
           "defaultValue": "\"hello\""
         },
         {
           "name": "type",
           "type": "string",
-          "description": "",
+          "description": "提示框的类型，有alert、success、error、confirm、prompt可选，默认为alert",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 131,
-              "column": 16
+              "line": 137,
+              "column": 20
             },
             "end": {
-              "line": 135,
-              "column": 17
+              "line": 140,
+              "column": 21
             }
           },
           "metadata": {
@@ -37550,16 +37740,16 @@
         {
           "name": "remark",
           "type": "string",
-          "description": "",
+          "description": "弹出框备注信息",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 136,
-              "column": 16
+              "line": 144,
+              "column": 20
             },
             "end": {
-              "line": 140,
-              "column": 17
+              "line": 148,
+              "column": 21
             }
           },
           "metadata": {
@@ -37571,16 +37761,16 @@
         {
           "name": "yesBtn",
           "type": "string",
-          "description": "",
+          "description": "确认按钮文字，默认为“确定”",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 141,
-              "column": 16
+              "line": 152,
+              "column": 20
             },
             "end": {
-              "line": 146,
-              "column": 17
+              "line": 157,
+              "column": 21
             }
           },
           "metadata": {
@@ -37591,16 +37781,16 @@
         {
           "name": "noBtn",
           "type": "string",
-          "description": "",
+          "description": "取消按钮文字，默认为“取消”",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 147,
-              "column": 16
+              "line": 161,
+              "column": 20
             },
             "end": {
-              "line": 152,
-              "column": 17
+              "line": 166,
+              "column": 21
             }
           },
           "metadata": {
@@ -39512,55 +39702,17 @@
           "inheritedFrom": "Polymer.ElementMixin"
         },
         {
-          "name": "_watcherMessage",
-          "description": "",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 155,
-              "column": 8
-            },
-            "end": {
-              "line": 159,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "message"
-            }
-          ]
-        },
-        {
-          "name": "cancelFn",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 160,
-              "column": 8
-            },
-            "end": {
-              "line": 165,
-              "column": 9
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
           "name": "_isConfirm",
-          "description": "",
+          "description": "判断是否confirm或prompt类型",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 166,
-              "column": 8
+              "line": 173,
+              "column": 12
             },
             "end": {
-              "line": 168,
-              "column": 9
+              "line": 175,
+              "column": 13
             }
           },
           "metadata": {},
@@ -39572,16 +39724,16 @@
         },
         {
           "name": "_isPrompt",
-          "description": "",
+          "description": "判断是否prompt类型",
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 169,
-              "column": 8
+              "line": 180,
+              "column": 12
             },
             "end": {
-              "line": 171,
-              "column": 9
+              "line": 182,
+              "column": 13
             }
           },
           "metadata": {},
@@ -39592,17 +39744,34 @@
           ]
         },
         {
-          "name": "confirmFn",
-          "description": "",
+          "name": "cancelFn",
+          "description": "点击取消按钮执行的函数，向外抛出cancel-handler事件",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 172,
-              "column": 8
+              "line": 187,
+              "column": 12
             },
             "end": {
-              "line": 184,
-              "column": 9
+              "line": 191,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "confirmFn",
+          "description": "点击确认按钮执行的函数，向外抛出confirm-handler事件",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 196,
+              "column": 12
+            },
+            "end": {
+              "line": 206,
+              "column": 13
             }
           },
           "metadata": {},
@@ -40388,11 +40557,11 @@
       "sourceRange": {
         "start": {
           "line": 118,
-          "column": 4
+          "column": 8
         },
         "end": {
-          "line": 185,
-          "column": 5
+          "line": 207,
+          "column": 9
         }
       },
       "privacy": "public",
@@ -40401,15 +40570,15 @@
       "attributes": [
         {
           "name": "message",
-          "description": "",
+          "description": "提示框提示信息,默认为hello",
           "sourceRange": {
             "start": {
-              "line": 126,
-              "column": 16
+              "line": 130,
+              "column": 20
             },
             "end": {
-              "line": 130,
-              "column": 17
+              "line": 133,
+              "column": 21
             }
           },
           "metadata": {},
@@ -40417,15 +40586,15 @@
         },
         {
           "name": "type",
-          "description": "",
+          "description": "提示框的类型，有alert、success、error、confirm、prompt可选，默认为alert",
           "sourceRange": {
             "start": {
-              "line": 131,
-              "column": 16
+              "line": 137,
+              "column": 20
             },
             "end": {
-              "line": 135,
-              "column": 17
+              "line": 140,
+              "column": 21
             }
           },
           "metadata": {},
@@ -40433,15 +40602,15 @@
         },
         {
           "name": "remark",
-          "description": "",
+          "description": "弹出框备注信息",
           "sourceRange": {
             "start": {
-              "line": 136,
-              "column": 16
+              "line": 144,
+              "column": 20
             },
             "end": {
-              "line": 140,
-              "column": 17
+              "line": 148,
+              "column": 21
             }
           },
           "metadata": {},
@@ -40449,15 +40618,15 @@
         },
         {
           "name": "yes-btn",
-          "description": "",
+          "description": "确认按钮文字，默认为“确定”",
           "sourceRange": {
             "start": {
-              "line": 141,
-              "column": 16
+              "line": 152,
+              "column": 20
             },
             "end": {
-              "line": 146,
-              "column": 17
+              "line": 157,
+              "column": 21
             }
           },
           "metadata": {},
@@ -40465,15 +40634,15 @@
         },
         {
           "name": "no-btn",
-          "description": "",
+          "description": "取消按钮文字，默认为“取消”",
           "sourceRange": {
             "start": {
-              "line": 147,
-              "column": 16
+              "line": 161,
+              "column": 20
             },
             "end": {
-              "line": 152,
-              "column": 17
+              "line": 166,
+              "column": 21
             }
           },
           "metadata": {},
@@ -43340,12 +43509,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 115,
-              "column": 12
+              "line": 126,
+              "column": 20
             },
             "end": {
-              "line": 117,
-              "column": 13
+              "line": 128,
+              "column": 21
             }
           },
           "metadata": {
@@ -43359,12 +43528,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 121,
-              "column": 12
+              "line": 132,
+              "column": 20
             },
             "end": {
-              "line": 124,
-              "column": 13
+              "line": 135,
+              "column": 21
             }
           },
           "metadata": {
@@ -43379,12 +43548,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 128,
-              "column": 12
+              "line": 139,
+              "column": 20
             },
             "end": {
-              "line": 131,
-              "column": 13
+              "line": 142,
+              "column": 21
             }
           },
           "metadata": {
@@ -43399,12 +43568,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 135,
-              "column": 12
+              "line": 146,
+              "column": 20
             },
             "end": {
-              "line": 138,
-              "column": 13
+              "line": 149,
+              "column": 21
             }
           },
           "metadata": {
@@ -43419,12 +43588,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 142,
-              "column": 12
+              "line": 153,
+              "column": 20
             },
             "end": {
-              "line": 145,
-              "column": 13
+              "line": 156,
+              "column": 21
             }
           },
           "metadata": {
@@ -45215,12 +45384,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 153,
-              "column": 8
+              "line": 164,
+              "column": 12
             },
             "end": {
-              "line": 159,
-              "column": 9
+              "line": 170,
+              "column": 13
             }
           },
           "metadata": {},
@@ -45339,12 +45508,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 164,
-              "column": 8
+              "line": 175,
+              "column": 12
             },
             "end": {
-              "line": 166,
-              "column": 9
+              "line": 177,
+              "column": 13
             }
           },
           "metadata": {},
@@ -45356,12 +45525,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 171,
-              "column": 8
+              "line": 182,
+              "column": 12
             },
             "end": {
-              "line": 173,
-              "column": 9
+              "line": 184,
+              "column": 13
             }
           },
           "metadata": {},
@@ -45373,12 +45542,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 178,
-              "column": 8
+              "line": 189,
+              "column": 12
             },
             "end": {
-              "line": 180,
-              "column": 9
+              "line": 191,
+              "column": 13
             }
           },
           "metadata": {},
@@ -45390,12 +45559,12 @@
           "privacy": "private",
           "sourceRange": {
             "start": {
-              "line": 182,
-              "column": 8
+              "line": 193,
+              "column": 12
             },
             "end": {
-              "line": 184,
-              "column": 9
+              "line": 195,
+              "column": 13
             }
           },
           "metadata": {},
@@ -46184,12 +46353,12 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 109,
-          "column": 4
+          "line": 120,
+          "column": 8
         },
         "end": {
-          "line": 185,
-          "column": 5
+          "line": 196,
+          "column": 9
         }
       },
       "privacy": "public",
@@ -46201,12 +46370,12 @@
           "description": "Name of the action group.",
           "sourceRange": {
             "start": {
-              "line": 115,
-              "column": 12
+              "line": 126,
+              "column": 20
             },
             "end": {
-              "line": 117,
-              "column": 13
+              "line": 128,
+              "column": 21
             }
           },
           "metadata": {},
@@ -46217,12 +46386,12 @@
           "description": "If true, the orientation is horizontal; otherwise is vertical.",
           "sourceRange": {
             "start": {
-              "line": 121,
-              "column": 12
+              "line": 132,
+              "column": 20
             },
             "end": {
-              "line": 124,
-              "column": 13
+              "line": 135,
+              "column": 21
             }
           },
           "metadata": {},
@@ -46233,12 +46402,12 @@
           "description": "True if the action group is expanded.",
           "sourceRange": {
             "start": {
-              "line": 128,
-              "column": 12
+              "line": 139,
+              "column": 20
             },
             "end": {
-              "line": 131,
-              "column": 13
+              "line": 142,
+              "column": 21
             }
           },
           "metadata": {},
@@ -46249,12 +46418,12 @@
           "description": "The icon when expanded.",
           "sourceRange": {
             "start": {
-              "line": 135,
-              "column": 12
+              "line": 146,
+              "column": 20
             },
             "end": {
-              "line": 138,
-              "column": 13
+              "line": 149,
+              "column": 21
             }
           },
           "metadata": {},
@@ -46265,12 +46434,12 @@
           "description": "The icon when collapsed.",
           "sourceRange": {
             "start": {
-              "line": 142,
-              "column": 12
+              "line": 153,
+              "column": 20
             },
             "end": {
-              "line": 145,
-              "column": 13
+              "line": 156,
+              "column": 21
             }
           },
           "metadata": {},
@@ -46289,12 +46458,12 @@
           "range": {
             "file": "h2-button-group.html",
             "start": {
-              "line": 98,
-              "column": 6
+              "line": 109,
+              "column": 12
             },
             "end": {
-              "line": 98,
-              "column": 19
+              "line": 109,
+              "column": 25
             }
           }
         }

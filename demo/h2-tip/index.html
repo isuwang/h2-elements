@@ -1,39 +1,134 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-tip demo</title>
+    <title>h2-tip demo</title>
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-tip.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../../paper-button/paper-button.html">
+    <link rel="import" href="../../h2-tip.html">
 
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      .centered {
-        min-width: 800px;
-      }
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
 
-      demo-snippet {
-        --demo-snippet-code: {
-          max-height: 500px;
-        }
-      }
-    </style>
-  </custom-style>
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+        </style>
+    </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-tip demo</h3>
-  <demo-snippet>
-    <template>
-      <h2-tip></h2-tip>
-    </template>
-  </demo-snippet>
+    <h3>H2-tip success demo</h3>
+    <demo-snippet>
+        <template>
+            <paper-button id="btn" raised>button</paper-button>
+            <h2-tip type="success" message="success" id="tip"></h2-tip>
+            <script>
+                btn["onclick"] = () => {
+                    tip.root.querySelector('#tip-dialog').open();
+                }
+            </script>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+    <h3>H2-tip alert demo</h3>
+    <demo-snippet>
+        <template>
+            <paper-button id="btn2" raised>button</paper-button>
+            <h2-tip type="alert" message="alert" id="tip2"></h2-tip>
+            <script>
+                btn2["onclick"] = () => {
+                    tip2.root.querySelector('#tip-dialog').open();
+                }
+            </script>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+    <h3>H2-tip error demo</h3>
+    <demo-snippet>
+        <template>
+            <paper-button id="btn3" raised>button</paper-button>
+            <h2-tip type="error" message="alert" id="tip3"></h2-tip>
+            <script>
+                btn3["onclick"] = () => {
+                    tip3.root.querySelector('#tip-dialog').open();
+                }
+            </script>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+    <h3>H2-tip confirm demo</h3>
+    <demo-snippet>
+        <template>
+            <paper-button id="btn4" raised>button</paper-button>
+            <script>
+                btn4["onclick"] = () => {
+                    let a = document.createElement('h2-tip');
+                    a.set('message', "confirm??");
+                    a.set('yesBtn', "yes");
+                    a.set('noBtn', "no");
+                    a.set('type', "confirm");
+                    document.body.appendChild(a);
+                    a.addEventListener("confirm-handler", function (e) {
+                        alert("on click ok!");
+                        a.remove();
+                    });
+
+                    a.addEventListener("cancel-handler", function (e) {
+                        alert("on click canal");
+                        a.remove();
+                    });
+                    a.root.querySelector('#tip-dialog').open();
+                }
+            </script>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+    <h3>H2-tip prompt demo</h3>
+    <demo-snippet>
+        <template>
+            <paper-button id="btn5" raised>button</paper-button>
+            <script>
+                btn5["onclick"] = () => {
+                    let a = document.createElement('h2-tip');
+                    a.set('message', "prompt");
+                    a.set('yesBtn', "yes");
+                    a.set('noBtn', "no");
+                    a.set('type', "prompt");
+                    document.body.appendChild(a);
+                    a.addEventListener("confirm-handler", function (e) {
+                        alert(e.detail.remark ||"on click ok!");
+                        a.remove();
+                    });
+
+                    a.addEventListener("cancel-handler", function (e) {
+                        alert("on click canal");
+                        a.remove();
+                    });
+                    a.root.querySelector('#tip-dialog').open();
+                }
+            </script>
+        </template>
+    </demo-snippet>
 </div>
 </body>
 </html>

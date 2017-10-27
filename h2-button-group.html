@@ -12,178 +12,189 @@
 -->
 
 <dom-module id="h2-button-group">
-  <template strip-whitespace>
-    <style include="paper-material-styles">
-      :host {
-        position: relative;
-        font: inherit;
-        width: auto;
-        display: inline-block;
-        min-width: 80px;
-      }
-
-      iron-collapse {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        float: left;
-        width: 100%;
-        margin: 2px 0 0;
-        list-style: none;
-        font-size: 1em;
-        text-align: center;
-        background-color: #fff;
-        -moz-border-radius: 4px;
-        -webkit-border-radius: 4px;
-        border-radius: 4px;
-        -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-        box-shadow: var(--paper-material-elevation-1_-_box-shadow);
-        background-clip: padding-box;
-      }
-
-      .trigger {
-        min-width: 80px;
-        -moz-border-radius: 4px;
-        -webkit-border-radius: 4px;
-        border-radius: 4px;
-        height: inherit;
-      }
-
-      .trigger {
-        display: inline-flex;
-      }
-      .trigger > .btn {
-        margin-left: 0px;
-        width: 85%;
-        height: inherit;
-      }
-
-      .trigger > .icon {
-        min-width: 15px;
-        padding: 0px;
-        margin-left: -2px;
-        margin-right: 0px;
-        width: 15%;
-        height: inherit;
-      }
-
-      .icon div iron-icon {
-        width: 100%;
-        height: inherit;
-      }
-
-      paper-button {
-        background: #fff;
-      }
-
-      ::slotted(*) {
-        width: 100%;
-        padding-top: 1px;
-      }
-    </style>
-
-    <div class="trigger" on-tap="toggle">
-      <paper-button class="btn" raised>
-        [[ name ]]
-      </paper-button>
-      <paper-button class="icon" raised>
-        <div>
-          <iron-icon icon="[[ __getIcon(opened) ]]"></iron-icon>
-        </div>
-      </paper-button>
-    </div>
-
-    <iron-collapse id="collapse" horizontal="[[horizontal]]" no-animation="[[noAnimation]]" opened="[[opened]]">
-      <slot></slot>
-    </iron-collapse>
-  </template>
-  <script>
-    /**
-     * `h2-button-group`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-button-group/index.html
-     */
-    class H2ButtonGroup extends Polymer.Element {
-      static get properties() {
-        return {
-            /**
-             * Name of the action group.
-             */
-            name: {
-                type: String
-            },
-            /**
-             * If true, the orientation is horizontal; otherwise is vertical.
-             */
-            horizontal: {
-                type: Boolean,
-                value: false
-            },
-            /**
-             * True if the action group is expanded.
-             */
-            opened: {
-                type: Boolean,
-                value: false
-            },
-            /**
-             * The icon when expanded.
-             */
-            expandIcon: {
-                type: String,
-                value: 'arrow-drop-up'
-            },
-            /**
-             * The icon when collapsed.
-             */
-            collapseIcon: {
-                type: String,
-                value: 'arrow-drop-down'
+    <template strip-whitespace>
+        <style include="paper-material-styles">
+            :host {
+                position: relative;
+                font: inherit;
+                width: auto;
+                display: inline-block;
+                min-width: 80px;
             }
-        };
-      }
 
-      static get is() {
-        return "h2-button-group";
-      }
+            :host > button {
+                margin: 0;
+                box-shadow: 0px 2px 0px #888888;
+            }
 
-        connectedCallback() {
-            super.connectedCallback();
-            this.addEventListener('blur', e => {
-                // make sure other event can happen on slotted element before the iron-collapse closed.
-                setTimeout(this.close.bind(this), 100);
-            });
-        }
+            iron-collapse {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1000;
+                float: left;
+                width: 100%;
+                margin: 2px 0 0;
+                list-style: none;
+                font-size: 1em;
+                text-align: center;
+                background-color: #fff;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+                box-shadow: var(--paper-material-elevation-1_-_box-shadow);
+                background-clip: padding-box;
+            }
 
+            .trigger {
+                min-width: 80px;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                height: inherit;
+            }
+
+            .trigger {
+                display: inline-flex;
+            }
+
+            .trigger > .btn {
+                margin-left: 0px;
+                width: 85%;
+                height: inherit;
+            }
+
+            .trigger > .icon {
+                min-width: 15px;
+                padding: 0px;
+                margin-left: -2px;
+                margin-right: 0px;
+                width: 15%;
+                height: inherit;
+            }
+
+            .icon div iron-icon {
+                width: 100%;
+                height: inherit;
+            }
+
+            paper-button {
+                background: #fff;
+            }
+
+            ::slotted(*) {
+                width: 100%;
+                padding-top: 1px;
+            }
+
+            ::slotted(paper-button) {
+                margin: 0;
+                box-shadow: 0px 2px 0px #888888;
+            }
+        </style>
+
+        <div class="trigger" on-tap="toggle">
+            <paper-button class="btn" raised>
+                [[ name ]]
+            </paper-button>
+            <paper-button class="icon" raised>
+                <div>
+                    <iron-icon icon="[[ __getIcon(opened) ]]"></iron-icon>
+                </div>
+            </paper-button>
+        </div>
+
+        <iron-collapse id="collapse" horizontal="[[horizontal]]" no-animation="[[noAnimation]]" opened="[[opened]]">
+            <slot></slot>
+        </iron-collapse>
+    </template>
+    <script>
         /**
-         * Expand the group.
+         * `h2-button-group`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-button-group/index.html
          */
-        open() {
-            this.opened = true;
-        }
+        class H2ButtonGroup extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * Name of the action group.
+                     */
+                    name: {
+                        type: String
+                    },
+                    /**
+                     * If true, the orientation is horizontal; otherwise is vertical.
+                     */
+                    horizontal: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * True if the action group is expanded.
+                     */
+                    opened: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * The icon when expanded.
+                     */
+                    expandIcon: {
+                        type: String,
+                        value: 'arrow-drop-up'
+                    },
+                    /**
+                     * The icon when collapsed.
+                     */
+                    collapseIcon: {
+                        type: String,
+                        value: 'arrow-drop-down'
+                    }
+                };
+            }
 
-        /**
-         * Collpase the group.
-         */
-        close() {
-            this.opened = false;
-        }
+            static get is() {
+                return "h2-button-group";
+            }
 
-        /**
-         * Toggle the group.
-         */
-        toggle() {
-            this.opened = !this.opened;
-        }
+            connectedCallback() {
+                super.connectedCallback();
+                this.addEventListener('blur', e => {
+                    // make sure other event can happen on slotted element before the iron-collapse closed.
+                    setTimeout(this.close.bind(this), 100);
+                });
+            }
 
-        __getIcon(opened) {
-            return opened ? this.expandIcon : this.collapseIcon;
+            /**
+             * Expand the group.
+             */
+            open() {
+                this.opened = true;
+            }
+
+            /**
+             * Collpase the group.
+             */
+            close() {
+                this.opened = false;
+            }
+
+            /**
+             * Toggle the group.
+             */
+            toggle() {
+                this.opened = !this.opened;
+            }
+
+            __getIcon(opened) {
+                return opened ? this.expandIcon : this.collapseIcon;
+            }
         }
-    }
-    window.customElements.define(H2ButtonGroup.is, H2ButtonGroup);
-  </script>
+        window.customElements.define(H2ButtonGroup.is, H2ButtonGroup);
+    </script>
 </dom-module>
