@@ -1,5 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="h2-label.html">
@@ -27,16 +29,6 @@
                 box-sizing: border-box;
             }
 
-            /*:host label {
-                text-align: right;
-                line-height: 34px;
-                float: left;
-                vertical-align: middle;
-                display: inline-block;
-                white-space: nowrap;
-                font-size: 14px;
-            }*/
-
             :host .select-warp {
                 display: inline-block;
                 vertical-align: inherit;
@@ -50,12 +42,11 @@
                 height: 24px;
                 line-height: 24px;
                 min-width: 5px;
+                width: 5px;
+                background-color: #ffffff;
             }
 
             :host div.tags-input {
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
                 overflow: hidden;
                 -moz-border-radius: 4px;
                 -webkit-border-radius: 4px;
@@ -63,7 +54,7 @@
                 background: #FFF;
                 padding: 4px;
                 height: 34px;
-                width: 170px;
+                min-width: 170px;
             }
 
             /*标签容器*/
@@ -76,7 +67,6 @@
                 -moz-border-radius: 2px;
                 -webkit-border-radius: 2px;
                 display: inline-block;
-                /*float: left;*/
                 padding: 0px 5px;
                 text-decoration: none;
                 margin-right: 5px;
@@ -90,11 +80,6 @@
                 color: #666;
                 white-space: normal;
             }
-
-            /*/!*标签*!/*/
-            /*div.tags-input span.tag:last-child{*/
-            /*margin-right: 0px;*/
-            /*}*/
 
             :host div.tags-input span.tag span.tag-name {
                 font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
@@ -184,17 +169,16 @@
                 white-space: nowrap;
             }
 
-            :host iron-icon {
-                /*float: right;*/
+            :host .float-r {
+                float: right;
             }
 
             /*下拉列表*/
-            :host .dropdown-menu1 {
+            :host .dropdown-menu {
                 position: absolute;
                 z-index: 1000;
-                /*float: left;*/
                 margin: 2px 0 0;
-                width: auto;
+                min-width: 170px;
                 list-style: none;
                 font-size: 14px;
                 text-align: left;
@@ -214,45 +198,37 @@
                 opacity: 0.5;
                 font-size: 14px;
             }
-
-            /*:host .label-size {
-                width: 80px;
-                display: none;
-                text-align: right;
-            }*/
         </style>
         <h2-label value="[[label]]"></h2-label>
         <div class="btn-group select-warp">
-            <div class="tags-input tags-box" style$="{{_getTagsBoxWidth(width)}}" on-click="_onInputClick">
-                <span id="placeHolder" class="place-holder">{{label}}</span>
+            <div class="tags-input tags-box" style$="[[_getTagsBoxWidth(width)]]" on-click="_onInputClick">
+                <span id="placeHolder" class="place-holder">[[label]]</span>
                 <span id="tag-content">
                     <template is="dom-repeat" items="{{selectedList}}">
-						<span class="tag" style$="{{_getTagMaxWidth(width)}}">
-                            <span class="tag-name" title="{{item.label}}">{{item.label}}</span>
-						    <a class="tag-delete" style="float: right" data-args="{{item.value}}" href="javascript:;"
-                               title="Removing tag" on-click="_deleteTag">x</a>
+						<span class="tag" style$="[[_getTagMaxWidth(width)]]">
+                            <span class="tag-name" title="[[_getLabel(item)]]">[[_getLabel(item)]]</span>
+						    <a class="float-r" data-args="[[_getValue(item)]]" href="javascript:void(0);"
+                               title="删除该选项" on-click="_deleteTag">x</a>
 						</span>
                     </template>
                 </span>
                 <iron-input bind-value="{{keyword}}" id="input" slot="input" maxlength$="[[maxlength]]">
                     <input id="tags-input"
-                           class$="tags-input"
-                           disabled$="{{noSearch}}"
-                           style="width: 5px;background-color: #ffffff;"
+                           disabled$="[[disabled]]"
                            on-keydown="_updatePressed"
                            autocomplete$="off">
                 </iron-input>
-                <iron-icon id="caret" class="tags-input" icon="icons:arrow-drop-down"></iron-icon>
+                <iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>
             </div>
-            <!--<div class="shade"></div>
-            <iron-collapse class="dropdown-menu1" id="input-collapse" style$="{{_getCollapseWidth(width)}}">
+            <div class="shade"></div>
+            <iron-collapse class="dropdown-menu" id="input-collapse" style$="[[_getTagsBoxWidth(width)]]">
                 <iron-selector class="selector-panel" multi selected-values="{{selectedList}}"
                                attr-for-selected="radio-item">
-                    <template is="dom-repeat" items="[[selectItems]]" filter="selectItemFilter">
-                        <span class="btn-row item" radio-item="{{item}}">{{item.label}}</span>
+                    <template is="dom-repeat" items="[[selectItems]]">
+                        <span class="btn-row item" radio-item="[[item]]">[[_getLabel(item)]]</span>
                     </template>
                 </iron-selector>
-            </iron-collapse>-->
+            </iron-collapse>
         </div>
     </template>
     <script>
@@ -276,19 +252,21 @@
                     label: {
                         type: String
                     },
+                    /**
+                     * 组件输入框的宽度
+                     */
                     width: {
-                        type: String,
-                        value: "170px"
+                        type: String
                     },
                     /**
                      * 是否支持多选
                      */
                     multi: Boolean,
-                    preLoading: {
+                    /*preLoading: {
                         type: Boolean,
                         value: false
-                    },
-                    searchLocal: Boolean,
+                    },*/
+                    /*searchLocal: Boolean,*/
 
                     /**
                      *
@@ -298,7 +276,7 @@
                      * @attribute selected
                      * @type {String}
                      */
-                    selectedData: {
+                    value: {
                         type: String,
                         reflectToAttribute: true,
                         notify: true
@@ -306,7 +284,6 @@
                     /**
                      *
                      * 需要展示的数据项
-                     * isShow === false 那么直接过滤
                      * eg：[{value:1,label:"全部",isShow:true/false}]
                      *
                      * @attribute selectItems
@@ -327,15 +304,6 @@
                             return [];
                         }
                     },
-                    /**
-                     * 模式 常量：'Edit','View'
-                     * View 模式下不可编辑
-                     */
-                    mode: {
-                        type: String,
-                        value: 'Edit',
-                        observer: '_modeChange'
-                    },
                     keyword: {
                         type: String,
                         notify: true,
@@ -351,14 +319,27 @@
                         },
                         notify: true
                     },
-                    noSearch: {
+                    disabled: {
                         type: Boolean,
                         value: false,
                         notify: true
                     },
                     maxlength: {
-                        type: Number,
-                        value: 10
+                        type: Number
+                    },
+                    /**
+                     * 用来取值的字段，默认为value
+                     */
+                    attrForValue: {
+                        type: String,
+                        value: "value"
+                    },
+                    /**
+                     * 用来展示的字段，默认为label
+                     */
+                    attrForLabel: {
+                        type: String,
+                        value: "label"
                     }
                 };
             }
@@ -370,7 +351,7 @@
             static get observers() {
                 return [
                     '_selectedListChange(selectedList.splices)',
-                    '_selectedDataChange(selectedData,selectItems)'
+                    '_valueChange(value,selectItems)'
                 ];
             }
 
@@ -423,7 +404,7 @@
                     this._collapseToggle("close");
                     document.body.removeEventListener("click", this._bodyClickFunc, false);
                     this._bodyClickFunc = null;
-                    if (!this.selectedData) {//没有选中任何项的时候把placeHolder重新显示出来
+                    if (!this.value) {//没有选中任何项的时候把placeHolder重新显示出来
                         this.$['placeHolder'].style.display = 'inline-block';
                         this.$['tags-input'].blur();//移除input标签的焦点
                         this.keyword = null;
@@ -453,29 +434,42 @@
                 }
                 return c_item;
             }
+            /**
+             * 获取展示字段名
+             */
+            _getLabel(item) {
+                return item[this.attrForLabel];
+            }
 
             /**
-             * selectedData,selectItems属性变化监听函数
+             * 获取展示字段值
              */
-            _selectedDataChange(selectedData, selectItems) {
+            _getValue(item) {
+                return item[this.attrForValue];
+            }
+
+            /**
+             * value,selectItems属性变化监听函数
+             */
+            _valueChange(value, selectItems) {
                 var self = this;
 
                 //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
-                if (selectedData == null || selectedData === "") {
+                if (value == null || value === "") {
                     this.set("selectedList", []);
                     return;
                 }
                 if (selectItems && selectItems.length > 0) {
                     this.$['placeHolder'].style.display = 'none';
-                    selectedData = selectedData.toString();
+                    value = value.toString();
                     var items = [];
-                    selectedData.split(",").forEach(function (val) {
+                    value.split(",").forEach(function (val) {
                         if (self._getItemName(val, selectItems) != null) {
                             items.push(self._getItemName(val, selectItems));
                         } else if (self.selectItemsLocal && self.selectItemsLocal != "" && self._getItemName(val, self.selectItemsLocal) != null) {
                             items.push(self._getItemName(val, self.selectItemsLocal));
-                        } else if (self.searchLocal && self.selectedList && self.selectedList != "" && self._getItemName(val, self.selectedList) != null) {
-                            items.push(self._getItemName(val, self.selectedList));
+                        /*} else if (self.searchLocal && self.selectedList && self.selectedList != "" && self._getItemName(val, self.selectedList) != null) {
+                            items.push(self._getItemName(val, self.selectedList));*/
                         }
                     });
                     this.set("selectedList", items);
@@ -483,7 +477,7 @@
             }
 
             _selectedListChange(newVal) {
-                var newSelectedData = this.selectedData;
+                var newSelectedData = this.value;
                 if (newVal) { //selectedList里面的数据增加和删除
                     if (newVal.indexSplices[0].removed.length > 0) { //删除
                         if (this.multi && newVal.indexSplices[0].object.length > 0) {
@@ -504,7 +498,7 @@
                         }
                     }
                     this.set("keyword", null);
-                } else if (!newVal && this.selectedList && !this.selectedList.indexSplices && this.preLoading) {//预加载&&新增时首次加载选择下拉列表后关键字仍然存在的bug-fixed。(o-company-select-picker.html)
+                /*} else if (!newVal && this.selectedList && !this.selectedList.indexSplices && this.preLoading) {*/
 
                 } else if (this.selectedList && this.selectedList.length > 0 && this.selectedList.every(function (item) {
                         return item != null
@@ -513,7 +507,7 @@
                         return item.value;
                     }).join();
                 }
-                this.set("selectedData", newSelectedData);
+                this.set("value", newSelectedData);
             }
 
             /**
@@ -581,20 +575,22 @@
              * @private
              */
             _getTagsBoxWidth(width) {
-                width = width || "170px";
-                return "min-width:" + width;
+                if (!width) {
+                    return "";
+                }
+                return "width:" + width;
             }
 
-            /**
+            /*/!**
              * 获取下拉面板最小宽度
              * @param width
              * @returns {string}
              * @private
-             */
+             *!/
             _getCollapseWidth(width) {
                 width = width || "170px";
                 return "min-width:" + width;
-            }
+            }*/
 
             /**
              * 获取span.tag 标签的最大宽度
@@ -607,51 +603,33 @@
             }
 
             /**
-             * 监听模式变化，在View模式下不可编辑
-             * @param {Object} newVal
-             */
-            _modeChange(newVal) {
-                /*if (newVal == 'View') {
-                    this.root.querySelector('.shade').style.display = 'block';
-                } else {
-                    this.root.querySelector('.shade').style.display = 'none';
-                }*/
-            }
-
-            /**
-             * 过滤不需要展示的item
-             * item.isShow === false 那么直接过滤
-             * @param item
-             */
-            selectItemFilter(item) {
-                return item.isShow !== false;
-            }
-
-            /**
              * 获取字符串在网页上边的宽度
              * @param str
              * @returns {string}
              * @private
              */
             _getStrWidth(str) {
-                var self = this;
-                var _thisMaxWith = Number(this.width.substr(0, this.width.indexOf("px"))) - 44;
+                let self = this;
+                let defaultWidth = 170;
+                let otherWidth = 44;
+                let inputWidth = this.width ? Number(this.width.substr(0, this.width.indexOf("px"))) : defaultWidth;
+                var _thisMaxWith = inputWidth - otherWidth;
 
                 function getTagContentWidth() {
-                    var tag = self.querySelectorAll(".tag");
+                    let tag = self.querySelectorAll(".tag");
                     return tag.length > 0 ? Array.prototype.reduce.call(tag, function (a, b) {
                         return {offsetWidth: a.offsetWidth + b.offsetWidth}
                     }).offsetWidth : 0;
                 }
 
-                var span = document.createElement("span");
+                let span = document.createElement("span");
                 document.body.appendChild(span);
                 span.style.visibility = "hidden";
                 span.style.whiteSpace = "nowrap";
                 span.innerText = str;
                 span.style.fontSize = "13px";
-                var maxWidth = _thisMaxWith - getTagContentWidth(); //容许的最大宽度
-                var realWidth = ((span.offsetWidth || 0) + 5 );
+                let maxWidth = _thisMaxWith - getTagContentWidth(); //容许的最大宽度
+                let realWidth = ((span.offsetWidth || 0) + 5 );
                 return (realWidth > maxWidth ? maxWidth : realWidth) + "px";
             }
         }
