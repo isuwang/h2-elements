@@ -19,7 +19,6 @@
             :host {
                 display: flex;
                 text-align: left;
-                line-height: 0;
                 position: relative;
             }
 
@@ -262,12 +261,6 @@
                      * 是否支持多选
                      */
                     multi: Boolean,
-                    /*preLoading: {
-                        type: Boolean,
-                        value: false
-                    },*/
-                    /*searchLocal: Boolean,*/
-
                     /**
                      *
                      * 初始选择项和selectItems的value值相对应
@@ -476,38 +469,11 @@
                 }
             }
 
-            _selectedListChange(newVal) {
-                var newSelectedData = this.value;
-                if (newVal) { //selectedList里面的数据增加和删除
-                    if (newVal.indexSplices[0].removed.length > 0) { //删除
-                        if (this.multi && newVal.indexSplices[0].object.length > 0) {
-                            newSelectedData = newVal.indexSplices[0].object.map(function (item) {
-                                return item.value;
-                            }).join();
-                        } else {
-                            newSelectedData = "";
-                        }
-                    }
-                    if (newVal.indexSplices[0].addedCount) { //添加
-                        if (this.multi && newVal.indexSplices[0].object.length > 0) {
-                            newSelectedData = newVal.indexSplices[0].object.map(function (item) {
-                                return item.value;
-                            }).join();
-                        } else if (!this.multi && newVal.indexSplices[0].object.length > 0) {
-                            newSelectedData = newVal.indexSplices[0].object[newVal.indexSplices[0].index].value.toString();
-                        }
-                    }
-                    this.set("keyword", null);
-                /*} else if (!newVal && this.selectedList && !this.selectedList.indexSplices && this.preLoading) {*/
-
-                } else if (this.selectedList && this.selectedList.length > 0 && this.selectedList.every(function (item) {
-                        return item != null
-                    })) {
-                    newSelectedData = this.selectedList.map(function (item) {
-                        return item.value;
-                    }).join();
+            _selectedListChange(selectedItems) {
+                if (selectedItems == undefined || selectedItems.length === 0) {
+                    return;
                 }
-                this.set("value", newSelectedData);
+                this.set("value", selectedItems.indexSplices[0].object.map(e => e.value).join(","));
             }
 
             /**
