@@ -25,6 +25,10 @@
                     max-height: 500px;
                 }
             }
+
+            .flex {
+                display: flex;
+            }
         </style>
     </custom-style>
 </head>
@@ -33,15 +37,15 @@
     <h3>Basic h2-label demo</h3>
     <demo-snippet>
         <template>
-            <div>
+            <div class="flex">
                 <h2-label value="标签"></h2-label>
                 <h2-input></h2-input>
             </div>
-            <div>
+            <div class="flex">
                 <h2-label value="这是一个名字中等长的标签"></h2-label>
                 <h2-input-date></h2-input-date>
             </div>
-            <div>
+            <div class="flex">
                 <h2-label value="这是一个名字很长长长长长长长长长长长长长长长长长长的标签"></h2-label>
                 <h2-input></h2-input>
             </div>
