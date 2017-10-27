@@ -1,0 +1,51 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-overlay-behavior/iron-overlay-behavior.html">
+
+<!--
+
+```javascript
+
+<h2-loading></h2-loading>
+```
+-->
+
+<dom-module id="h2-loading">
+    <template>
+        <style>
+            :host {
+                background: white;
+                color: black;
+                padding: 24px;
+                box-shadow: rgba(0, 0, 0, 0.24) -2px 5px 12px 0px, rgba(0, 0, 0, 0.12) 0px 0px 12px 0px;
+            }
+        </style>
+        <img src="[[imgUrl]]" height="20px">
+        <slot></slot>
+    </template>
+    <script>
+        /**
+         * `h2-loading`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-loading/index.html
+         */
+        class H2Loading extends Polymer.mixinBehaviors([Polymer.IronOverlayBehavior], Polymer.Element) {
+            static get properties() {
+                return {
+                    imgUrl: {
+                        type: String,
+                        value: function () {
+                            return this.importPath + "img/loading-4.gif"
+                        }
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-loading";
+            }
+        }
+        window.customElements.define(H2Loading.is, H2Loading);
+    </script>
+</dom-module>

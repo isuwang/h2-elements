@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>h2-form demo</title>
+
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../h2-form.html">
+    <link rel="import" href="../../h2-input.html">
+
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
+
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+        </style>
+    </custom-style>
+</head>
+<body>
+<div class="vertical-section-container centered">
+    <h3>Basic h2-form demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-form title="demo" id="form" url="/test1.do">
+                <h2-input label="公司名称" name="company"></h2-input>
+                <h2-input label="地址" name="address"></h2-input>
+                <h2-input label="姓名" name="name"></h2-input>
+                <h2-input label="年龄" name="age"></h2-input>
+            </h2-form>
+        </template>
+    </demo-snippet>
+</div>
+<div class="vertical-section-container centered">
+    <h3>h2-form hide button demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-form title="demo" id="form2" url="/test1.do" hide-submit-btn hide-reset-btn>
+                <h2-input label="公司名称" name="company" value="demo company"></h2-input>
+                <h2-input label="地址" name="address" value="guangzhou"></h2-input>
+                <h2-input label="姓名" name="name" value="jack"></h2-input>
+                <h2-input label="年龄" name="age" value="22"></h2-input>
+            </h2-form>
+        </template>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+    <h3>h2-form define submit demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-form title="demo" id="form3" url="/test1.do" hide-reset-btn>
+                <h2-input label="公司名称" name="company" value="demo company"></h2-input>
+                <h2-input label="地址" name="address" value="guangzhou"></h2-input>
+                <h2-input label="姓名" name="name" value="jack"></h2-input>
+                <h2-input label="年龄" name="age" value="22"></h2-input>
+            </h2-form>
+        </template>
+        <script>
+            form3.settingSubmit = () => {
+                alert("User-define Submit Function");
+            }
+        </script>
+    </demo-snippet>
+</div>
+</body>
+</html>

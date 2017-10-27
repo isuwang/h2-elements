@@ -1,0 +1,187 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="behaviors/base-behavior.html">
+<link rel="import" href="behaviors/ajax-behavior.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<!--
+
+```javascript
+
+<h2-form></h2-form>
+```
+-->
+
+<dom-module id="h2-form">
+    <template>
+        <style>
+            .container {
+                display: grid;
+                grid-column-gap: 10px;
+                grid-row-gap: 10px;
+            }
+
+            .one_item:only-of-type {
+                justify-items: center;
+            }
+
+            .two_item {
+                grid-template-columns: 45% 45%;
+                justify-items: center;
+            }
+
+            .three_item {
+                grid-template-columns: 33% 33% 33%;
+                justify-items: center;
+            }
+
+            .btns {
+                position: relative;
+                padding: 8px 8px 8px 24px;
+                margin: 0;
+                display: flex;
+                justify-content: flex-end;
+            }
+        </style>
+        <h2>[[title]]</h2>
+
+        <div class="container two_item">
+            <slot></slot>
+        </div>
+        <div class="btns">
+            <template is="dom-if" if="[[ !hideSubmitBtn ]]">
+                <paper-button raised on-click="submit">保存</paper-button>
+            </template>
+            <template is="dom-if" if="[[ !hideResetBtn ]]">
+                <paper-button raised on-click="reset">重置</paper-button>
+            </template>
+        </div>
+    </template>
+    </div>
+    </template>
+    <script>
+        /**
+         * `h2-form`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-form/index.html
+         */
+        class H2Form extends Polymer.mixinBehaviors([BaseBehavior, AjaxBehavior], Polymer.Element) {
+            static get properties() {
+                return {
+                    /**
+                     * this form title
+                     */
+                    title: {
+                        type: String
+                    },
+                    /**
+                     * Set form columns,default 2,the optional values  for 1,2,3
+                     */
+                    grid: {
+                        type: Number,
+                        value: 2,
+                        oberver: "__gridChange"
+                    },
+                    /**
+                     * hide submit button or not,default not
+                     */
+                    hideSubmitBtn: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * hide reset button or not,default not
+                     */
+                    hideResetBtn: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * User-defined submit function,instead of the default method
+                     */
+                    settingSubmit: {
+                        type: Function
+                    },
+                    /**
+                     * User-defined reset function,instead of the default method
+                     */
+                    settingReset: {
+                        type: Function
+                    },
+                    /**
+                     * This form require url
+                     */
+                    url: {
+                        type: String
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-form";
+            }
+
+            __gridChange(grid) {
+                let containerClassList = root.querySelector(".container").classList;
+                switch (grid) {
+                    case 1:
+                        containerClassList.add("one_item");
+                        containerClassList.remove("two_item");
+                        containerClassList.remove("three_item");
+                        break;
+                    case 2:
+                        containerClassList.remove("one_item");
+                        containerClassList.add("two_item");
+                        containerClassList.remove("three_item");
+                        break;
+                    case 3:
+                        containerClassList.remove("one_item");
+                        containerClassList.remove("two_item");
+                        containerClassList.add("three_item");
+                        break;
+                    default :
+                        containerClassList.remove("one_item");
+                        containerClassList.add("two_item");
+                        containerClassList.remove("three_item");
+                        break;
+                }
+            }
+
+            /**
+             * default submit Function,
+             */
+            submit() {
+                if (this.isFunction(this.settingSubmit)) {
+                    setTimeout(() => this.settingSubmit(), 0);
+                } else {
+                    let params = {}
+                    for (let i = 0; i < this.childElementCount; i++) {
+                        params[this.children[i].getAttribute("name")] = this.children[i].value || ""
+                    }
+                    delete params.null;
+                    console.log(params);
+                    this.post({
+                        url: this.url,
+                        data: params
+                    }, console.log, console.log);
+                }
+            }
+
+            /**
+             * Default reset Function,Sets all the child element value to " "
+             */
+            reset() {
+                if (this.isFunction(this.settingReset)) {
+                    setTimeout(() => this.settingReset(), 0);
+                } else {
+                    let params = {}
+                    for (let i = 0; i < this.childElementCount; i++) {
+                        this.children[i].value = ""
+                    }
+                }
+            }
+        }
+        window.customElements.define(H2Form.is, H2Form);
+    </script>
+</dom-module>
