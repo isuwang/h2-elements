@@ -42,8 +42,8 @@
      */
     query(input, succCallback, failCallback) {
       let url,
-          data = {},
-          handleAs = 'json';
+        data = {},
+        handleAs = 'json';
 
       if (Request.prototype.isPrototypeOf(input)) {
 
@@ -52,7 +52,7 @@
       } else if (Object.prototype.isPrototypeOf(input)) {
 
         ({
-          url = this.__throwUrlNotFoundError(),
+          url = this.throwNotFoundError("url"),
           data = {},
           handleAs = "json"
         } = input);
@@ -116,9 +116,9 @@
     post(input, succCallback, failCallback) {
 
       let url,
-          data = {},
-          handleAs = 'json',
-          sendAsJson = false;
+        data = {},
+        handleAs = 'json',
+        sendAsJson = false;
 
       if (Request.prototype.isPrototypeOf(input)) {
 
@@ -127,7 +127,7 @@
       } else if (Object.prototype.isPrototypeOf(input)) {
 
         ({
-          url = this.__throwUrlNotFoundError(),
+          url = this.throwNotFoundError("url"),
           data = {},
           handleAs = "json",
           sendAsJson = false,
@@ -186,7 +186,7 @@
         if (response.ok) {
           // response content is blank
           if (response.headers.has('Content-length')
-              && response.headers.get('Content-length') == 0) {
+            && response.headers.get('Content-length') == 0) {
 
             succCallback && succCallback();
           } else {
@@ -217,10 +217,6 @@
           return pump();
         });
       }
-    },
-
-    __throwUrlNotFoundError(){
-      throw new Error("url not found");
     }
   };
 
