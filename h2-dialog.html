@@ -20,12 +20,6 @@
                 position: absolute;
             }
 
-            /*:host paper-dialog {
-              min-width: 20%;
-              max-width: 20%;
-              max-height: 30%;
-            }*/
-
             :host .close-dialog {
                 width: 40px;
                 height: 40px;
@@ -50,12 +44,27 @@
                 height: auto;
             }
 
+            :host .title {
+                padding-top: 12px;
+                font-weight: bolder;
+            }
+
+            :host .dashed-line {
+                border-top: #00686b 1px dashed;
+                overflow: hidden;
+            }
+
         </style>
         <paper-dialog id="dialog"
                       modal
                       entry-animation="scale-up-animation"
                       exit-animation="fade-out-animation">
             <div class="close-dialog" on-tap="close">X</div>
+            <template is="dom-if" if="[[__hasTitle(title)]]">
+                <h2 class="title">[[title]]</h2>
+                <div class="dashed-line"></div>
+            </template>
+
             <paper-dialog-scrollable>
                 <div class="scrollable-container">
                     <slot name="container"></slot>
@@ -74,6 +83,9 @@
         class H2Dialog extends Polymer.Element {
             static get properties() {
                 return {
+                    title: {
+                        type: String
+                    },
                     /** True to stop auto dismiss. */
                     stopAutoDismiss: {
                         type: Boolean,
@@ -159,6 +171,19 @@
              */
             close() {
                 this.$.dialog.close();
+            }
+
+            /**
+             * Determine whether the title exists
+             * @param title
+             * @returns {boolean}
+             * @private
+             */
+            __hasTitle(title) {
+                if (title) {
+                    return true;
+                }
+                return false;
             }
         }
         window.customElements.define(H2Dialog.is, H2Dialog);

@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
 
 <!--
 
@@ -9,30 +10,137 @@
 -->
 
 <dom-module id="h2-checkbox">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                line-height: 34px;
+                vertical-align: middle;
+            }
+        </style>
+        <div>
+            <label class="label-size"><span>[[label]]</span>：</label>
+            <template is="dom-repeat" items="{{items}}">
+                <paper-checkbox checked="{{item.selected}}">[[__getItemValueByAttr(item,attrForLabel)]]</paper-checkbox>
+            </template>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-checkbox`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-checkbox/index.html
+         */
+        class H2Checkbox extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * checkbox 前面的标签名字
+                     *
+                     * @attribute label
+                     * @type {String}
+                     */
+                    label: {
+                        type: String
+                    },
+                    /**
+                     * checkbox 组成项，例如：[{name:'薄膜',value:0,selected:true},{name:'纤维',value:1}]
+                     * 我们会根据数据项的selected值来决定当前这个checkbox是否选定
+                     *
+                     * @attribute items
+                     * @type {Array}
+                     */
+                    items: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    /**
+                     * checkbox当前选中的值。是items属性的value值的子集的字符串表示。
+                     * items.map(function(x){return x.value}).join(",").includes(selectedValue)==true
+                     * 使用标签的时候如果给这个属性赋初始值的话那么会有相应的复选框被选定。
+                     *
+                     * @attribute value
+                     * @type {String}
+                     */
+                    value: {
+                        type: String,
+                        notify: true,
+                        observer: '__valueChanged'
+                    },
+                    /**
+                     * 用来取值的字段，默认为value
+                     */
+                    attrForValue: {
+                        type: String,
+                        value: "value"
+                    },
+                    /**
+                     * 用来展示的字段，默认为label
+                     */
+                    attrForLabel: {
+                        type: String,
+                        value: "label"
+                    }
+                };
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-checkbox`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-checkbox/index.html
-     */
-    class H2Checkbox extends Polymer.Element {
-      static get properties() {
-        return {
+            static get is() {
+                return "h2-checkbox";
+            }
 
-        };
-      }
+            static get observers() {
+                return ['__itemsChanged(items.*,attrForValue)']
+            }
 
-      static get is() {
-        return "h2-checkbox";
-      }
-    }
-    window.customElements.define(H2Checkbox.is, H2Checkbox);
-  </script>
+            /**
+             * value发生变化时候，重新渲染组件
+             * @param newValue
+             * @param oldValue
+             * @private
+             */
+            __valueChanged(newValue, oldValue) {
+                let newItems = Object.assign([], JSON.parse(JSON.stringify(this.items)));
+                if (this.value && this.value.length > 0) {
+                    newItems.forEach((item) => {
+                        if (this.value.split(",").indexOf(item.value+"") > -1) {
+                            item.selected = true;
+                        } else {
+                            item.selected = false;
+                        }
+                    });
+                } else {
+                    newItems.forEach((item) => {
+                        item.selected = false;
+                    })
+                }
+                this.set("items", newItems);
+            }
+
+            __itemsChanged(changeItems, attrForValue) {
+                if(!(changeItems)) return;
+                let newItems = changeItems.base;
+                let newSelectedValue = [];
+                if (newItems && newItems.length > 0) {
+                    newItems.forEach((item) => {
+                        if (item.selected) {
+                            newSelectedValue.push(this.__getItemValueByAttr(item, attrForValue));
+                        }
+                    });
+                    this.set("value", newSelectedValue.join(","));
+                }
+            }
+
+            __getItemValueByAttr(item, attr) {
+                if (item && attr) {
+                    return item[attr]
+                }
+            }
+
+        }
+        window.customElements.define(H2Checkbox.is, H2Checkbox);
+    </script>
 </dom-module>

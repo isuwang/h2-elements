@@ -18,20 +18,9 @@
                 display: grid;
                 grid-column-gap: 10px;
                 grid-row-gap: 10px;
-            }
-
-            .one_item:only-of-type {
-                justify-items: center;
-            }
-
-            .two_item {
                 grid-template-columns: 45% 45%;
                 justify-items: center;
-            }
-
-            .three_item {
-                grid-template-columns: 33% 33% 33%;
-                justify-items: center;
+                @apply (--form-container-style);
             }
 
             .btns {
@@ -44,7 +33,7 @@
         </style>
         <h2>[[title]]</h2>
 
-        <div class="container two_item">
+        <div class="container">
             <slot></slot>
         </div>
         <div class="btns">
@@ -76,14 +65,6 @@
                         type: String
                     },
                     /**
-                     * Set form columns,default 2,the optional values  for 1,2,3
-                     */
-                    grid: {
-                        type: Number,
-                        value: 2,
-                        oberver: "__gridChange"
-                    },
-                    /**
                      * hide submit button or not,default not
                      */
                     hideSubmitBtn: {
@@ -97,16 +78,17 @@
                         type: Boolean,
                         value: false
                     },
+
                     /**
                      * User-defined submit function,instead of the default method
                      */
-                    settingSubmit: {
+                    bindSubmit: {
                         type: Function
                     },
                     /**
                      * User-defined reset function,instead of the default method
                      */
-                    settingReset: {
+                    bindReset: {
                         type: Function
                     },
                     /**
@@ -114,6 +96,14 @@
                      */
                     url: {
                         type: String
+                    },
+                    /**
+                     * submit type
+                     * json,jsonAsString,form-data selection is optional
+                     */
+                    submitType:{
+                        type:String,
+                        value:"json"
                     }
                 };
             }
@@ -122,58 +112,48 @@
                 return "h2-form";
             }
 
-            __gridChange(grid) {
-                let containerClassList = root.querySelector(".container").classList;
-                switch (grid) {
-                    case 1:
-                        containerClassList.add("one_item");
-                        containerClassList.remove("two_item");
-                        containerClassList.remove("three_item");
-                        break;
-                    case 2:
-                        containerClassList.remove("one_item");
-                        containerClassList.add("two_item");
-                        containerClassList.remove("three_item");
-                        break;
-                    case 3:
-                        containerClassList.remove("one_item");
-                        containerClassList.remove("two_item");
-                        containerClassList.add("three_item");
-                        break;
-                    default :
-                        containerClassList.remove("one_item");
-                        containerClassList.add("two_item");
-                        containerClassList.remove("three_item");
-                        break;
-                }
-            }
 
             /**
              * default submit Function,
              */
             submit() {
-                if (this.isFunction(this.settingSubmit)) {
-                    setTimeout(() => this.settingSubmit(), 0);
+                if (this.isFunction(this.bindSubmit)) {
+                    setTimeout(() => this.bindSubmit(), 0);
                 } else {
                     let params = {}
                     for (let i = 0; i < this.childElementCount; i++) {
                         params[this.children[i].getAttribute("name")] = this.children[i].value || ""
                     }
                     delete params.null;
+                    if(this.submitType == "form-data"){
+                        let formdata = new FormData();
+                        for(let item in params){
+                            formdata.append(item,params[item])
+                        }
+                        this.post({
+                            url: this.url,
+                            data: formdata,
+                        }, console.log, console.log);
+
+                    }else{
+                        this.post({
+                            url: this.url,
+                            data: params,
+                            sendAsJson:this.submitType ==  "jsonAsString"
+                        }, console.log, console.log);
+                    }
                     console.log(params);
-                    this.post({
-                        url: this.url,
-                        data: params
-                    }, console.log, console.log);
+
                 }
+
             }
 
             /**
              * Default reset Function,Sets all the child element value to " "
              */
             reset() {
-                if (this.isFunction(this.settingReset)) {
-                    setTimeout(() => this.settingReset(), 0);
+                if (this.isFunction(this.bindReset)) {
+                    setTimeout(() => this.bindReset(), 0);
                 } else {
                     let params = {}
                     for (let i = 0; i < this.childElementCount; i++) {

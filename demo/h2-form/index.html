@@ -24,6 +24,12 @@
                     max-height: 500px;
                 }
             }
+
+            #form4 {
+                --form-container-style:{
+                    grid-template-columns: 33% 33% 33%;
+                }
+            }
         </style>
     </custom-style>
 </head>
@@ -67,10 +73,24 @@
             </h2-form>
         </template>
         <script>
-            form3.settingSubmit = () => {
+            form3.bindSubmit = () => {
                 alert("User-define Submit Function");
             }
         </script>
+    </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+    <h3>Change h2-form style demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-form title="demo" id="form4" url="/test1.do">
+                <h2-input label="公司名称" name="company"></h2-input>
+                <h2-input label="地址" name="address"></h2-input>
+                <h2-input label="姓名" name="name"></h2-input>
+                <h2-input label="年龄" name="age"></h2-input>
+            </h2-form>
+        </template>
     </demo-snippet>
 </div>
 </body>

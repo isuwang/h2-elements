@@ -97,7 +97,7 @@
 
         <div class="trigger" on-tap="toggle">
             <paper-button class="btn" raised>
-                [[ name ]]
+                [[ label ]]
             </paper-button>
             <paper-button class="icon" raised>
                 <div>
@@ -106,7 +106,7 @@
             </paper-button>
         </div>
 
-        <iron-collapse id="collapse" horizontal="[[horizontal]]" no-animation="[[noAnimation]]" opened="[[opened]]">
+        <iron-collapse id="collapse"  opened="[[opened]]">
             <slot></slot>
         </iron-collapse>
     </template>
@@ -122,17 +122,10 @@
             static get properties() {
                 return {
                     /**
-                     * Name of the action group.
+                     * Label of the action group.
                      */
-                    name: {
+                    label: {
                         type: String
-                    },
-                    /**
-                     * If true, the orientation is horizontal; otherwise is vertical.
-                     */
-                    horizontal: {
-                        type: Boolean,
-                        value: false
                     },
                     /**
                      * True if the action group is expanded.
