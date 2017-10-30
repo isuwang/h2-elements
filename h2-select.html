@@ -302,16 +302,6 @@
                         notify: true,
                         observer: '_keywordChange'
                     },
-                    /**
-                     * 缓存中的所有数据
-                     */
-                    selectItemsLocal: {
-                        type: Array,
-                        value: function () {
-                            return []
-                        },
-                        notify: true
-                    },
                     disabled: {
                         type: Boolean,
                         value: false,
@@ -413,19 +403,14 @@
             }
 
             /**
-             * 根据item值获取item名字
+             * 根据item值获取item
              */
-            _getItemName(value, selectItems) {
-                var c_item = null;
-                if (value) {
-                    selectItems.forEach(function (item) {
-                        if (item.value == value) {
-                            c_item = item;
-                            return;
-                        }
-                    })
-                }
-                return c_item;
+            _getItemByValue(value, selectItems) {
+                if (!value) return null;
+                let matchItems = selectItems.filter(item => {
+                    return this._getValue(item) == value;
+                });
+                return matchItems[0];
             }
             /**
              * 获取展示字段名
@@ -445,8 +430,6 @@
              * value,selectItems属性变化监听函数
              */
             _valueChange(value, selectItems) {
-                var self = this;
-
                 //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
                 if (value == null || value === "") {
                     this.set("selectedList", []);
@@ -454,26 +437,23 @@
                 }
                 if (selectItems && selectItems.length > 0) {
                     this.$['placeHolder'].style.display = 'none';
-                    value = value.toString();
-                    var items = [];
-                    value.split(",").forEach(function (val) {
-                        if (self._getItemName(val, selectItems) != null) {
-                            items.push(self._getItemName(val, selectItems));
-                        } else if (self.selectItemsLocal && self.selectItemsLocal != "" && self._getItemName(val, self.selectItemsLocal) != null) {
-                            items.push(self._getItemName(val, self.selectItemsLocal));
-                        /*} else if (self.searchLocal && self.selectedList && self.selectedList != "" && self._getItemName(val, self.selectedList) != null) {
-                            items.push(self._getItemName(val, self.selectedList));*/
+                    value += "";
+                    let items = [];
+                    value.split(",").forEach(val => {
+                        let matchItem = this._getItemByValue(val, selectItems);
+                        if (matchItem != null) {
+                            items.push(matchItem);
                         }
                     });
                     this.set("selectedList", items);
                 }
             }
 
-            _selectedListChange(selectedItems) {
-                if (selectedItems == undefined || selectedItems.length === 0) {
+            _selectedListChange(splices) {
+                if (splices == undefined || splices.length === 0) {
                     return;
                 }
-                this.set("value", selectedItems.indexSplices[0].object.map(e => e.value).join(","));
+                this.set("value", splices.indexSplices[0].object.map(e => e.value).join(","));
             }
 
             /**
