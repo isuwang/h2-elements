@@ -28,10 +28,10 @@
      * ```
      * ******************************************************
      *
-     * @param {String|Request|Object} input -
+     * @param {string|Request|Object} input -
      *      支持3种类型： String|Request|Object
      *      1. Request实例
-     *      2. String：请求url
+     *      2. string：请求url
      *      3: Object： 对象结构要求 { url , data, handleAs}
      *          url：必填项
      *          data：可选
@@ -39,6 +39,7 @@
      *
      * @param {Function} succCallback - callback whenever query success
      * @param {Function} failCallback - callback whenever query fail
+     * @return
      */
     query(input, succCallback, failCallback) {
       let url,
@@ -99,10 +100,10 @@
      * ```
      * ******************************************************
      *
-     * @param {String|Request|Object} input -
+     * @param {string|Request|Object} input -
      *      支持3种类型： String|Request|Object
      *      1. Request实例
-     *      2. String：请求url
+     *      2. string：请求url
      *      3: Object： 对象结构要求 { url , data, handleAs, sendAsJson}
      *          url：必填项
      *          data：可选
@@ -111,7 +112,7 @@
      *
      * @param {Function} succCallback - callback whenever post success
      * @param {Function} failCallback - callback whenever post fail
-     * @returns {*}
+     * @return {*}
      */
     post(input, succCallback, failCallback) {
 

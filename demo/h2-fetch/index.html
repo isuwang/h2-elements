@@ -31,7 +31,12 @@
       <h3>Basic h2-fetch demo</h3>
       <demo-snippet>
         <template>
-          <h2-fetch></h2-fetch>
+          <h2-fetch id="fetchDemo" handle-response-as="json"></h2-fetch>
+          <script>
+            fetchDemo.request = {
+              url: "www.baidu.com"
+            };
+          </script>
         </template>
       </demo-snippet>
     </div>
