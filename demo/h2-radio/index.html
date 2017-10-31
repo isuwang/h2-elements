@@ -1,39 +1,53 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-radio demo</title>
+    <title>h2-radio demo</title>
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-radio.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../h2-radio.html">
 
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      .centered {
-        min-width: 800px;
-      }
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
 
-      demo-snippet {
-        --demo-snippet-code: {
-          max-height: 500px;
-        }
-      }
-    </style>
-  </custom-style>
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+        </style>
+    </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-radio demo</h3>
-  <demo-snippet>
-    <template>
-      <h2-radio></h2-radio>
-    </template>
-  </demo-snippet>
+    <h3>Basic h2-radio demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-radio id="radio" label="性别"></h2-radio>
+        </template>
+        <script>
+            radio.items = [{value: 1, label: "男"}, {value: 2, label: "女"}]
+        </script>
+    </demo-snippet>
+</div>
+<div class="vertical-section-container centered">
+    <h3>h2-radio demo2</h3>
+    <demo-snippet>
+        <template>
+            <h2-radio id="radio2"  attr-for-value="id" attr-for-label="name"></h2-radio>
+        </template>
+        <script>
+            radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
+        </script>
+    </demo-snippet>
 </div>
 </body>
 </html>

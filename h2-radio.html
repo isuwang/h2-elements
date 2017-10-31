@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
 
 <!--
 
@@ -9,30 +10,235 @@
 -->
 
 <dom-module id="h2-radio">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+                white-space: nowrap;
+                text-align: left;
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-radio`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-radio/index.html
-     */
-    class H2Radio extends Polymer.Element {
-      static get properties() {
-        return {
+            :host .status-wrap {
+                display: inline-block;
+                position: relative;
+                float: left;
+            }
 
-        };
-      }
+            :host label {
+                display: inline-block;
+                line-height: 34px;
+                float: left;
+            }
 
-      static get is() {
-        return "h2-radio";
-      }
-    }
-    window.customElements.define(H2Radio.is, H2Radio);
-  </script>
+            :host .radio-label {
+                vertical-align: middle;
+            }
+
+            :host iron-selector > * {
+                padding: 6px 10px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            :host .status-items {
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            :host iron-selector .status {
+                border-right: 1px solid #ccc;
+                border-bottom: 1px solid #ccc;
+                border-top: 1px solid #ccc;
+                float: left;
+                background-color: #ffffff;
+            }
+
+            /*第一项*/
+            :host iron-selector span.status:first-child {
+                border-left: 1px solid #ccc;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+
+            /*最后一项*/
+            :host iron-selector span.status:last-of-type {
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+
+            /*奇数项hover*/
+            :host iron-selector span.status:nth-child(odd):hover {
+                background-color: #0099FF;
+                color: #fff;
+                border-right: 1px solid #0099FF;
+                border-bottom: 1px solid #0099FF;
+                border-top: 1px solid #0099FF;
+            }
+
+            /*偶数项hover*/
+            :host iron-selector span.status:nth-child(even):hover {
+                background-color: var(--iron-selector-color-even, #0099FF);
+                color: #fff;
+                border-right: 1px solid var(--iron-selector-color-even, #0099FF);
+                border-bottom: 1px solid var(--iron-selector-color-even, #0099FF);
+                border-top: 1px solid var(--iron-selector-color-even, #0099FF);
+            }
+
+            /*奇数项选中*/
+            :host iron-selector span.status:nth-child(odd).iron-selected {
+                border-right: 1px solid #0099FF;
+                border-bottom: 1px solid #0099FF;
+                border-top: 1px solid #0099FF;
+                background-color: #0099FF;
+                color: #fff;
+            }
+
+            /*偶数项选中*/
+            :host iron-selector span.status:nth-child(even).iron-selected {
+                border-right: 1px solid var(--iron-selector-color-even, #0099FF);
+                border-bottom: 1px solid var(--iron-selector-color-even, #0099FF);
+                border-top: 1px solid var(--iron-selector-color-even, #0099FF);
+                background-color: var(--iron-selector-color-even, #0099FF);
+                color: #fff;
+            }
+
+            :host iron-selector .status:first-child.iron-selected {
+                border-left: 1px solid #0099FF;
+            }
+
+            :host .shade {
+                display: none;
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                background-color: black;
+                z-index: 99;
+                opacity: .00;
+                border-radius: 4px;
+            }
+        </style>
+        <label class="label-size radio-label"><span>[[label]]</span>：</label>
+
+        <div class="status-wrap">
+            <iron-selector class="status-items" selected="{{value}}" attr-for-selected="radio-item">
+                <template is="dom-repeat" items="[[items]]">
+                    <span class="status" radio-item="{{__getItemValueByName(item,attrForValue)}}">{{__getItemValueByName(item,attrForLabel)}}</span>
+                </template>
+            </iron-selector>
+            <div class="shade"></div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-radio`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-radio/index.html
+         */
+        class H2Radio extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     *
+                     * 标签名字
+                     * eg：1
+                     *
+                     * @attribute label
+                     * @type {String}
+                     */
+                    label: {
+                        type: String,
+                        value: "",
+                        observer: '__labelChange'
+                    },
+                    /**
+                     *
+                     * 初始选择项和items的value值相对应
+                     * eg：1
+                     *
+                     * @attribute selected
+                     * @type {String}
+                     */
+                    value: {
+                        type: String,
+                        reflectToAttribute: true,
+                        notify: true
+                    },
+                    /**
+                     *
+                     * 需要展示的数据项
+                     * eg：[{value:1,label:"全部",count:"19"}]
+                     *
+                     * @attribute items
+                     * @type {Array}
+                     */
+                    items: {
+                        type: Array,
+                        value: []
+                    },
+                    /**
+                     * 是否可编辑,默认可以编辑
+                     */
+                    editable: {
+                        type: Boolean,
+                        value: true,
+                        observer: '_modeChange'
+                    },
+                    /**
+                     * 用来取值的字段，默认为value
+                     */
+                    attrForValue: {
+                        type: String,
+                        value: "value"
+                    },
+                    /**
+                     * 用来展示的字段，默认为label
+                     */
+                    attrForLabel: {
+                        type: String,
+                        value: "label"
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-radio";
+            }
+
+            _modeChange(newVal) {
+                if (!newVal) {
+                    let height = this.root.querySelector(".status-wrap").offsetHeight;
+                    this.root.querySelector('.shade').style.height = height + "px";
+                    this.root.querySelector('.shade').style.display = 'block';
+                } else {
+                    this.root.querySelector('.shade').style.display = 'none';
+                }
+            }
+
+            /**
+             * 监听标签名改变
+             * @param label 标签名
+             * @private
+             */
+            __labelChange(label) {
+                let labelElement = this.root.querySelector(".label-size");
+                if (labelElement) {
+                    if (!label) {
+                        labelElement.style.display = "none";
+                    } else {
+                        labelElement.style.display = "";
+                    }
+                }
+            }
+
+            __getItemValueByName(item, name) {
+                if (item && name) {
+                    return item[name]
+                }
+            }
+        }
+        window.customElements.define(H2Radio.is, H2Radio);
+    </script>
 </dom-module>

@@ -17,12 +17,36 @@
                 line-height: 34px;
                 vertical-align: middle;
             }
+
+            :host .item-wrap {
+                display: inline-block;
+                position: relative;
+                float: left;
+            }
+
+            :host .shade {
+                display: none;
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                width: 100%;
+                //height: 34px;
+                background-color: black;
+                z-index: 99;
+                opacity: .00;
+                border-radius: 4px;
+            }
         </style>
         <div>
-            <label class="label-size"><span>[[label]]</span>：</label>
-            <template is="dom-repeat" items="{{items}}">
-                <paper-checkbox checked="{{item.selected}}">[[__getItemValueByAttr(item,attrForLabel)]]</paper-checkbox>
-            </template>
+            <div class="item-wrap">
+                <label class="label-size"><span>[[label]]</span>：</label>
+                <template is="dom-repeat" items="{{items}}">
+                    <paper-checkbox checked="{{item.selected}}">[[__getItemValueByName(item,attrForLabel)]]
+                    </paper-checkbox>
+                </template>
+                <div class="shade"></div>
+            </div>
+
         </div>
     </template>
     <script>
@@ -43,7 +67,8 @@
                      * @type {String}
                      */
                     label: {
-                        type: String
+                        type: String,
+                        observer:"__labelChanged"
                     },
                     /**
                      * checkbox 组成项，例如：[{name:'薄膜',value:0,selected:true},{name:'纤维',value:1}]
@@ -84,6 +109,14 @@
                     attrForLabel: {
                         type: String,
                         value: "label"
+                    },
+                    /**
+                     * 是否可编辑,默认可以编辑
+                     */
+                    editable: {
+                        type: Boolean,
+                        value: true,
+                        observer: '__modeChange'
                     }
                 };
             }
@@ -106,7 +139,7 @@
                 let newItems = Object.assign([], JSON.parse(JSON.stringify(this.items)));
                 if (this.value && this.value.length > 0) {
                     newItems.forEach((item) => {
-                        if (this.value.split(",").indexOf(item.value+"") > -1) {
+                        if (this.value.split(",").indexOf(item.value + "") > -1) {
                             item.selected = true;
                         } else {
                             item.selected = false;
@@ -120,23 +153,50 @@
                 this.set("items", newItems);
             }
 
+            /**
+             * items发生变化时候，重新获取选中值
+             * @param changeItems
+             * @param attrForValue
+             * @private
+             */
             __itemsChanged(changeItems, attrForValue) {
-                if(!(changeItems)) return;
+                if (!(changeItems)) return;
                 let newItems = changeItems.base;
                 let newSelectedValue = [];
                 if (newItems && newItems.length > 0) {
                     newItems.forEach((item) => {
                         if (item.selected) {
-                            newSelectedValue.push(this.__getItemValueByAttr(item, attrForValue));
+                            newSelectedValue.push(this.__getItemValueByName(item, attrForValue));
                         }
                     });
                     this.set("value", newSelectedValue.join(","));
                 }
             }
 
-            __getItemValueByAttr(item, attr) {
+            __getItemValueByName(item, attr) {
                 if (item && attr) {
                     return item[attr]
+                }
+            }
+
+            __modeChange(editable) {
+                if (!editable) {
+                    let height = this.root.querySelector(".item-wrap").offsetHeight;
+                    this.root.querySelector('.shade').style.height = height + "px";
+                    this.root.querySelector('.shade').style.display = 'block';
+                } else {
+                    this.root.querySelector('.shade').style.display = 'none';
+                }
+            }
+
+            __labelChanged(label){
+                let labelElement = this.root.querySelector(".label-size");
+                if (labelElement) {
+                    if (!label) {
+                        labelElement.style.display = "none";
+                    } else {
+                        labelElement.style.display = "";
+                    }
                 }
             }
 
