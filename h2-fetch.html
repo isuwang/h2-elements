@@ -109,11 +109,11 @@
 
       __requestChange(request) {
         if (!request) return;
-        return window.mockEnabled ? setTimeout(this.mockIt.bind(this), 100) : this.fetchIt();
+        return window.__mockEnabled ? this.mockIt() : this.fetchIt();
       }
 
       mockIt() {
-        if(window.mockEnabled && typeof MockDataPool !== "undefined") {
+        if(window.__mockEnabled && typeof MockDataPool !== "undefined") {
           const collectedReq = this.__getCollectedRequest(this.request);
           const matchedRes = MockDataPool.match(collectedReq);
           if (matchedRes) {
