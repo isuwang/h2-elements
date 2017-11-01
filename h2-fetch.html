@@ -16,163 +16,130 @@
       {{stringify(responseBody)}}
     </div>
   </template>
-  <script>/**
-   * `h2-fetch`
-   *
-   * @customElement
-   * @polymer
-   * @demo demo/h2-fetch/index.html
-   */
+  <script>
+    /**
+     * `h2-fetch`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-fetch/index.html
+     */
+    class H2Fetch extends Polymer.Element {
+      stringify(obj) {
+        return JSON.stringify(obj);
+      }
 
-  class H2Fetch extends Polymer.Element {
-    stringify(obj) {
-      return JSON.stringify(obj);
-    }
-
-    static get properties() {
-      return {
-        /**
-         *
-         * See [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request)
-         * {
-         *   url: String
-         *   method: String (GET, POST, etc)
-         *   headers: {
-         *     header-field: header-value
-         *   }
-         *   mode: String
-         *   ...
-         * }
-         *
-         */
-        request: {
-          type: Object
-        },
-
-        /**
-         * error is null when mock
-         */
-        error: {
-          type: Object,
-          notify: true
-        },
-        /**
-         * See [Response API] (https://developer.mozilla.org/en-US/docs/Web/API/Response)
-         */
-        response: {
-          type: Object,
-          notify: true
-        },
-
-        /**
-         * How to handle the response body, the handled result will access as the property 'responseBody'.
-         * json/text/blob/arrayBuffer
-         */
-        handleResponseAs: {
-          type: String,
-          value: "json"
-        },
-
-        /**
-         * Handled response body.
-         */
-        responseBody: {
-          type: Object,
-          notify: true
-        },
-
-        __mock: {
-          type: Boolean,
-          value: false
-        },
-
-        __defaultRequest: {
-          type: Object,
-          value: {
-            credentials: "include"
+      static get properties() {
+        return {
+          /**
+           * See [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request)
+           */
+          request: {
+            type: Object
           },
-          readOnly: true
-        },
 
-        __defaultHeaders: {
-          type: Object,
-          value: {
-            "content-type": "application/json;charset=utf-8"
+          /**
+           * error is null when mock
+           */
+          error: {
+            type: Object,
+            notify: true
           },
-          readOnly: true
+          /**
+           * See [Response API](https://developer.mozilla.org/en-US/docs/Web/API/Response)
+           */
+          response: {
+            type: Object,
+            notify: true
+          },
+
+          /**
+           * How to handle the response body, the handled result will access as the property 'responseBody'.
+           * json/text/blob/arrayBuffer
+           */
+          handleResponseAs: {
+            type: String,
+            value: "json"
+          },
+
+          /**
+           * Handled response body.
+           */
+          responseBody: {
+            type: Object,
+            notify: true
+          },
+
+          __defaultRequest: {
+            type: Object,
+            value: {
+              credentials: "include"
+            },
+            readOnly: true
+          },
+
+          __defaultHeaders: {
+            type: Object,
+            value: {
+              "content-type": "application/json;charset=utf-8"
+            },
+            readOnly: true
+          }
+
+        };
+      }
+
+      static get is() {
+        return "h2-fetch";
+      }
+
+      static get observers() {
+        return [
+          "__requestChange(request)",
+          "__responseChange(response)"
+        ];
+      }
+
+      __getCollectedRequest(request) {
+        const req = Request.prototype.isPrototypeOf(request) ? request : new Request(request.url, request);
+        //TODO set default value to req
+        return req;
+      }
+
+
+      __requestChange(request) {
+        if (!request) return;
+        return window.mockEnabled ? setTimeout(this.mockIt.bind(this), 100) : this.fetchIt();
+      }
+
+      mockIt() {
+        if(window.mockEnabled && typeof MockDataPool !== "undefined") {
+          const collectedReq = this.__getCollectedRequest(this.request);
+          const matchedRes = MockDataPool.match(collectedReq);
+          if (matchedRes) {
+            this.response = new Response(matchedRes.body, matchedRes);
+            return;
+          }
         }
 
-      };
-    }
-
-    static get is() {
-      return "h2-fetch";
-    }
-
-    static get observers() {
-      return [
-        "__requestChange(request)",
-        "__responseChange(response)"
-      ];
-    }
-
-    __getCollectedRequest(request) {
-      const req = Request.prototype.isPrototypeOf(request) ? request : new Request(request.url, request);
-      //TODO set default value to req
-      return req;
-    }
-
-
-    __requestChange(request) {
-      if (!request) return;
-      return this.__mock ? setTimeout(this.mockIt.bind(this), 200) : this.fetchIt();
-    }
-
-    mockIt() {
-      const collectedReq = this.__getCollectedRequest(this.request);
-      const matchedRes = MockDataPool.match(collectedReq);
-      if (matchedRes) {
-        this.response = new Response(matchedRes.body, matchedRes);
-      } else {
         return this.fetchIt();
       }
-    }
 
-    fetchIt() {
-      const collectedReq = this.__getCollectedRequest(this.request);
-      fetch(collectedReq)
-        .then(res => this.response = res)
-        .catch(err => this.error = err);
-    }
-
-    __responseChange(response) {
-      // TODO response.ok
-      const resClone = response.clone();
-      resClone[this.handleResponseAs]().then(data => this.responseBody = data);
-    }
-
-    created() {
-      super.created();
-
-      const mockSearchParam = window.location.search.replace("?", "").split("&").map(part => part.split("="))
-        .reduce((tmp, part) => Object.assign(tmp, {[part[0]]: part[1]}), {});
-
-      const mockDataSrc = mockSearchParam["mock"];
-
-      this.__mock = !!mockDataSrc;
-      // load mockdata once for document
-
-      // TODO 避免多次初始化实例MockDataPool多次声明
-      if (mockDataSrc && typeof MockDataPool === "undefined") {
-        const scriptTag = document.createElement("script");
-        scriptTag.type = "text/javascript";
-        scriptTag.src = mockDataSrc;
-        document.head.appendChild(scriptTag);
+      fetchIt() {
+        const collectedReq = this.__getCollectedRequest(this.request);
+        fetch(collectedReq)
+          .then(res => this.response = res)
+          .catch(err => this.error = err);
       }
+
+      __responseChange(response) {
+        // TODO response.ok
+        const resClone = response.clone();
+        resClone[this.handleResponseAs]().then(data => this.responseBody = data);
+      }
+
     }
 
-  }
-
-  window.customElements.define(H2Fetch.is, H2Fetch);
+    window.customElements.define(H2Fetch.is, H2Fetch);
   </script>
 </dom-module>

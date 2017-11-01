@@ -12,6 +12,8 @@
     <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../h2-fetch.html">
 
+    <script type="text/javascript" src="../../utils/mock_check.js"></script>
+
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
         .centered {
@@ -30,11 +32,33 @@
     <div class="vertical-section-container centered">
       <h3>Basic h2-fetch demo</h3>
       <demo-snippet>
+
         <template>
           <h2-fetch id="fetchDemo" handle-response-as="json"></h2-fetch>
           <script>
             fetchDemo.request = {
-              url: "www.baidu.com"
+              url: "/page/to/index.do",
+              method:"POST",
+              headers: {
+                "content-type":"application/json;charset=utf-8",
+                "Cache-Control": "no-cache"
+              }
+            };
+          </script>
+        </template>
+      </demo-snippet>
+      <h3>Basic h2-fetch demo</h3>
+      <demo-snippet>
+
+        <template>
+          <h2-fetch id="fetchDemo1" handle-response-as="json"></h2-fetch>
+          <script>
+            fetchDemo1.request = {
+              url: "/page/to/index.do",
+              method:"POST",
+              headers: {
+                "Cache-Control": "no-cache"
+              }
             };
           </script>
         </template>
