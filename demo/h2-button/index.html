@@ -10,6 +10,8 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../../iron-icons/iron-icons.html">
+  <link rel="import" href="../../../paper-styles/color.html">
   <link rel="import" href="../../h2-button.html">
 
   <custom-style>
@@ -23,6 +25,11 @@
           max-height: 500px;
         }
       }
+      #btn2 {
+        --btn-primary-style:{
+          background-color:red;
+        }
+      }
     </style>
   </custom-style>
 </head>
@@ -31,7 +38,16 @@
   <h3>Basic h2-button demo</h3>
   <demo-snippet>
     <template>
-      <h2-button></h2-button>
+      <h2-button>enable</h2-button>
+      <h2-button disabled>disabled</h2-button>
+      <h2-button id ="btn1">onclick</h2-button>
+      <h2-button><iron-icon icon="check"></iron-icon>link</h2-button>
+      <h2-button id ="btn2">button</h2-button>
+      <script>
+          btn1["onclick"] = (e)=>{
+              alert("on click button;")
+          }
+      </script>
     </template>
   </demo-snippet>
 </div>

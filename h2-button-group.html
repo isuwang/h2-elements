@@ -2,6 +2,7 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
 
 <!--
 
@@ -85,14 +86,92 @@
             }
 
             ::slotted(*) {
+                cursor: pointer;
+                display: block;
+                line-height: 30px;
+                height: 30px;
+                margin: 0;
                 width: 100%;
-                padding-top: 1px;
+                white-space: nowrap;
+                font-size: 12px;
+                text-align: center;
+                box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.175);
             }
 
-            ::slotted(paper-button) {
-                margin: 0;
-                box-shadow: 0px 2px 0px #888888;
+            /*下拉列表*/
+            :host .dropdown-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1000;
+                float: left;
+                min-width: 100px;
+                margin: 2px 0 0;
+                list-style: none;
+                font-size: 14px;
+                text-align: left;
+                background-color: #fff;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+                background-clip: padding-box;
             }
+
+            :host .selector-panel {
+                max-height: 300px;
+                overflow: auto;
+                display: block;
+                padding: 5px;
+                border: 1px solid #dedede;
+                border-top: none;
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+                @apply(
+                --shadow-elevation-2dp);
+            }
+
+            :host .dropdown-menu iron-selector .item {
+                cursor: pointer;
+                display: block;
+                line-height: 30px;
+                height: 30px;
+                margin: 0;
+                /*padding: 0 5px;*/
+                width: 100%;
+                white-space: nowrap;
+                font-size: 12px;
+                text-align: center;
+                box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.175);
+            }
+
+            /*hover*/
+            :host .dropdown-menu iron-selector .item:hover {
+                color: #0099FF;
+            }
+
+            /*选中*/
+            :host iron-selector .iron-selected {
+                background-color: #0099FF;
+                color: #fff;
+            }
+
+            /*选中hover*/
+            :host .dropdown-menu iron-selector span.item.iron-selected:hover {
+                background-color: #0099FF;
+                color: #fff;
+            }
+
+            :host iron-collapse iron-selector {
+                vertical-align: middle;
+            }
+
+            :host iron-collapse iron-selector .item {
+                text-align: center;
+            }
+
         </style>
 
         <div class="trigger" on-tap="toggle">
@@ -106,8 +185,13 @@
             </paper-button>
         </div>
 
-        <iron-collapse id="collapse"  opened="[[opened]]">
-            <slot></slot>
+        <iron-collapse id="collapse" class="dropdown-menu" opened="[[opened]]" on-click="_onButtonDropdownClick" >
+            <iron-selector class="selector-panel" selected="{{value}}" attr-for-selected="selected-item">
+                <template is="dom-repeat" items="[[items]]" filter="_hasPermission">
+                    <span class="item" selected-item="{{item}}">{{item.label}}</span>
+                </template>
+                <slot></slot>
+            </iron-selector>
         </iron-collapse>
     </template>
     <script>
@@ -147,6 +231,18 @@
                     collapseIcon: {
                         type: String,
                         value: 'arrow-drop-down'
+                    },
+                    items: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    value: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
                     }
                 };
             }
@@ -186,6 +282,27 @@
 
             __getIcon(opened) {
                 return opened ? this.expandIcon : this.collapseIcon;
+            }
+
+            /**
+             * 是否有权限
+             * @param item
+             * @returns {*}
+             * @private
+             */
+            _hasPermission(item) {
+                let b = "permission" in item;
+                return !b || (b && item["permission"]);
+            }
+
+            _onButtonDropdownClick() {
+                this.dispatchEvent(new CustomEvent('click', {
+                    detail: {
+                        value: this.value
+                    },
+                    bubbles: true,
+                    composed: true
+                }));
             }
         }
         window.customElements.define(H2ButtonGroup.is, H2ButtonGroup);

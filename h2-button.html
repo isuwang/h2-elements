@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-button/paper-button.html">
 
 <!--
 
@@ -9,30 +10,52 @@
 -->
 
 <dom-module id="h2-button">
-  <template>
-    <style>
+    <template>
+        <style>
+            .btn {
+                float: left;
+                color: #fff;
+                background-color: #337ab7;
+                border-color: #2e6da4;
+                margin-bottom: 0;
+                font-weight: normal;
+                text-align: center;
+                vertical-align: middle;
+                touch-action: manipulation;
+                cursor: pointer;
+                white-space: nowrap;
+                font-size: 14px;
+                line-height: 1.42857143;
+                border-radius: 4px;
+                @apply(--btn-primary-style);
+            }
+        </style>
+        <paper-button class="btn" disabled="{{disabled}}">
+            <slot></slot>
+        </paper-button>
+    </template>
+    <script>
+        /**
+         * `h2-button`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-button/index.html
+         */
+        class H2Button extends Polymer.Element {
+            static get properties() {
+                return {
+                    disabled: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-button`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-button/index.html
-     */
-    class H2Button extends Polymer.Element {
-      static get properties() {
-        return {
-
-        };
-      }
-
-      static get is() {
-        return "h2-button";
-      }
-    }
-    window.customElements.define(H2Button.is, H2Button);
-  </script>
+            static get is() {
+                return "h2-button";
+            }
+        }
+        window.customElements.define(H2Button.is, H2Button);
+    </script>
 </dom-module>

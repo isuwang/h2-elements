@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
 
 <!--
 
@@ -9,30 +10,170 @@
 -->
 
 <dom-module id="h2-image-view">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-image-view`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-image-view/index.html
-     */
-    class H2ImageView extends Polymer.Element {
-      static get properties() {
-        return {
+            :host paper-button[raised].colorful {
+                background: var(--paper-button-backgrount, #4285f4);
+                color: var(--paper-button-color, #fff);
+            }
 
-        };
-      }
+            #pasted-pane {
+                -webkit-user-select: initial;
+            }
 
-      static get is() {
-        return "h2-image-view";
-      }
-    }
-    window.customElements.define(H2ImageView.is, H2ImageView);
-  </script>
+            .ks-image-pane {
+                float: left;
+                position: relative
+            }
+
+           /* .ks-image-pane.dragging {
+                background: #c5ddff
+            }*/
+
+            /*.ks-image-result-pane {
+                width: 160px;
+                height: 160px;
+                border: 1px dashed #ccc;;
+                text-align: center;
+                line-height: 160px;
+            }*/
+
+            /*.ks-image-open-button {
+                font-size: 15px;
+                float: right;
+                margin: 10px;
+            }*/
+
+            .ks-image-pasted-pane {
+                text-align: center;
+                border: 1px dashed #ccc;
+                font-size: 12px;
+                background: #f0f0f0;
+            }
+
+            .ks-image-pasted-pane img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            .ks-image-pane .toolbar {
+                position: absolute;
+                background: rgba(79, 79, 79, 0.33);
+                bottom: 0;
+                width: 100%;
+                height: 40px;
+                padding-top: 5px;
+                left: 0;
+            }
+            .btn {
+                display: inline-block;
+                margin-bottom: 0;
+                font-weight: normal;
+                text-align: center;
+                vertical-align: middle;
+                touch-action: manipulation;
+                cursor: pointer;
+                background-image: none;
+                border: 1px solid transparent;
+                white-space: nowrap;
+                padding: 5px 10px;
+                font-size: 14px;
+                line-height: 1.42857143;
+                border-radius: 4px;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none
+            }
+
+            .btn-success {
+                color: #fff;
+                background-color: #5cb85c;
+                border-color: #4cae4c
+            }
+
+        </style>
+        <div>
+
+            <div class="ks-image-pane">
+                <div class="ks-image-pasted-pane" id="pasted-pane">
+                    <img id="result-img"/>
+                    <div class="toolbar">
+                        <button class="btn btn-success" on-click="viewZoom">查看大图</button>
+                    </div>
+                    <paper-dialog id="dialog">
+                        <img src="[[src]]"/>
+                    </paper-dialog>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-image-view`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-image-view/index.html
+         */
+        class H2ImageView extends Polymer.Element {
+            static get properties() {
+                return {
+                    imgHeight: {
+                        type: Number,
+                        value: 150,
+                        observer: '_setImageHeight'
+                    },
+                    imgWidth: {
+                        type: Number,
+                        value: 150,
+                        observer: '_setImageWidth'
+                    },
+
+                    src: {
+                        type: String,
+                        value: null,
+                        observer: '_changeSrc'
+                    },
+                };
+            }
+
+            static get is() {
+                return "h2-image-view";
+            }
+
+
+            _setImageWidth(newValue, oldValue) {
+                if (newValue)
+                    this.$['pasted-pane'].style.width = newValue + "px";
+            }
+
+            _setImageHeight(newValue, oldValue) {
+                if (newValue) {
+                    this.$['pasted-pane'].style.height = newValue + "px";
+                }
+            }
+
+
+            _changeSrc(newValue, oldValue) {
+                if (newValue) {
+                    this.$["result-img"].setAttribute("src", newValue);
+                }
+            }
+
+
+            //查看大图
+            viewZoom() {
+                if (this.src) {
+                    this.$.dialog.open();
+                }
+            }
+
+        }
+        window.customElements.define(H2ImageView.is, H2ImageView);
+    </script>
 </dom-module>

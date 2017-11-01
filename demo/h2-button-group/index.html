@@ -36,11 +36,31 @@
     <h3>Basic h2-button-group demo</h3>
     <demo-snippet>
         <template>
-            <h2-button-group name="测试">
-                <paper-button>测试1</paper-button>
-                <paper-button>测试2</paper-button>
+            <h2-button-group label="测试" id="butGroup">
             </h2-button-group>
+            <script>
+                butGroup.items = [{label: "测试1", value: "1"}, {label: "测试2", value: "2"}, {label: "测试3", value: "3",permission:false}]
+            </script>
         </template>
+    </demo-snippet>
+</div>
+<div class="vertical-section-container centered">
+    <h3>h2-button-group demo2</h3>
+    <demo-snippet>
+        <template>
+            <h2-button-group label="测试" id="butGroup2">
+            </h2-button-group>
+            <script>
+                butGroup2.items = [{label: "测试1", value: "1"}, {label: "测试2", value: "2"}, {label: "测试3", value: "3"}]
+                butGroup2["onclick"] = (e) => {
+                    if (e.detail && e.detail.value) {
+                        console.log("点击" + e.detail.value.label);
+                    }
+
+                }
+            </script>
+        </template>
+
     </demo-snippet>
 </div>
 </body>
