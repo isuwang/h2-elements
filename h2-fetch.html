@@ -39,7 +39,7 @@
           },
 
           /**
-           * error is null when mock
+           * Error is undefined when window.__mockEnabled is true
            */
           error: {
             type: Object,
@@ -113,7 +113,7 @@
       }
 
       mockIt() {
-        if(window.__mockEnabled && typeof MockDataPool !== "undefined") {
+        if (window.__mockEnabled && typeof MockDataPool !== "undefined") {
           const collectedReq = this.__getCollectedRequest(this.request);
           const matchedRes = MockDataPool.match(collectedReq);
           if (matchedRes) {
@@ -133,9 +133,9 @@
       }
 
       __responseChange(response) {
-        // TODO response.ok
         const resClone = response.clone();
-        resClone[this.handleResponseAs]().then(data => this.responseBody = data);
+        const handleAs = response.ok ? this.handleResponseAs : "text";
+        resClone[handleAs]().then(data => this.responseBody = data);
       }
 
     }
