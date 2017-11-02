@@ -10,7 +10,7 @@
 <dom-module id="h2-fetch">
   <template>
     <style>
-
+      
     </style>
     <div>
       {{stringify(responseBody)}}
@@ -103,16 +103,24 @@
       __getCollectedRequest(request) {
         const req = Request.prototype.isPrototypeOf(request) ? request : new Request(request.url, request);
         //TODO set default value to req
+
+
         return req;
       }
 
 
       __requestChange(request) {
         if (!request) return;
-        return window.__mockEnabled ? this.mockIt() : this.fetchIt();
+        return window.__mockEnabled ? this._mockIt() : this._fetchIt();
       }
 
-      mockIt() {
+      __responseChange(response) {
+        const resClone = response.clone();
+        const handleAs = response.ok ? this.handleResponseAs : "text";
+        resClone[handleAs]().then(data => this.responseBody = data);
+      }
+
+      _mockIt() {
         if (window.__mockEnabled && typeof MockDataPool !== "undefined") {
           const collectedReq = this.__getCollectedRequest(this.request);
           const matchedRes = MockDataPool.match(collectedReq);
@@ -122,20 +130,23 @@
           }
         }
 
-        return this.fetchIt();
+        return this._fetchIt();
       }
 
-      fetchIt() {
+      _fetchIt() {
         const collectedReq = this.__getCollectedRequest(this.request);
         fetch(collectedReq)
           .then(res => this.response = res)
           .catch(err => this.error = err);
       }
 
-      __responseChange(response) {
-        const resClone = response.clone();
-        const handleAs = response.ok ? this.handleResponseAs : "text";
-        resClone[handleAs]().then(data => this.responseBody = data);
+      /**
+       *
+       * @param {Request|object} request
+       * @return {Promise}
+       */
+      fetchIt(request) {
+
       }
 
     }

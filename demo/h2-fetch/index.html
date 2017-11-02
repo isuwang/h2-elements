@@ -12,7 +12,7 @@
     <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../h2-fetch.html">
 
-    <script type="text/javascript" src="../../utils/mock_check.js"></script>
+    <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
     <custom-style>
       <style is="custom-style" include="demo-pages-shared-styles">
@@ -37,7 +37,7 @@
           <h2-fetch id="fetchDemo" handle-response-as="json"></h2-fetch>
           <script>
             fetchDemo.request = {
-              url: "/page/to/index.do",
+              url: "/path/to/index.do",
               method:"POST",
               headers: {
                 "content-type":"application/json;charset=utf-8",
@@ -54,11 +54,42 @@
           <h2-fetch id="fetchDemo1" handle-response-as="json"></h2-fetch>
           <script>
             fetchDemo1.request = {
-              url: "/page/to/index.do",
+              url: "/path/to/index.do",
               method:"POST",
               headers: {
                 "Cache-Control": "no-cache"
               }
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+      <h3>Basic h2-fetch demo</h3>
+      <demo-snippet>
+
+        <template>
+          <h2-fetch id="fetchDemo2" handle-response-as="text"></h2-fetch>
+          <script>
+            fetchDemo2.request = {
+              url: "/path/to/index.do",
+              method:"POST",
+              headers: {
+                "test-header": "no-value"
+              }
+            };
+          </script>
+        </template>
+      </demo-snippet>
+
+      <h3>Basic h2-fetch demo</h3>
+      <demo-snippet>
+
+        <template>
+          <h2-fetch id="fetchDemo3" handle-response-as="text"></h2-fetch>
+          <script>
+            fetchDemo3.request = {
+              url: "/path/to/helloworld.do",
+              method:"get",
             };
           </script>
         </template>
