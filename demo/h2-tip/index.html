@@ -36,7 +36,7 @@
             <h2-tip type="success" message="success" id="tip"></h2-tip>
             <script>
                 btn["onclick"] = () => {
-                    tip.root.querySelector('#tip-dialog').open();
+                    tip.open();
                 }
             </script>
         </template>
@@ -51,7 +51,7 @@
             <h2-tip type="alert" message="alert" id="tip2"></h2-tip>
             <script>
                 btn2["onclick"] = () => {
-                    tip2.root.querySelector('#tip-dialog').open();
+                    tip2.open();
                 }
             </script>
         </template>
@@ -66,7 +66,7 @@
             <h2-tip type="error" message="alert" id="tip3"></h2-tip>
             <script>
                 btn3["onclick"] = () => {
-                    tip3.root.querySelector('#tip-dialog').open();
+                    tip3.open();
                 }
             </script>
         </template>
@@ -78,24 +78,14 @@
     <demo-snippet>
         <template>
             <paper-button id="btn4" raised>button</paper-button>
+            <h2-tip type="confirm" message="confirm?" id="tip4"></h2-tip>
             <script>
                 btn4["onclick"] = () => {
-                    let a = document.createElement('h2-tip');
-                    a.set('message', "confirm??");
-                    a.set('yesBtn', "yes");
-                    a.set('noBtn', "no");
-                    a.set('type', "confirm");
-                    document.body.appendChild(a);
-                    a.addEventListener("confirm-handler", function (e) {
-                        alert("on click ok!");
-                        a.remove();
-                    });
-
-                    a.addEventListener("cancel-handler", function (e) {
-                        alert("on click canal");
-                        a.remove();
-                    });
-                    a.root.querySelector('#tip-dialog').open();
+                    tip4.open(() => {
+                        alert("点击确定！");
+                    }, () => {
+                        alert("点击取消");
+                    })
                 }
             </script>
         </template>
@@ -107,26 +97,17 @@
     <demo-snippet>
         <template>
             <paper-button id="btn5" raised>button</paper-button>
+            <h2-tip type="prompt" message="prompt?" id="tip5"></h2-tip>
             <script>
                 btn5["onclick"] = () => {
-                    let a = document.createElement('h2-tip');
-                    a.set('message', "prompt");
-                    a.set('yesBtn', "yes");
-                    a.set('noBtn', "no");
-                    a.set('type', "prompt");
-                    document.body.appendChild(a);
-                    a.addEventListener("confirm-handler", function (e) {
-                        alert(e.detail.remark ||"on click ok!");
-                        a.remove();
-                    });
-
-                    a.addEventListener("cancel-handler", function (e) {
-                        alert("on click canal");
-                        a.remove();
-                    });
-                    a.root.querySelector('#tip-dialog').open();
+                    tip5.open((e) => {
+                        alert("点击确定," + e.detail.remark + "！");
+                    }, () => {
+                        alert("点击取消");
+                    })
                 }
             </script>
+
         </template>
     </demo-snippet>
 </div>

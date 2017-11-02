@@ -15,7 +15,7 @@
     <template>
         <style>
 
-            :host .tip-dialog {
+            :host .dialog {
 
                 min-height: 25px;
                 min-width: 125px;
@@ -89,7 +89,7 @@
                 display: none;
             }
         </style>
-        <paper-dialog id="tip-dialog" attached="attachedHandler" modal="[[_isConfirm(type)]]">
+        <paper-dialog id="dialog" attached="attachedHandler" modal="[[_isConfirm(type)]]">
             <div id="tip" class$="{{type}}">[[message]]</div>
             <template is="dom-if" if="{{_isPrompt(type)}}">
                 <div class="remark-panl">
@@ -100,7 +100,7 @@
             </template>
             <template is="dom-if" if="{{_isConfirm(type)}}">
                 <div id="operate-panl">
-                    <paper-button type="true" on-click="confirmFn">[[yesBtn]]</paper-button>
+                    <paper-button type="true" on-click="confirmFn">[[okBtn]]</paper-button>
                     <paper-button on-click="cancelFn">[[noBtn]]</paper-button>
                 </div>
             </template>
@@ -149,7 +149,7 @@
                     /**
                      * 确认按钮文字，默认为“确定”
                      */
-                    yesBtn: {
+                    okBtn: {
                         type: String,
                         value: function () {
                             return "确定"
@@ -163,6 +163,12 @@
                         value: function () {
                             return "取消"
                         }
+                    },
+                    okFn: {
+                        type: Object
+                    },
+                    noFn: {
+                        type: Object
                     }
                 };
             }
@@ -203,6 +209,50 @@
                         bubbles: true, composed: true, detail: {remark: this.remark}
                     }));
                 }
+            }
+
+            __handler(fn) {
+                return (e) => {
+                    e.stopPropagation();
+                    fn && fn(e);
+                    this.close();
+                }
+            }
+
+            open(okFn, noFn, type) {
+                switch (type || this.type) {
+                    case "alert":
+                    case "error":
+                    case "success":
+                        this.$.dialog.open();
+                        break;
+                    case "confirm":
+                    case "prompt":
+                        this.okFn = okFn || this.okFn;
+                        this.noFn = noFn || this.noFn;
+                        this.$.dialog.open();
+                        break;
+                    default:
+                        this.$.dialog.open();
+                        break;
+
+                }
+            }
+
+            close() {
+                this.$.dialog.close();
+            }
+
+            ready() {
+                super.ready();
+                this.addEventListener("confirm-handler", (e) => {
+                    this.okFn && this.okFn(e);
+                    this.close();
+                });
+                this.addEventListener("cancel-handler", (e) => {
+                    this.noFn && this.noFn(e);
+                    this.close();
+                }, {once: true});
             }
         }
         window.customElements.define(H2Tip.is, H2Tip);
