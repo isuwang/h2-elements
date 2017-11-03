@@ -1,4 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
 
 <!--
 
@@ -9,30 +11,360 @@
 -->
 
 <dom-module id="h2-image-upload">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host {
+                display: inline-block;
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-image-upload`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-image-upload/index.html
-     */
-    class H2ImageUpload extends Polymer.Element {
-      static get properties() {
-        return {
+            :host paper-button[raised].colorful {
+                background: var(--paper-button-backgrount, #4285f4);
+                color: var(--paper-button-color, #fff);
+            }
 
-        };
-      }
+            #pasted-pane {
+                -webkit-user-select: initial;
+            }
 
-      static get is() {
-        return "h2-image-upload";
-      }
-    }
-    window.customElements.define(H2ImageUpload.is, H2ImageUpload);
-  </script>
+            #copy-tip {
+                -webkit-user-select: initial;
+            }
+
+            .file-input-div {
+                width: 30px;
+                position: absolute;
+                bottom: 5px;
+                /*right: 0;*/
+                right: 5px;
+            }
+
+            .image-upload-tip {
+                display: inline-block;
+                line-height: 20px;
+            }
+
+            /**/
+            .ks-image-pane {
+                float: left;
+                position: relative
+            }
+
+            .ks-image-pane.dragging {
+                background: #c5ddff
+            }
+
+            .ks-image-pane .toolbar {
+                position: absolute;
+                background: rgba(79, 79, 79, 0.33);
+                bottom: 0;
+                height: 40px;
+                padding-top: 5px;
+                left: 0;
+            }
+
+            .ks-image-pasted-pane {
+                border: 1px dashed #ccc;;
+                text-align: center;
+                font-size: 12px;
+                background: #f0f0f0;
+            }
+
+            .ks-image-pasted-pane img {
+                max-width: 100%;
+                max-height: 100%
+            }
+
+            .btn-success {
+                color: #fff;
+                background-color: #5cb85c;
+                border-color: #4cae4c;
+            }
+
+            .btn-sm {
+                padding: 5px 10px;
+                font-size: 12px;
+                line-height: 1.5;
+                border-radius: 3px;
+            }
+
+            #ks-image-choose {
+                width: 30px;
+                font-size: 12px;
+                opacity: 0;
+                position: absolute;
+                left: 0;
+                bottom: 0px;
+            }
+        </style>
+        <div class="ks-image-upload-wrap clearfix">
+
+            <div class="ks-image-pane">
+                <div class="ks-image-pasted-pane" id="pasted-pane">
+                    <div id="copy-tip" style="height:100%;width:100%;">
+                        <span class="image-upload-tip">拖拽文件或者复制到这里</span>
+                    </div>
+                    <img class="result-img" id="result-img" src="[[src]]"/>
+                    <div class="toolbar" style="width:100%;">
+                        <template is="dom-if" if="{{__showChangeBtn(src,editable)}}">
+                            <button class="btn btn-success btn-sm" on-click="cancelImg">取消</button>
+                        </template>
+                        <template is="dom-if" if="{{__showViewBtn(src)}}">
+                            <button class="btn btn-success btn-sm" on-click="viewZoom">查看大图</button>
+                        </template>
+                        <paper-dialog id="dialog">
+                            <img src="[[src]]"/>
+                        </paper-dialog>
+                        <template is="dom-if" if="{{__showFloderIcon(src,editable)}}">
+                            <div class="file-input-div">
+                                <iron-icon icon="folder-open">
+                                </iron-icon>
+                                <input type="file" on-change="chooseFile" id="ks-image-choose" class="ks-image-choose">
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-image-upload`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-image-upload/index.html
+         */
+        class H2ImageUpload extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * 设置组件高度
+                     */
+                    imgHeight: {
+                        type: Number,
+                        value: 150,
+                        observer: '_setImageHeight'
+                    },
+                    /**
+                     * 设置组件宽度
+                     */
+                    imgWidth: {
+                        type: Number,
+                        value: 150,
+                        observer: '_setImageWidth'
+                    },
+                    /**
+                     * 指定组件src
+                     */
+                    src: {
+                        type: String,
+                        value: "",
+                        observer: '_changeSrc'
+                    },
+                    /**
+                     *
+                     */
+                    value: {
+                        type: Object,
+                        notify: true
+                    },
+                    /**
+                     * 是否可编辑模式：true->可编辑,false->不可编辑
+                     */
+                    editable: {
+                        type: Boolean,
+                        value: false,
+                        notify: true,
+                        reflectToAttribute: true,
+                    }
+                };
+
+
+            }
+
+            static get is() {
+                return "h2-image-upload";
+            }
+
+            static get observers() {
+                return [
+                    '__showCopyTip(editable,src)'
+                ]
+            }
+
+            chooseFile(e) {
+                let file = e.target.files[0];
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    this.changing = false;
+                    this.set("src", e.target.result)
+
+                }
+                reader.readAsDataURL(file);
+                this.value = file;
+
+            }
+
+
+            /**
+             * 编辑状态下，取消/删除 已有图片
+             * */
+            cancelImg() {
+                this.set("src", "");
+                this.set("value", undefined);
+            }
+
+            _setImageWidth(newValue, oldValue) {
+                if (newValue)
+                    this.$['pasted-pane'].style.width = newValue + "px";
+            }
+
+            _setImageHeight(newValue, oldValue) {
+                if (newValue) {
+
+                    this.$['pasted-pane'].style.height = newValue + "px";
+                    this.$['copy-tip'].style.lineHeight = newValue + "px";
+                }
+            }
+
+            _panelListener() {
+                let ele = this.$['pasted-pane']
+                ele.addEventListener("dragenter", (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (!this.editable) {
+                        return;
+                    }
+                }, false);
+
+                ele.addEventListener("dragleave", (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (!this.editable) {
+                        return;
+                    }
+                }, false);
+
+                ele.addEventListener('dragover', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (!this.editable) {
+                        return;
+                    }
+                }, false);
+                ele.addEventListener('drop', (event) => {
+                    if (!this.editable) {
+                        return;
+                    }
+                    this.handleDrop(event, ele);
+                }, false);
+
+                // 黏贴事件，处理图片
+                ele.addEventListener('paste', (event) => {
+                    if (!this.editable) {
+                        return;
+                    }
+                    this.pasteIntoTextArea(event, ele);
+
+                }, false);
+            }
+
+            //拖曳
+            handleDrop(e, ele) {
+                e.stopPropagation();
+                e.preventDefault();
+                let fileList = e.dataTransfer.files;//获取拖拽文件
+                let reader = new FileReader();
+                if (!fileList || fileList.length <= 0 || fileList[0].type.indexOf("image") == -1) {
+                    return;
+                }
+                reader.onload = (e) => {
+                    //this.$["result-img"].setAttribute("src", e.target.result);
+                    this.set("src", e.target.result)
+                    this.value = fileList[0]
+                    this.changing = false;
+                }
+                reader.readAsDataURL(fileList[0]);
+            }
+
+            _changeSrc(newValue, oldValue) {
+                if (newValue) {
+                    this.$["result-img"].setAttribute("src", newValue);
+                }
+            }
+
+
+            //粘贴
+            pasteIntoTextArea(event, ele) {
+                let clipboardData = event.clipboardData;
+                for (let i = 0; i < clipboardData.items.length; i++) {
+                    let item = clipboardData.items[i];
+                    if (item.kind == 'file' && item.type.match(/^image\//i)) {
+                        let blob = item.getAsFile();
+                        let reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.set("src", e.target.result)
+                        }
+                        reader.readAsDataURL(blob);
+                        this.value = blob;
+                        this.changing = false;
+                    }
+                }
+            }
+
+            /**
+             * 是否显示取消按钮
+             * @param src
+             * @param editable
+             * @private
+             */
+            __showChangeBtn(src, editable) {
+                return editable && src;
+            }
+
+            /**
+             * 是否显示查看大图按钮
+             * @param src
+             * @returns {boolean}
+             * @private
+             */
+            __showViewBtn(src) {
+                if (src) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * 是否显示文件图标
+             * @param src
+             * @private
+             */
+            __showFloderIcon(src, editable) {
+                return editable && !src;
+            }
+
+            __showCopyTip(editable, src) {
+                if (editable && !src) {
+                    this.$['copy-tip'].style.display = "";
+                } else {
+                    this.$['copy-tip'].style.display = "none";
+                }
+            }
+
+            /**
+             * 查看大图
+             */
+            viewZoom() {
+                if (this.src)
+                    this.$.dialog.open();
+            }
+
+            ready() {
+                super.ready();
+                this._panelListener();
+            }
+        }
+        window.customElements.define(H2ImageUpload.is, H2ImageUpload);
+    </script>
 </dom-module>

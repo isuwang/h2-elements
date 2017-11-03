@@ -26,7 +26,9 @@
     "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0",
     "paper-button": "PolymerElements/paper-button#^2.0.0",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1"
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1",
+    "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^2.1.0",
+    "paper-input": "PolymerElements/paper-input#^2.0.3"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
