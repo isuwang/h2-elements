@@ -220,7 +220,7 @@
                 <!--<span id="placeholder" class="placeholder">[[placeholder]]</span>-->
                 <span id="tag-content">
                     <template is="dom-repeat" items="[[selectedList]]">
-                        <span class="tag" style$="[[_getTagMaxWidth(width)]]">
+                        <span class="tag" style$="[[_getInputContainerMaxWidth(width)]]">
                             <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
                             <a class="tag-delete" style="float: right" data-args="[[_getItemValue(item)]]"
                                href="javascript:void(0);"
@@ -230,7 +230,7 @@
                 </span>
                 <iron-input slot="input" bind-value="{{searchKeyword}}" maxlength$="20">
                     <input id="keywordInput"
-                           style$="[[_getInputStyle(width)]]"
+                           style$="[[_getInputContainerMaxWidth(width)]]"
                            autocomplete="off">
                 </iron-input>
                 <!--<iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>-->
@@ -645,24 +645,13 @@
              * @param width
              * @returns {string}
              */
-            _getTagMaxWidth(width) {
+            _getInputContainerMaxWidth(width) {
                 if (!width) {
                     return "";
                 }
-                var _thisMaxWidth = Number(width.substr(0, width.indexOf("px"))) - 10;
+                let paddingBorderWidth = 10;
+                let _thisMaxWidth = Number(width.substr(0, width.indexOf("px"))) - paddingBorderWidth;
                 return "max-width:" + _thisMaxWidth + "px";
-            }
-
-            /**
-             * 获取Input 宽度
-             * @param width
-             * @private
-             */
-            _getInputStyle(width) {
-                let iconWidth = 24;
-                let paddingWidth = 16;
-                let _thisWidth = Number(this.width.substr(0, this.width.indexOf("px"))) - paddingWidth - iconWidth;
-                return "width:" + _thisWidth + "px";
             }
 
             _genHotKeyLabel(index) {
