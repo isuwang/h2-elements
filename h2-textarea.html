@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 
 <!--
 
@@ -9,30 +10,147 @@
 -->
 
 <dom-module id="h2-textarea">
-  <template>
-    <style>
+    <template>
+        <style include="o-base-form-style">
+            :host {
+                display: inline-block;
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-textarea`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-textarea/index.html
-     */
-    class H2Textarea extends Polymer.Element {
-      static get properties() {
-        return {
+            :host label {
+                line-height: 34px;
+            }
 
-        };
-      }
+            :host iron-autogrow-textarea {
+                flex-grow: 1;
+                width: 270px;
+                /*定义了最小宽度后，flex-grow属性才起效。否则当textarea内字符宽度超出textarea的宽度时会撑大textarea*/
+            }
 
-      static get is() {
-        return "h2-textarea";
-      }
-    }
-    window.customElements.define(H2Textarea.is, H2Textarea);
-  </script>
+            :host span.input-view {
+                text-align: left;
+                line-height: 34px;
+            }
+
+            #h-form-textarea-container {
+                text-align: left;
+            }
+        </style>
+        <div id="h-form-textarea-container">
+            <label class="label-size"><span>[[label]]</span>：</label>
+            <template is="dom-if" if="{{editable}}">
+                <iron-autogrow-textarea bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
+                                        required="[[required]]" placeholder="[[placeholder]]"></iron-autogrow-textarea>
+            </template>
+            <template is="dom-if" if="{{!editable}}">
+                <span class=" input-view">{{value}}</span>
+            </template>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-textarea`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-textarea/index.html
+         */
+        class H2Textarea extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * textarea 前面的标签名字
+                     *
+                     * @attribute label
+                     * @type {String}
+                     */
+                    label: {
+                        type: String,
+                        value: "",
+                        observer: '_labelChange'
+                    },
+                    /**
+                     * textarea 文本值
+                     * 双向绷定
+                     */
+                    value: {
+                        notify: true,
+                        type: String
+                    },
+                    /**
+                     * textarea 行数
+                     *
+                     * @attribute rows
+                     * @type number
+                     * @default 4
+                     */
+                    rows: {
+                        type: Number,
+                        value: 1
+                    },
+                    /**
+                     * textarea 最大行数
+                     *
+                     * @attribute maxRows
+                     * @type number
+                     * @default 4
+                     */
+                    maxRows: {
+                        type: Number,
+                        value: 1
+                    },
+                    /**
+                     * textarea 是否必填
+                     * 设置为true的话为必填
+                     */
+                    required: {
+                        type: Boolean
+                    }
+                    ,
+                    /**
+                     * 模式 常量：'Edit','View'
+                     */
+                    editable: {
+                        type: Boolean,
+                        value: true
+                    },
+                    /**
+                     * 提示符
+                     */
+                    placeholder: {
+                        type: String,
+                        value: ""
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-textarea";
+            }
+
+            /*__isEditable(editable) {
+             return editable;
+             }
+
+             __isViewMode(editable) {
+             return editable == 'View';
+             }*/
+
+            /**
+             * 监听标签名改变
+             * @param label 标签名
+             * @private
+             */
+            _labelChange(label) {
+                var labelElement = this.root.querySelector(".label-size");
+                if (labelElement) {
+                    if (!label) {
+                        labelElement.style.display = "none";
+                    } else {
+                        labelElement.style.display = "inline-block";
+                    }
+                }
+            }
+        }
+        window.customElements.define(H2Textarea.is, H2Textarea);
+    </script>
 </dom-module>
