@@ -154,7 +154,7 @@
             <iron-input bind-value="{{value}}" id="input" slot="input" allowed-pattern="[[allowedPattern]]"
                         maxlength$="[[maxlength]]">
                 <input id="innerInput"
-                       placeholder$="[[label]]"
+                       placeholder$="[[placeholder]]"
                        type$="[[type]]"
                        class$="[[clazz]]"
                        step$="any"
@@ -193,6 +193,13 @@
                      * @type {String}
                      */
                     label: {
+                        type: String
+                    },
+                    /**
+                     * 占位符
+                     * @type {String}
+                     */
+                    placeholder: {
                         type: String
                     },
                     /**

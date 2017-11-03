@@ -1,4 +1,9 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="h2-label.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<script type="text/javascript" src="../../resource/plugin/cachePick.js"></script>
 
 <!--
 
@@ -9,30 +14,690 @@
 -->
 
 <dom-module id="h2-picker">
-  <template>
-    <style>
+    <template>
+        <style>
+            :host {
+                text-align: center;
+                display: flex;
+            }
 
-    </style>
-  </template>
-  <script>
-    /**
-     * `h2-picker`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-picker/index.html
-     */
-    class H2Picker extends Polymer.Element {
-      static get properties() {
-        return {
+            :host * {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
 
-        };
-      }
+            :host input {
+                height: 24px;
+                line-height: 24px;
+                padding: 6px;
+                background-color: #fff;
+                border: none;
+                outline: medium;
+                /*width: 30px;*/
+            }
 
-      static get is() {
-        return "h2-picker";
-      }
-    }
-    window.customElements.define(H2Picker.is, H2Picker);
-  </script>
+            :host input::-moz-placeholder {
+                color: #999;
+                opacity: 1;
+            }
+
+            :host input:-ms-input-placeholder {
+                color: #999;
+            }
+
+            :host input::-webkit-input-placeholder {
+                color: #999;
+            }
+
+            :host div.input-warp {
+                display: inline-block;
+            }
+
+            :host div.input-box {
+                position: relative;
+            }
+
+            :host div.input-warp iron-input {
+                margin-left: 0;
+                float: left;
+            }
+
+            :host .module-box {
+                position: absolute;
+                border-radius: 4px;
+                font-size: 12px;
+                border-left: 1px solid #ddd;
+                border-top: 1px solid #ddd;
+                z-index: 9999;
+                padding: 5px 0 0 0;
+                background: white;
+                color: black;
+                /*下拉面板动画特效*/
+                height: 0px;
+                opacity: 0;
+                visibility: hidden;
+                -webkit-transition: all 100ms linear;
+                -moz-transition: all 100ms linear;
+                -ms-transition: all 100ms linear;
+                -o-transition: all 100ms linear;
+                transition: all 100ms linear;
+                @apply(--shadow-elevation-2dp);
+            }
+
+            /*显示下拉面板*/
+            :host .show {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            :host .module-list-wrap {
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            :host .module-list {
+                font-size: 12px;
+                background-color: #ffffff;
+            }
+
+            :host .module-list th.complete {
+                padding: 8px 12px;
+                line-height: 1.42857143;
+                color: #000;
+                border-bottom: 2px solid #ddd;
+            }
+
+            :host .module-list tr.complete:nth-child(even) {
+                background-color: #efefef;
+            }
+
+            :host .module-list td.complete {
+                padding: 8px 12px;
+                line-height: 1.42857143;
+                border-bottom: 1px solid #ddd;
+            }
+
+            :host .module-list tr.complete:hover td {
+                background-color: #CAF1FF;
+                cursor: pointer;
+            }
+
+            :host .module-list th.complete:first-child,
+            :host .module-list td.complete:first-child {
+                padding-left: 20px;
+            }
+
+            :host .module-list th.complete:last-child,
+            :host .module-list td.complete:last-child {
+                padding-right: 20px;
+            }
+
+            /*标签容器*/
+            :host div.tags-input {
+                overflow: hidden;
+                -moz-border-radius: 4px;
+                -webkit-border-radius: 4px;
+                border: 1px solid #CCC;
+                background: #FFF;
+                padding: 4px;
+                height: auto;
+                min-height: 34px;
+                min-width:170px;
+            }
+
+            :host .tags-input:focus {
+                border-color: #66afe9;
+                outline: 0;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            }
+
+            /*标签*/
+            :host div.tags-input span.tag {
+                -moz-border-radius: 2px;
+                -webkit-border-radius: 2px;
+                display: inline-block;
+                float: left;
+                padding: 0px 5px;
+                text-decoration: none;
+                margin-right: 5px;
+                margin-bottom: 2px;
+                margin-top: 0px;
+                font-family: helvetica;
+                font-size: 13px;
+                line-height: 20px;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                color: #666;
+                white-space: normal;
+            }
+
+            :host div.tags-input span.tag span.tag-name {
+                font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
+            }
+
+            /*标签关闭按钮*/
+            :host div.tags-input span.tag a {
+                margin-left: 5px;
+                font-weight: bold;
+                color: #0273D4;
+                text-decoration: none;
+                font-size: 11px;
+            }
+
+            :host div.tags-input span.tag a:hover {
+                color: #f60;
+                font-size: 13px;
+            }
+
+            :host .shade {
+                display: none;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 34px;
+                background-color: black;
+                z-index: 99;
+                opacity: .00;
+                border-radius: 4px;
+            }
+
+            :host .float-r {
+                float: right;
+            }
+
+            /* 占位符样式 */
+            :host .placeholder {
+                opacity: 0.5;
+                font-size: 14px;
+            }
+        </style>
+        <h2-label value="[[label]]"></h2-label>
+        <div class="input-warp">
+            <div class="input-box tags-input" style$="{{_getTagsBoxWidth(width)}}">
+                <!--<span id="placeholder" class="placeholder">[[placeholder]]</span>-->
+                <span id="tag-content">
+                    <template is="dom-repeat" items="[[selectedList]]">
+                        <span class="tag" style$="[[_getTagMaxWidth(width)]]">
+                            <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
+                            <a class="tag-delete" style="float: right" data-args="[[_getItemValue(item)]]"
+                               href="javascript:void(0);"
+                               title="删除选项" on-click="_deleteTag">x</a>
+                        </span>
+                    </template>
+                </span>
+                <iron-input slot="input" bind-value="{{searchKeyword}}" maxlength$="20">
+                    <input id="keywordInput"
+                           style$="[[_getInputStyle(width)]]"
+                           autocomplete="off">
+                </iron-input>
+                <!--<iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>-->
+                <div class="shade"></div>
+            </div>
+            <div class="module-box" id="dropdown">
+                <div class="module-list-wrap">
+                    <table class="module-list" cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <thead>
+                        <template is="dom-repeat" items="[[columnInfo]]">
+                            <th class="complete">[[item.label]]</th>
+                        </template>
+                        <!--此处用一个dom-if是为了和其他th一起初始化，避免换行显示的问题-->
+                        <template is="dom-if" if="true">
+                            <th class="complete">快捷键</th>
+                        </template>
+                        </thead>
+                        <tbody>
+                        <template is="dom-repeat" items="[[entityList]]" as="row">
+                            <tr class="complete" id="[[index]]" on-click="_onDropdownClick">
+                                <template is="dom-repeat" items="[[columnInfo]]" as="col">
+                                    <td class="complete">[[_getCellValue(row,col)]]</td>
+                                </template>
+                                <td class="complete">[[_genHotKeyLabel(index)]]</td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `h2-picker`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-picker/index.html
+         */
+        class H2Picker extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * 拼音搜索插件
+                     */
+                    cachePick: {
+                        type: Object,
+                        value: function () {
+                            return window.ks.cachePick.newInstance();
+                        }
+                    },
+                    /**
+                     * 标签
+                     */
+                    label: {
+                        type: String
+                    },
+                    /**
+                     * 标签盒子宽度
+                     */
+                    width: {
+                        type: String,
+                    },
+                    /**
+                     * 组件初始数据集
+                     */
+                    items: {
+                        type: Array,
+                        observer: '_itemsChange'
+                    },
+                    /**
+                     * 下拉面板当前展示的数据集
+                     */
+                    entityList: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    /**
+                     * 输入框占位符
+                     */
+                    placeholder: {
+                        type: String
+                    },
+                    /**
+                     * 模糊搜索关键字
+                     */
+                    searchKeyword: {
+                        type: String,
+                        observer: "searchKeywordChange",
+                        notify: true
+                    },
+                    /**
+                     * 下拉面板中展示的字段，默认为[{field: 'label', label: '选项'}]
+                     */
+                    columnInfo: {
+                        type: Array,
+                        readyOnly: true,
+                        value: [{field: 'label', label: '选项'}]
+                    },
+                    /**
+                     * 模糊搜索的字段字符串数组，默认为["label"]
+                     */
+                    searchFields: {
+                        type: Array,
+                        value: function () {
+                            return ["label"];
+                        }
+                    },
+                    /**
+                     * 已选数据项标签展示字段,默认为"label"
+                     */
+                    attrForTag: {
+                        type: String,
+                        value: "label"
+                    },
+                    /**
+                     * 取值字段,默认为"value"
+                     */
+                    attrForValue: {
+                        type: String,
+                        value: "value"
+                    },
+                    /**
+                     * 被选中的数据项
+                     */
+                    selectedItem: {
+                        type: Object,
+                        notify: true
+                    },
+                    /**
+                     * 被选中的数据项集合
+                     */
+                    selectedList: {
+                        type: Array,
+                        notify: true,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    /**
+                     *
+                     * 初始选择项和items的value值相对应
+                     * eg：1
+                     *
+                     * @attribute selected
+                     * @type {String}
+                     */
+                    value: {
+                        type: String,
+                        reflectToAttribute: true,
+                        notify: true
+                    },
+                    /**
+                     * 是否只读
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * 是否支持多选
+                     */
+                    multi: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * 下拉面板当前选项焦点
+                     */
+                    focusIndex: {
+                        type: Number
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-picker";
+            }
+
+            static get observers() {
+                return [
+                    '_valueChange(value,items)'
+                ]
+            }
+
+
+            connectedCallback() {
+                super.connectedCallback();
+                /**
+                 * focus事件用来控制下拉面板打开；
+                 * keydown事件用来控制快捷键选中；
+                 * blur事件用来控制下拉面板关闭
+                 */
+                let input = this.root.querySelector('#keywordInput');
+                input.addEventListener("keydown", e => {
+                    this._keyDownHandler(e);
+                });
+                this.root.querySelector('div.input-box').addEventListener("click", e => {
+                    this._showDropdown(e);
+                });
+                this.addEventListener("blur", e => {
+                    e.stopPropagation();
+                    this._hideDropdown(e);
+                });
+            }
+
+            _itemsChange(newVal) {
+                if (!this.items) return;
+                this.set('entityList', this.items.slice(0, 9));
+                this.cachePick.resetCache();
+                this.items.forEach(function (entity) {
+                    this.cachePick.setCache(entity.tags, entity.label, JSON.stringify(entity));
+                }.bind(this));
+            }
+
+            searchKeywordChange(newVal) {
+                var snapshot = [];
+                if (!!newVal) {
+                    var searchResult = this.cachePick.search(this.searchKeyword);
+                    if (searchResult) {
+                        searchResult.forEach(function (sr) {
+                            snapshot.push(JSON.parse(sr.content));
+                        });
+                    }
+                } else {
+                    snapshot = this.items;
+                }
+                this.set('entityList', snapshot.slice(0, 9));
+            }
+
+            /**
+             * value,items属性变化监听函数
+             */
+            _valueChange(value, items) {
+                //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
+                if (value == null || value === "") {
+                    this.set("selectedList", []);
+                    return;
+                }
+
+                if (items && items.length > 0) {
+                    /*this._hidePlaceholder();*/
+
+                    value += "";
+                    let selectedList = [];
+                    value.toString().split(",").forEach(val => {
+                        let matchItem = this._getItemByValue(val, items);
+                        if (matchItem != null) {
+                            selectedList.push(matchItem);
+                        }
+                    });
+                    this.set("selectedList", selectedList);
+                }
+            }
+
+            /**
+             * 输入框键盘按键事件
+             * @param event
+             * @private
+             */
+            _keyDownHandler(event) {
+                if (event.altKey) {
+                    event.preventDefault();
+                }
+
+                var key;
+                if (document.all) {
+                    key = event.keyCode;
+                } else {
+                    key = event.which;
+                }
+                if (event.ctrlKey == 1 && key == 86) {// 其他按键，不处理
+                    return;
+                }
+
+                if (key == 38 || key == 40 || key == 32 || event.altKey) {
+                    event.stopPropagation();
+                }
+
+                if (key == 38) {// 按键UP
+                    this._switchFocusItemAt(this.focusIndex - 1);
+                } else if (key == 40) {// 按键DOWN
+                    this._switchFocusItemAt(this.focusIndex + 1);
+                } else if (key == 32 || key == 13) {// 空格、回车
+                    event.preventDefault();
+                    if (this.entityList.length > 0 && this.focusIndex < this.entityList.length) {
+                        this.selectItemAt();
+                    }
+                } else if (event.altKey) {
+                    var ind = String.fromCharCode(key) - 1;
+                    if (ind >= 0 && ind < this.entityList.length) {
+                        this.selectItemAt(ind);
+                    }
+                }
+            }
+
+            selectItemAt(index) {
+                if (index >= 0) {
+                    this._switchFocusItemAt(index);
+                }
+                this.selectItem(this.entityList[this.focusIndex]);
+            }
+
+            selectItem(item) {
+                /**
+                 * 1.当value没值时，直接赋值
+                 * 2.当该选项被选过时,直接赋值
+                 */
+                let value = this.value;
+                if (value == undefined) {
+                    this.set('selectedItem', item);
+                    this.set('value', item[this.attrForValue]);
+                } else if (value.toString().split(',').every(value => value != item[this.attrForValue])) {
+                    this.set('selectedItem', item);
+                    this.set('value', this.value + "," + item[this.attrForValue]);
+                }
+                this.searchKeyword = "";
+                this._hideDropdown();
+            }
+
+            /**
+             * 切换焦点到第n个元素，从0开始
+             * @param index
+             * @private
+             */
+            _switchFocusItemAt(index) {
+                var maxIndex = this.entityList.length;
+                var newIndex = (maxIndex + index) % maxIndex;
+                this.root.querySelectorAll("tr.complete").forEach(e => e.style.backgroundColor = "");
+                var newFocusItem = this.root.querySelector("tr[id='" + newIndex + "']");
+                if (newFocusItem != null) {
+                    newFocusItem.style.backgroundColor = "#CAF1FF";
+                    this.focusIndex = newIndex;
+                }
+            }
+
+            /**
+             * 隐藏下拉面板
+             */
+            _hideDropdown() {
+                /*this.$['caret'].icon = 'icons:arrow-drop-down';*/
+                // 延迟100ms，为了让点击事件先触发
+                setTimeout(
+                    () => {
+                        let dropdown = this.$['dropdown'];
+                        dropdown.className = dropdown.className.replace(/ show/g, "");
+                    }, 100
+                );
+            }
+
+            /**
+             * 显示下拉面板
+             */
+            _showDropdown(e) {
+                e.stopPropagation();
+                /*this._hidePlaceholder();*/
+                /*this.$['caret'].icon = 'icons:arrow-drop-up';*/
+
+                // 显示下拉面板
+                let dropdown = this.$['dropdown'];
+                dropdown.className += " show";
+                // 每次打开默认选中第一条选项
+                this._switchFocusItemAt(0);
+            }
+
+            /**
+             * 隐藏占位符
+             */
+            _hidePlaceholder() {
+                this.$['placeholder'].style.display = 'none';
+            }
+
+            /**
+             * 下拉面板点击事件
+             * @param event
+             * @private
+             */
+            _onDropdownClick(event) {
+                event.stopPropagation();
+                this.selectItem(event.model.row);
+            }
+
+            /**
+             * 删除Tag项，事件处理函数
+             */
+            _deleteTag(e) {
+                if (!this.readonly) {
+                    let tagValue = e.target.dataArgs;
+                    let regExp = new RegExp(tagValue + ",", "g");
+                    let valueStr = this.value + ",";
+                    let newValue = valueStr.replace(regExp, "");
+                    this.value = newValue.substr(0, newValue.length - 1);
+                }
+            }
+
+            /**
+             * 获取标签盒子宽度
+             * @param width
+             * @returns {string}
+             * @private
+             */
+            _getTagsBoxWidth(width) {
+                width = width || "170px";
+                return "min-width:" + width;
+            }
+
+            /**
+             * 获取标签的最大宽度
+             * @param width
+             * @returns {string}
+             */
+            _getTagMaxWidth(width) {
+                if (!width) {
+                    return "";
+                }
+                var _thisMaxWidth = Number(width.substr(0, width.indexOf("px"))) - 10;
+                return "max-width:" + _thisMaxWidth + "px";
+            }
+
+            /**
+             * 获取Input 宽度
+             * @param width
+             * @private
+             */
+            _getInputStyle(width) {
+                let iconWidth = 24;
+                let paddingWidth = 16;
+                let _thisWidth = Number(this.width.substr(0, this.width.indexOf("px"))) - paddingWidth - iconWidth;
+                return "width:" + _thisWidth + "px";
+            }
+
+            _genHotKeyLabel(index) {
+                return 'Alt+' + (index + 1);
+            }
+
+            _getTag(item) {
+                return item[this.attrForTag];
+            }
+
+            _getItemValue(item) {
+                return item[this.attrForValue];
+            }
+
+            /**
+             * 根据item值获取item
+             */
+            _getItemByValue(value, items) {
+                if (!value) return null;
+                let matchItems = items.filter(item => {
+                    return this._getItemValue(item) == value;
+                });
+                return matchItems[0];
+            }
+
+            /**
+             * 获取列值
+             * @param row 数据行
+             * @param col 数据列属性
+             * @private
+             */
+            _getCellValue(row, col) {
+                return row[col.field];
+            }
+        }
+        window.customElements.define(H2Picker.is, H2Picker);
+    </script>
 </dom-module>

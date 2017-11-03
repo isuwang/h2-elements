@@ -1,39 +1,80 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-picker demo</title>
+    <title>h2-picker demo</title>
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-picker.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../h2-picker.html">
 
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      .centered {
-        min-width: 800px;
-      }
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
 
-      demo-snippet {
-        --demo-snippet-code: {
-          max-height: 500px;
-        }
-      }
-    </style>
-  </custom-style>
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+        </style>
+    </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-picker demo</h3>
-  <demo-snippet>
-    <template>
-      <h2-picker></h2-picker>
-    </template>
-  </demo-snippet>
+    <h3>Basic h2-picker demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-picker id="picker" label="产品" width="170px" style="width:250px"></h2-picker>
+            <script>
+                picker.attrForValue = "id";
+                picker.columnInfo = [{field: 'label', label: '选项'},{field: 'id', label: 'ID'}];
+                picker.items = [{"id": 500079, "label": "放荡不羁", "tags": ["fdbj", "fdfj"]}, {
+                    "id": 500095,
+                    "label": "鄱阳湖小龙虾",
+                    "tags": ["pyhxlx", "pyhxlh"]
+                }, {"id": 500104, "label": "印度阿三来测试网站", "tags": ["ydeslcswz", "ydaslcswz"]}, {
+                    "id": 1000001,
+                    "label": "一拳超人网站公司",
+                    "tags": ["yqcrwzgs"]
+                }, {"id": 1000002, "label": "变态辣小龙虾", "tags": ["btlxlx", "btlxlh"]}, {
+                    "id": 1000012,
+                    "label": "丘比龙",
+                    "tags": ["qbl"]
+                }, {"id": 1000015, "label": "快乐塑料", "tags": ["kysl", "klsl"]}, {
+                    "id": 1000016,
+                    "label": "卫龙小辣条",
+                    "tags": ["wlxlt"]
+                }, {"id": 1000017, "label": "宁波神雕电子商务有限公司", "tags": ["nbsddzswyyxgs", "npsddzswyyxgs"]}, {
+                    "id": 1000023,
+                    "label": "花花的花花",
+                    "tags": ["hhdhh"]
+                }, {"id": 1000027, "label": "包子手工蓝莓小饼干", "tags": ["bzsglmxbgg"]}, {
+                    "id": 1000028,
+                    "label": "嘻嘻嘻",
+                    "tags": ["xxx"]
+                }, {"id": 1000033, "label": "恒大集团", "tags": ["hdjt"]}, {
+                    "id": 1000034,
+                    "label": "大图测试",
+                    "tags": ["dtcs"]
+                }, {"id": 1000035, "label": "凤凰花开的路口", "tags": ["fhhkdlk"]}, {
+                    "id": 1000036,
+                    "label": "测试升级11",
+                    "tags": ["cssj11"]
+                }, {"id": 1000037, "label": "测试升级12", "tags": ["cssj12"]}, {
+                    "id": 1000038,
+                    "label": "浔阳楼酒糟鱼",
+                    "tags": ["xyljzy"]
+                }, {"id": 1000042, "label": "嚯嚯嚯", "tags": ["hhh"]}];
+            </script>
+        </template>
+    </demo-snippet>
 </div>
 </body>
 </html>
