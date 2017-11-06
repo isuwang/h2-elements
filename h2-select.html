@@ -223,7 +223,7 @@
             <iron-collapse class="dropdown-menu" id="input-collapse" style$="[[_getTagsBoxWidth(width)]]">
                 <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
                                selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
-                    <template is="dom-repeat" items="[[selectItems]]">
+                    <template is="dom-repeat" items="[[items]]">
                         <span class="btn-row item" radio-item="[[item]]">[[_getLabel(item)]]</span>
                     </template>
                 </iron-selector>
@@ -273,7 +273,7 @@
                     },
                     /**
                      *
-                     * 初始选择项和selectItems的value值相对应
+                     * 初始选择项和items的value值相对应
                      * eg：1
                      *
                      * @attribute selected
@@ -289,10 +289,10 @@
                      * 需要展示的数据项
                      * eg：[{value:1,label:"全部",isShow:true/false}]
                      *
-                     * @attribute selectItems
+                     * @attribute items
                      * @type {Array}
                      */
-                    selectItems: {
+                    items: {
                         type: Array,
                         notify: true,
                         value: []
@@ -349,7 +349,7 @@
                 return [
                     '_selectedChange(selected)',
                     '_selectedListChange(selectedList.splices)',
-                    '_valueChange(value,selectItems)'
+                    '_valueChange(value,items)'
                 ];
             }
 
@@ -388,9 +388,9 @@
             /**
              * 根据item值获取item
              */
-            _getItemByValue(value, selectItems) {
+            _getItemByValue(value, items) {
                 if (!value) return null;
-                let matchItems = selectItems.filter(item => {
+                let matchItems = items.filter(item => {
                     return this._getValue(item) == value;
                 });
                 return matchItems[0];
@@ -410,9 +410,9 @@
             }
 
             /**
-             * value,selectItems属性变化监听函数
+             * value,items属性变化监听函数
              */
-            _valueChange(value, selectItems) {
+            _valueChange(value, items) {
                 //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
                 if (value == null || value === "") {
                     this.set("selectedList", []);
@@ -420,18 +420,18 @@
                     return;
                 }
 
-                if (selectItems && selectItems.length > 0) {
+                if (items && items.length > 0) {
                     this.$['placeHolder'].style.display = 'none';
                     value += "";
-                    let items = [];
+                    let selectedList = [];
                     value.split(",").forEach(val => {
-                        let matchItem = this._getItemByValue(val, selectItems);
+                        let matchItem = this._getItemByValue(val, items);
                         if (matchItem != null) {
-                            items.push(matchItem);
+                            selectedList.push(matchItem);
                         }
                     });
-                    this.set("selectedList", items);
-                    this.multi ? "" : this.set("selected", items[0]);
+                    this.set("selectedList", selectedList);
+                    this.multi ? "" : this.set("selected", selectedList[0]);
                 }
             }
 
