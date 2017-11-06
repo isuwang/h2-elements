@@ -28,7 +28,7 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>基础 h2-picker demo</h3>
+    <h3>基础demo</h3>
     <demo-snippet>
         <template>
             <h2-picker id="picker" label="公司"></h2-picker>
@@ -37,73 +37,97 @@
                  * 整个demo页面共用这份数据
                  */
                 const attrForValue = "id";
-                const attrForTag = "label";
+                const attrForLabel = "label";
                 const columnInfo = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
                 const items = [
-                    {"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "sl"]},
-                    {"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "ds"]},
-                    {"id": 3, "label": "腾讯", "business": "游戏", "tags": ["tx", "yx"]},
-                    {"id": 4, "label": "京东", "business": "电商", "tags": ["jd", "ds"]}
+                    {"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "kuaisuwang"]},
+                    {"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "alibaba"]},
+                    {"id": 3, "label": "腾讯", "business": "游戏", "tags": ["tx", "tengxun"]},
+                    {"id": 4, "label": "京东", "business": "电商", "tags": ["jd", "jingdong"]}
                 ];
-
                 picker.attrForValue = attrForValue;
-                picker.attrForTag = attrForTag;
+                picker.attrForLabel = attrForLabel;
                 picker.columnInfo = columnInfo;
                 picker.items = items;
             </script>
         </template>
     </demo-snippet>
 
-    <h3>单选、多选 h2-picker demo</h3>
+    <h3>支持单选、多选</h3>
     <demo-snippet>
         <template>
-            <h2-picker id="picker1" label="公司" style="width:250px" value="1"></h2-picker>
-            <h2-picker id="picker2" label="公司" style="width:250px" multi value="1,2,3,4"></h2-picker>
+            <h2-picker id="picker1" label="单选框" style="width:250px" value="1"></h2-picker>
+            <h2-picker id="picker2" label="多选框" style="width:250px" multi value="1,2,3,4"></h2-picker>
             <script>
                 picker1.attrForValue = attrForValue;
-                picker1.attrForTag = attrForTag;
+                picker1.attrForLabel = attrForLabel;
                 picker1.columnInfo = columnInfo;
                 picker1.items = items;
                 picker2.attrForValue = attrForValue;
-                picker2.attrForTag = attrForTag;
+                picker2.attrForLabel = attrForLabel;
                 picker2.columnInfo = columnInfo;
                 picker2.items = items;
             </script>
         </template>
     </demo-snippet>
 
-    <h3>只读 h2-picker demo</h3>
+    <h3>支持只读、必填属性</h3>
     <demo-snippet>
         <template>
             <h2-picker id="picker3" label="公司" value="1,2,3" multi readonly style="width:250px"></h2-picker>
+            <h2-picker id="picker4" label="公司" value="1,2,3" multi required style="width:250px"></h2-picker>
             <script>
                 picker3.attrForValue = attrForValue;
-                picker3.attrForTag = attrForTag;
+                picker3.attrForLabel = attrForLabel;
                 picker3.columnInfo = columnInfo;
                 picker3.items = items;
+                picker4.attrForValue = attrForValue;
+                picker4.attrForLabel = attrForLabel;
+                picker4.columnInfo = columnInfo;
+                picker4.items = items;
             </script>
         </template>
     </demo-snippet>
 
-    <h3>宽度 h2-picker demo</h3>
+    <h3>支持输入框宽度属性，自定义组件宽度</h3>
     <demo-snippet>
         <template>
-            <h2-picker id="picker4" label="公司" multi></h2-picker>
-            <h2-picker id="picker5" label="公司" multi width="200px"></h2-picker>
-            <h2-picker id="picker6" label="公司" multi style="width:250px"></h2-picker>
+            <h2-picker id="picker5" label="原始宽度" multi></h2-picker>
+            <h2-picker id="picker6" label="输入框宽度" multi width="200px"></h2-picker>
+            <h2-picker id="picker7" label="组件宽度" multi style="width:250px"></h2-picker>
             <script>
-                picker4.attrForValue = attrForValue;
-                picker4.attrForTag = attrForTag;
-                picker4.columnInfo = columnInfo;
-                picker4.items = items;
                 picker5.attrForValue = attrForValue;
-                picker5.attrForTag = attrForTag;
+                picker5.attrForLabel = attrForLabel;
                 picker5.columnInfo = columnInfo;
                 picker5.items = items;
                 picker6.attrForValue = attrForValue;
-                picker6.attrForTag = attrForTag;
+                picker6.attrForLabel = attrForLabel;
                 picker6.columnInfo = columnInfo;
                 picker6.items = items;
+                picker7.attrForValue = attrForValue;
+                picker7.attrForLabel = attrForLabel;
+                picker7.columnInfo = columnInfo;
+                picker7.items = items;
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>支持自定义模糊搜索的字段（默认为对所有字段做搜索缓存）</h3>
+    <demo-snippet>
+        <template>
+            <h2-picker id="picker8" label="默认" style="width:250px"></h2-picker>
+            <h2-picker id="picker9" label="自定义只搜索label字段" style="width:400px"></h2-picker>
+            <script>
+                picker8.attrForValue = attrForValue;
+                picker8.attrForLabel = attrForLabel;
+                picker8.columnInfo = columnInfo;
+                picker8.items = items;
+
+                picker9.attrForValue = attrForValue;
+                picker9.attrForLabel = attrForLabel;
+                picker9.columnInfo = columnInfo;
+                picker9.searchFields = ["label"];
+                picker9.items = items;
             </script>
         </template>
     </demo-snippet>

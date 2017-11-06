@@ -198,7 +198,7 @@
                 font-size: 14px;
             }
         </style>
-        <h2-label value="[[label]]"></h2-label>
+        <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <div class="btn-group select-warp">
             <div class="tags-input tags-box" style$="[[_getTagsBoxWidth(width)]]" on-click="_onInputClick">
                 <span id="placeHolder" class="placeholder">[[placeholder]]</span>
@@ -213,7 +213,6 @@
                 </span>
                 <iron-input bind-value="{{keyword}}" id="input" slot="input" maxlength$="[[maxlength]]">
                     <input id="tags-input"
-                           disabled$="[[disabled]]"
                            on-keydown="_updatePressed"
                            autocomplete$="off">
                 </iron-input>
@@ -316,10 +315,19 @@
                         notify: true,
                         observer: '_keywordChange'
                     },
-                    disabled: {
+                    /**
+                     * 是否必填
+                     */
+                    required: {
                         type: Boolean,
-                        value: false,
-                        notify: true
+                        value: false
+                    },
+                    /**
+                     * 是否只读
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: false
                     },
                     maxlength: {
                         type: Number
