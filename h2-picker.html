@@ -506,9 +506,9 @@
 
                 if (items && items.length > 0) {
                     /*this._hidePlaceholder();*/
-                    let values = (value+"").split(",");
+                    let values = (value + "").split(",");
                     //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
-                    let selectedList=items.filter(e=>values.some(s=>e[this.attrForValue]==s));
+                    let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
                     this.set("selectedList", selectedList);
                 }
             }
@@ -711,6 +711,7 @@
                 return row[col.field];
             }
         }
+
         window.customElements.define(H2Picker.is, H2Picker);
     </script>
 </dom-module>
