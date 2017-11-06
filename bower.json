@@ -21,7 +21,7 @@
     "url": "git://github.com/isuwang/h2-elements.git"
   },
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0",
+    "polymer": "^2.2.0",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
     "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.1.0",
