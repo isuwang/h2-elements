@@ -213,7 +213,7 @@
                 font-size: 14px;
             }
         </style>
-        <h2-label value="[[label]]"></h2-label>
+        <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <div class="input-wrap">
             <div class="input-container">
                 <div class="tags-input" style$="{{_getTagsBoxWidth(width)}}">
@@ -250,7 +250,7 @@
                         </template>
                         </thead>
                         <tbody>
-                        <template is="dom-repeat" items="[[entityList]]" as="row">
+                        <template is="dom-repeat" items="[[selectItems]]" as="row">
                             <tr class="complete" id="[[index]]" on-click="_onDropdownClick">
                                 <template is="dom-repeat" items="[[columnInfo]]" as="col">
                                     <td class="complete">[[_getCellValue(row,col)]]</td>
@@ -276,12 +276,12 @@
             static get properties() {
                 return {
                     /**
-                     * 拼音搜索插件
+                     * 缓存搜索插件
                      */
                     cachePick: {
                         type: Object,
                         value: function () {
-                            return window.ks.cachePick.newInstance();
+                            return new CachePick();
                         }
                     },
                     /**
@@ -299,7 +299,7 @@
                     },
                     /**
                      * 组件初始数据集（tags字段是拼音搜索的字符串数组）
-                     * 如：[{"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "sl"]},{"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "ds"]}]
+                     * 如：[{"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "kuaisuwang"]},{"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "alibaba"]}]
                      */
                     items: {
                         type: Array,
@@ -385,6 +385,13 @@
                         value: false
                     },
                     /**
+                     * 是否必填
+                     */
+                    required: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
                      * 是否支持多选
                      */
                     multi: {
@@ -395,7 +402,15 @@
                      * 下拉面板当前选项焦点
                      */
                     focusIndex: {
-                        type: Number
+                        type: Number,
+                        value: 0
+                    },
+                    /**
+                     * 下拉面板是否打开状态
+                     */
+                    opened: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -437,15 +452,13 @@
              * 是否只读，是则显示遮罩层，否则不显示
              */
             _readonlyChange(readonly) {
-                !!readonly ? this.root.querySelector('.shade').style.display = 'block'
-                    : this.root.querySelector('.shade').style.display = 'none';
+                let shade = this.root.querySelector('.shade');
+                !!readonly ? shade.style.display = 'block' : shade.style.display = 'none';
             }
 
             _itemsChange(items) {
                 if (!items) return;
-                this.cachePick.resetCache();
                 this.set('selectItems', items.slice(0, 9));
-
                 /**
                  * 当searchFields无值的时候，默认对所有字段做缓存
                  */
@@ -461,25 +474,24 @@
                     item => this.searchFields.reduce((obj, searchField) => {
                         obj[searchField] = item[searchField];
                         return obj;
-                    }, {})
+                    }, {tags: item.tags || [], [this.attrForValue]: item[this.attrForValue]})
                 ).forEach(item =>
                     this.cachePick.setCache(item.tags, item[this.attrForLabel], JSON.stringify(item))
                 );
             }
 
-            _searchKeywordChange(newVal) {
-                var snapshot = [];
-                if (!!newVal) {
-                    var searchResult = this.cachePick.search(this.searchKeyword);
+            _searchKeywordChange(searchKeyword) {
+                let selectItems = [];
+                if (!!searchKeyword) {
+                    let searchResult = this.cachePick.search(this.searchKeyword);
                     if (searchResult) {
-                        searchResult.forEach(function (sr) {
-                            snapshot.push(JSON.parse(sr.content));
-                        });
+                        let resultItems = searchResult.map(s => JSON.parse(s.content));
+                        selectItems = this.items.filter(item => resultItems.some(o => o[this.attrForValue] === item[this.attrForValue]));
                     }
                 } else {
-                    snapshot = this.items;
+                    selectItems = this.items;
                 }
-                this.set('selectItems', snapshot.slice(0, 9));
+                this.set('selectItems', selectItems.slice(0, 9));
             }
 
             /**
@@ -513,11 +525,18 @@
              * @private
              */
             _keyDownHandler(event) {
+                /**
+                 * 面板关闭的时候不允许选择数据
+                 */
+                if (!this.opened) {
+                    return;
+                }
+
                 if (event.altKey) {
                     event.preventDefault();
                 }
 
-                var key;
+                let key;
                 if (document.all) {
                     key = event.keyCode;
                 } else {
@@ -541,7 +560,7 @@
                         this.selectItemAt();
                     }
                 } else if (event.altKey) {
-                    var ind = String.fromCharCode(key) - 1;
+                    let ind = String.fromCharCode(key) - 1;
                     if (ind >= 0 && ind < this.selectItems.length) {
                         this.selectItemAt(ind);
                     }
@@ -581,10 +600,10 @@
              * @private
              */
             _switchFocusItemAt(index) {
-                var maxIndex = this.selectItems.length;
-                var newIndex = (maxIndex + index) % maxIndex;
+                let maxIndex = this.selectItems.length;
+                let newIndex = (maxIndex + index) % maxIndex;
                 this.root.querySelectorAll("tr.complete").forEach(e => e.style.backgroundColor = "");
-                var newFocusItem = this.root.querySelector("tr[id='" + newIndex + "']");
+                let newFocusItem = this.root.querySelector("tr[id='" + newIndex + "']");
                 if (newFocusItem != null) {
                     newFocusItem.style.backgroundColor = "#CAF1FF";
                     this.focusIndex = newIndex;
@@ -601,6 +620,7 @@
                     () => {
                         let dropdown = this.$['dropdown'];
                         dropdown.className = dropdown.className.replace(/ show/g, "");
+                        this.opened = false;
                     }, 100
                 );
             }
@@ -616,6 +636,7 @@
                 // 显示下拉面板
                 let dropdown = this.$['dropdown'];
                 dropdown.className += " show";
+                this.opened = true;
                 // 每次打开默认选中第一条选项
                 this._switchFocusItemAt(0);
             }

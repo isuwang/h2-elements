@@ -19,9 +19,18 @@
                 font-size: 14px;
                 height: 34px;
             }
+
+            :host .color-red {
+                color: rgb(255, 100, 100);
+            }
         </style>
         <template is="dom-if" if="[[value]]">
-            <label><span>[[value]]</span>：</label>
+            <label><span>[[value]]</span>
+                <template is="dom-if" if="[[required]]">
+                    <span class="color-red">*</span>
+                </template>
+                ：
+            </label>
         </template>
     </template>
     <script>
@@ -37,6 +46,10 @@
                 return {
                     value: {
                         type: String
+                    },
+                    required: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
