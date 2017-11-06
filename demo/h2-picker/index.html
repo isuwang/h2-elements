@@ -28,50 +28,82 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic h2-picker demo</h3>
+    <h3>基础 h2-picker demo</h3>
     <demo-snippet>
         <template>
-            <h2-picker id="picker" label="产品" width="170px" style="width:250px"></h2-picker>
+            <h2-picker id="picker" label="公司"></h2-picker>
             <script>
-                picker.attrForValue = "id";
-                picker.columnInfo = [{field: 'label', label: '选项'},{field: 'id', label: 'ID'}];
-                picker.items = [{"id": 500079, "label": "放荡不羁", "tags": ["fdbj", "fdfj"]}, {
-                    "id": 500095,
-                    "label": "鄱阳湖小龙虾",
-                    "tags": ["pyhxlx", "pyhxlh"]
-                }, {"id": 500104, "label": "印度阿三来测试网站", "tags": ["ydeslcswz", "ydaslcswz"]}, {
-                    "id": 1000001,
-                    "label": "一拳超人网站公司",
-                    "tags": ["yqcrwzgs"]
-                }, {"id": 1000002, "label": "变态辣小龙虾", "tags": ["btlxlx", "btlxlh"]}, {
-                    "id": 1000012,
-                    "label": "丘比龙",
-                    "tags": ["qbl"]
-                }, {"id": 1000015, "label": "快乐塑料", "tags": ["kysl", "klsl"]}, {
-                    "id": 1000016,
-                    "label": "卫龙小辣条",
-                    "tags": ["wlxlt"]
-                }, {"id": 1000017, "label": "宁波神雕电子商务有限公司", "tags": ["nbsddzswyyxgs", "npsddzswyyxgs"]}, {
-                    "id": 1000023,
-                    "label": "花花的花花",
-                    "tags": ["hhdhh"]
-                }, {"id": 1000027, "label": "包子手工蓝莓小饼干", "tags": ["bzsglmxbgg"]}, {
-                    "id": 1000028,
-                    "label": "嘻嘻嘻",
-                    "tags": ["xxx"]
-                }, {"id": 1000033, "label": "恒大集团", "tags": ["hdjt"]}, {
-                    "id": 1000034,
-                    "label": "大图测试",
-                    "tags": ["dtcs"]
-                }, {"id": 1000035, "label": "凤凰花开的路口", "tags": ["fhhkdlk"]}, {
-                    "id": 1000036,
-                    "label": "测试升级11",
-                    "tags": ["cssj11"]
-                }, {"id": 1000037, "label": "测试升级12", "tags": ["cssj12"]}, {
-                    "id": 1000038,
-                    "label": "浔阳楼酒糟鱼",
-                    "tags": ["xyljzy"]
-                }, {"id": 1000042, "label": "嚯嚯嚯", "tags": ["hhh"]}];
+                /**
+                 * 整个demo页面共用这份数据
+                 */
+                const attrForValue = "id";
+                const attrForTag = "label";
+                const columnInfo = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+                const items = [
+                    {"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "sl"]},
+                    {"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "ds"]},
+                    {"id": 3, "label": "腾讯", "business": "游戏", "tags": ["tx", "yx"]},
+                    {"id": 4, "label": "京东", "business": "电商", "tags": ["jd", "ds"]}
+                ];
+
+                picker.attrForValue = attrForValue;
+                picker.attrForTag = attrForTag;
+                picker.columnInfo = columnInfo;
+                picker.items = items;
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>单选、多选 h2-picker demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-picker id="picker1" label="公司" style="width:250px" value="1"></h2-picker>
+            <h2-picker id="picker2" label="公司" style="width:250px" multi value="1,2,3,4"></h2-picker>
+            <script>
+                picker1.attrForValue = attrForValue;
+                picker1.attrForTag = attrForTag;
+                picker1.columnInfo = columnInfo;
+                picker1.items = items;
+                picker2.attrForValue = attrForValue;
+                picker2.attrForTag = attrForTag;
+                picker2.columnInfo = columnInfo;
+                picker2.items = items;
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>只读 h2-picker demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-picker id="picker3" label="公司" value="1,2,3" multi readonly style="width:250px"></h2-picker>
+            <script>
+                picker3.attrForValue = attrForValue;
+                picker3.attrForTag = attrForTag;
+                picker3.columnInfo = columnInfo;
+                picker3.items = items;
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>宽度 h2-picker demo</h3>
+    <demo-snippet>
+        <template>
+            <h2-picker id="picker4" label="公司" multi></h2-picker>
+            <h2-picker id="picker5" label="公司" multi width="200px"></h2-picker>
+            <h2-picker id="picker6" label="公司" multi style="width:250px"></h2-picker>
+            <script>
+                picker4.attrForValue = attrForValue;
+                picker4.attrForTag = attrForTag;
+                picker4.columnInfo = columnInfo;
+                picker4.items = items;
+                picker5.attrForValue = attrForValue;
+                picker5.attrForTag = attrForTag;
+                picker5.columnInfo = columnInfo;
+                picker5.items = items;
+                picker6.attrForValue = attrForValue;
+                picker6.attrForTag = attrForTag;
+                picker6.columnInfo = columnInfo;
+                picker6.items = items;
             </script>
         </template>
     </demo-snippet>

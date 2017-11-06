@@ -34,7 +34,6 @@
                 background-color: #fff;
                 border: none;
                 outline: medium;
-                /*width: 30px;*/
             }
 
             :host input::-moz-placeholder {
@@ -50,15 +49,15 @@
                 color: #999;
             }
 
-            :host div.input-warp {
+            :host div.input-wrap {
                 display: inline-block;
             }
 
-            :host div.input-box {
+            :host div.input-container {
                 position: relative;
             }
 
-            :host div.input-warp iron-input {
+            :host iron-input {
                 margin-left: 0;
                 float: left;
             }
@@ -143,7 +142,7 @@
                 padding: 4px;
                 height: auto;
                 min-height: 34px;
-                min-width:170px;
+                min-width: 170px;
             }
 
             :host .tags-input:focus {
@@ -197,7 +196,7 @@
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 34px;
+                height: 100%;
                 background-color: black;
                 z-index: 99;
                 opacity: .00;
@@ -215,10 +214,11 @@
             }
         </style>
         <h2-label value="[[label]]"></h2-label>
-        <div class="input-warp">
-            <div class="input-box tags-input" style$="{{_getTagsBoxWidth(width)}}">
-                <!--<span id="placeholder" class="placeholder">[[placeholder]]</span>-->
-                <span id="tag-content">
+        <div class="input-wrap">
+            <div class="input-container">
+                <div class="tags-input" style$="{{_getTagsBoxWidth(width)}}">
+                    <!--<span id="placeholder" class="placeholder">[[placeholder]]</span>-->
+                    <span id="tag-content">
                     <template is="dom-repeat" items="[[selectedList]]">
                         <span class="tag" style$="[[_getInputContainerMaxWidth(width)]]">
                             <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
@@ -228,12 +228,13 @@
                         </span>
                     </template>
                 </span>
-                <iron-input slot="input" bind-value="{{searchKeyword}}" maxlength$="20">
-                    <input id="keywordInput"
-                           style$="[[_getInputContainerMaxWidth(width)]]"
-                           autocomplete="off">
-                </iron-input>
-                <!--<iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>-->
+                    <iron-input slot="input" bind-value="{{searchKeyword}}" maxlength$="20">
+                        <input id="keywordInput"
+                               style$="[[_getInputContainerMaxWidth(width)]]"
+                               autocomplete="off">
+                    </iron-input>
+                    <!--<iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>-->
+                </div>
                 <div class="shade"></div>
             </div>
             <div class="module-box" id="dropdown">
@@ -294,9 +295,11 @@
                      */
                     width: {
                         type: String,
+                        value: "170px"
                     },
                     /**
-                     * 组件初始数据集
+                     * 组件初始数据集（tags字段是拼音搜索的字符串数组）
+                     * 如：[{"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "sl"]},{"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "ds"]}]
                      */
                     items: {
                         type: Array,
@@ -322,30 +325,27 @@
                      */
                     searchKeyword: {
                         type: String,
-                        observer: "searchKeywordChange",
+                        observer: "_searchKeywordChange",
                         notify: true
                     },
                     /**
-                     * 下拉面板中展示的字段，默认为[{field: 'label', label: '选项'}]
+                     * 模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
+                     */
+                    searchFields: {
+                        type: Array
+                    },
+                    /**
+                     * 下拉面板中展示的字段，默认为[{"field": "label", "label": "选项"}]
                      */
                     columnInfo: {
                         type: Array,
                         readyOnly: true,
-                        value: [{field: 'label', label: '选项'}]
-                    },
-                    /**
-                     * 模糊搜索的字段字符串数组，默认为["label"]
-                     */
-                    searchFields: {
-                        type: Array,
-                        value: function () {
-                            return ["label"];
-                        }
+                        value: [{"field": "label", "label": "选项"}]
                     },
                     /**
                      * 已选数据项标签展示字段,默认为"label"
                      */
-                    attrForTag: {
+                    attrForLabel: {
                         type: String,
                         value: "label"
                     },
@@ -355,13 +355,6 @@
                     attrForValue: {
                         type: String,
                         value: "value"
-                    },
-                    /**
-                     * 被选中的数据项
-                     */
-                    selectedItem: {
-                        type: Object,
-                        notify: true
                     },
                     /**
                      * 被选中的数据项集合
@@ -376,9 +369,8 @@
                     /**
                      *
                      * 初始选择项和items的value值相对应
-                     * eg：1
                      *
-                     * @attribute selected
+                     * @attribute value
                      * @type {String}
                      */
                     value: {
@@ -415,7 +407,9 @@
 
             static get observers() {
                 return [
-                    '_valueChange(value,items)'
+                    '_valueChange(value,items)',
+                    '_readonlyChange(readonly)',
+
                 ]
             }
 
@@ -431,7 +425,7 @@
                 input.addEventListener("keydown", e => {
                     this._keyDownHandler(e);
                 });
-                this.root.querySelector('div.input-box').addEventListener("click", e => {
+                this.root.querySelector('div.tags-input').addEventListener("click", e => {
                     this._showDropdown(e);
                 });
                 this.addEventListener("blur", e => {
@@ -440,16 +434,41 @@
                 });
             }
 
-            _itemsChange(newVal) {
-                if (!this.items) return;
-                this.set('entityList', this.items.slice(0, 9));
-                this.cachePick.resetCache();
-                this.items.forEach(function (entity) {
-                    this.cachePick.setCache(entity.tags, entity.label, JSON.stringify(entity));
-                }.bind(this));
+            /**
+             * 是否只读，是则显示遮罩层，否则不显示
+             */
+            _readonlyChange(readonly) {
+                !!readonly ? this.root.querySelector('.shade').style.display = 'block'
+                    : this.root.querySelector('.shade').style.display = 'none';
             }
 
-            searchKeywordChange(newVal) {
+            _itemsChange(items) {
+                if (!items) return;
+                this.set('entityList', items.slice(0, 9));
+                this.cachePick.resetCache();
+
+                /**
+                 * 当searchFields无值的时候，默认对所有字段做缓存
+                 */
+                if (this.searchFields == null || this.searchFields.length === 0) {
+                    items.forEach(item => this.cachePick.setCache(item.tags, item[this.attrForLabel], JSON.stringify(item)));
+                    return;
+                }
+
+                /**
+                 * 当searchFields有值的时候，只对searchFields中的字段做缓存
+                 */
+                items.map(
+                    item => this.searchFields.reduce((obj, searchField) => {
+                        obj[searchField] = item[searchField];
+                        return obj;
+                    }, {})
+                ).forEach(item =>
+                    this.cachePick.setCache(item.tags, item[this.attrForLabel], JSON.stringify(item))
+                );
+            }
+
+            _searchKeywordChange(newVal) {
                 var snapshot = [];
                 if (!!newVal) {
                     var searchResult = this.cachePick.search(this.searchKeyword);
@@ -537,17 +556,20 @@
                 this.selectItem(this.entityList[this.focusIndex]);
             }
 
+            /**
+             * 选择选项
+             * @param item
+             */
             selectItem(item) {
                 /**
                  * 1.当value没值时，直接赋值
-                 * 2.当该选项被选过时,直接赋值
+                 * 2.当multi=false（单选）时，直接赋值
+                 * 3.当该选项没被选中时,直接赋值
                  */
                 let value = this.value;
-                if (value == undefined) {
-                    this.set('selectedItem', item);
+                if (value == undefined || !this.multi) {
                     this.set('value', item[this.attrForValue]);
                 } else if (value.toString().split(',').every(value => value != item[this.attrForValue])) {
-                    this.set('selectedItem', item);
                     this.set('value', this.value + "," + item[this.attrForValue]);
                 }
                 this.searchKeyword = "";
@@ -620,13 +642,11 @@
              * 删除Tag项，事件处理函数
              */
             _deleteTag(e) {
-                if (!this.readonly) {
-                    let tagValue = e.target.dataArgs;
-                    let regExp = new RegExp(tagValue + ",", "g");
-                    let valueStr = this.value + ",";
-                    let newValue = valueStr.replace(regExp, "");
-                    this.value = newValue.substr(0, newValue.length - 1);
-                }
+                let tagValue = e.target.dataArgs;
+                let regExp = new RegExp(tagValue + ",", "g");
+                let valueStr = this.value + ",";
+                let newValue = valueStr.replace(regExp, "");
+                this.value = newValue.substr(0, newValue.length - 1);
             }
 
             /**
@@ -659,7 +679,7 @@
             }
 
             _getTag(item) {
-                return item[this.attrForTag];
+                return item[this.attrForLabel];
             }
 
             _getItemValue(item) {
