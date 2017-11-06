@@ -129,7 +129,7 @@
                      */
                     message: {
                         type: String,
-                        value: 'hello',
+                        value: '',
                     },
                     /**
                      * 提示框的类型，有alert、success、error、confirm、prompt可选，默认为alert
@@ -248,11 +248,17 @@
                 this.addEventListener("confirm-handler", (e) => {
                     this.okFn && this.okFn(e);
                     this.close();
+                    this.dispatchEvent(new CustomEvent("option-done", {
+                        bubbles: true, composed: true
+                    }));
                 });
                 this.addEventListener("cancel-handler", (e) => {
                     this.noFn && this.noFn(e);
                     this.close();
-                }, {once: true});
+                    this.dispatchEvent(new CustomEvent("option-done", {
+                        bubbles: true, composed: true
+                    }));
+                });
             }
         }
         window.customElements.define(H2Tip.is, H2Tip);
