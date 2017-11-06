@@ -32,10 +32,10 @@
     <demo-snippet>
         <template>
             <h2-radio id="radio" label="性别"></h2-radio>
+            <script>
+              radio.items = [{value: 1, label: "男"}, {value: 2, label: "女"}]
+            </script>
         </template>
-        <script>
-            radio.items = [{value: 1, label: "男"}, {value: 2, label: "女"}]
-        </script>
     </demo-snippet>
 </div>
 <div class="vertical-section-container centered">
@@ -43,10 +43,10 @@
     <demo-snippet>
         <template>
             <h2-radio id="radio2"  attr-for-value="id" attr-for-label="name"></h2-radio>
+            <script>
+              radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
+            </script>
         </template>
-        <script>
-            radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
-        </script>
     </demo-snippet>
 </div>
 </body>
