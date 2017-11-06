@@ -1,99 +1,100 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-fetch demo</title>
+  <title>h2-fetch demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-fetch.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-fetch.html">
 
-    <script type="text/javascript" src="../../utils/mock_setup.js"></script>
+  <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
-    <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-        .centered {
-          min-width: 800px;
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
+
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
         }
+      }
+    </style>
+  </custom-style>
+</head>
+<body>
+<div class="vertical-section-container centered">
+  <h3>Basic h2-fetch demo</h3>
+  <demo-snippet>
+    <template>
+      <h2-fetch id="fetchDemo" handle-response-as="json" response-body="{{responseBody}}"></h2-fetch>
+    </template>
+    <script>
+      fetchDemo.request = {
+        url: "/path/to/index.do",
+        method: "POST",
+        headers: {
+          "content-type": "application/json;charset=utf-8",
+          "Cache-Control": "no-cache"
+        }
+      };
 
-        demo-snippet {
-          --demo-snippet-code: {
-            max-height: 500px;
+    </script>
+    </template>
+  </demo-snippet>
+  <h3>Basic h2-fetch demo</h3>
+  <demo-snippet>
+
+    <template>
+      <h2-fetch id="fetchDemo1" handle-response-as="json"></h2-fetch>
+      <script>
+        fetchDemo1.request = {
+          url: "/path/to/index.do",
+          method: "POST",
+          headers: {
+            "Cache-Control": "no-cache"
           }
-        }
-      </style>
-    </custom-style>
-  </head>
-  <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic h2-fetch demo</h3>
-      <demo-snippet>
+        };
+      </script>
+    </template>
+  </demo-snippet>
 
-        <template>
-          <h2-fetch id="fetchDemo" handle-response-as="json"></h2-fetch>
-          <script>
-            fetchDemo.request = {
-              url: "/path/to/index.do",
-              method:"POST",
-              headers: {
-                "content-type":"application/json;charset=utf-8",
-                "Cache-Control": "no-cache"
-              }
-            };
-          </script>
-        </template>
-      </demo-snippet>
-      <h3>Basic h2-fetch demo</h3>
-      <demo-snippet>
+  <h3>Basic h2-fetch demo</h3>
+  <demo-snippet>
 
-        <template>
-          <h2-fetch id="fetchDemo1" handle-response-as="json"></h2-fetch>
-          <script>
-            fetchDemo1.request = {
-              url: "/path/to/index.do",
-              method:"POST",
-              headers: {
-                "Cache-Control": "no-cache"
-              }
-            };
-          </script>
-        </template>
-      </demo-snippet>
+    <template>
+      <h2-fetch id="fetchDemo2" handle-response-as="text"></h2-fetch>
+      <script>
+        fetchDemo2.request = {
+          url: "/path/to/index.do",
+          method: "POST",
+          headers: {
+            "test-header": "no-value"
+          }
+        };
+      </script>
+    </template>
+  </demo-snippet>
 
-      <h3>Basic h2-fetch demo</h3>
-      <demo-snippet>
+  <h3>Basic h2-fetch demo</h3>
+  <demo-snippet>
 
-        <template>
-          <h2-fetch id="fetchDemo2" handle-response-as="text"></h2-fetch>
-          <script>
-            fetchDemo2.request = {
-              url: "/path/to/index.do",
-              method:"POST",
-              headers: {
-                "test-header": "no-value"
-              }
-            };
-          </script>
-        </template>
-      </demo-snippet>
-
-      <h3>Basic h2-fetch demo</h3>
-      <demo-snippet>
-
-        <template>
-          <h2-fetch id="fetchDemo3" handle-response-as="text"></h2-fetch>
-          <script>
-            fetchDemo3.request = {
-              url: "/path/to/helloworld.do",
-              method:"get",
-            };
-          </script>
-        </template>
-      </demo-snippet>
-    </div>
-  </body>
+    <template>
+      <h2-fetch id="fetchDemo3" handle-response-as="text"></h2-fetch>
+      <script>
+        fetchDemo3.request = {
+          url: "/path/to/helloworld.do",
+          method: "get",
+        };
+      </script>
+    </template>
+  </demo-snippet>
+</div>
+</body>
 </html>
