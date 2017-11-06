@@ -306,9 +306,9 @@
                         observer: '_itemsChange'
                     },
                     /**
-                     * 下拉面板当前展示的数据集
+                     * 下拉面板当前展示的数据集（默认显示items的前10条）
                      */
-                    entityList: {
+                    selectItems: {
                         type: Array,
                         value: function () {
                             return [];
@@ -325,8 +325,7 @@
                      */
                     searchKeyword: {
                         type: String,
-                        observer: "_searchKeywordChange",
-                        notify: true
+                        observer: "_searchKeywordChange"
                     },
                     /**
                      * 模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
@@ -444,8 +443,8 @@
 
             _itemsChange(items) {
                 if (!items) return;
-                this.set('entityList', items.slice(0, 9));
                 this.cachePick.resetCache();
+                this.set('selectItems', items.slice(0, 9));
 
                 /**
                  * 当searchFields无值的时候，默认对所有字段做缓存
@@ -480,7 +479,7 @@
                 } else {
                     snapshot = this.items;
                 }
-                this.set('entityList', snapshot.slice(0, 9));
+                this.set('selectItems', snapshot.slice(0, 9));
             }
 
             /**
@@ -538,12 +537,12 @@
                     this._switchFocusItemAt(this.focusIndex + 1);
                 } else if (key == 32 || key == 13) {// 空格、回车
                     event.preventDefault();
-                    if (this.entityList.length > 0 && this.focusIndex < this.entityList.length) {
+                    if (this.selectItems.length > 0 && this.focusIndex < this.selectItems.length) {
                         this.selectItemAt();
                     }
                 } else if (event.altKey) {
                     var ind = String.fromCharCode(key) - 1;
-                    if (ind >= 0 && ind < this.entityList.length) {
+                    if (ind >= 0 && ind < this.selectItems.length) {
                         this.selectItemAt(ind);
                     }
                 }
@@ -553,7 +552,7 @@
                 if (index >= 0) {
                     this._switchFocusItemAt(index);
                 }
-                this.selectItem(this.entityList[this.focusIndex]);
+                this.selectItem(this.selectItems[this.focusIndex]);
             }
 
             /**
@@ -582,7 +581,7 @@
              * @private
              */
             _switchFocusItemAt(index) {
-                var maxIndex = this.entityList.length;
+                var maxIndex = this.selectItems.length;
                 var newIndex = (maxIndex + index) % maxIndex;
                 this.root.querySelectorAll("tr.complete").forEach(e => e.style.backgroundColor = "");
                 var newFocusItem = this.root.querySelector("tr[id='" + newIndex + "']");
