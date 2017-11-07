@@ -101,8 +101,8 @@
             :host .shade {
                 display: none;
                 position: absolute;
-                top: 0%;
-                left: 0%;
+                top: 0px;
+                left: 0px;
                 width: 100%;
                 height: 100%;
                 background-color: black;
@@ -357,6 +357,7 @@
                 return [
                     '_selectedChange(selected)',
                     '_selectedListChange(selectedList.splices)',
+                    '_readonlyChange(readonly)',
                     '_valueChange(value,items)'
                 ];
             }
@@ -373,6 +374,14 @@
                 if (!!newKey && newKey.length > 0) {
                     this.$['tags-input'].style.width = this._getStrWidth(newKey);
                 }
+            }
+
+            /**
+             * 是否只读，是则显示遮罩层，否则不显示
+             */
+            _readonlyChange(readonly) {
+                let shade = this.root.querySelector('.shade');
+                !!readonly ? shade.style.display = 'block' : shade.style.display = 'none';
             }
 
             /**
@@ -393,16 +402,6 @@
                 this._collapseToggle('close');
             }
 
-            /**
-             * 根据item值获取item
-             */
-            _getItemByValue(value, items) {
-                if (!value) return null;
-                let matchItems = items.filter(item => {
-                    return this._getValue(item) == value;
-                });
-                return matchItems[0];
-            }
             /**
              * 获取展示字段名
              */
@@ -430,14 +429,8 @@
 
                 if (items && items.length > 0) {
                     this.$['placeHolder'].style.display = 'none';
-                    value += "";
-                    let selectedList = [];
-                    value.split(",").forEach(val => {
-                        let matchItem = this._getItemByValue(val, items);
-                        if (matchItem != null) {
-                            selectedList.push(matchItem);
-                        }
-                    });
+                    let values = (value+"").split(",");
+                    let selectedList=items.filter(e=>values.some(s=>e[this.attrForValue]==s));
                     this.set("selectedList", selectedList);
                     this.multi ? "" : this.set("selected", selectedList[0]);
                 }

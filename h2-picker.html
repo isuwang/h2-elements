@@ -193,8 +193,8 @@
             :host .shade {
                 display: none;
                 position: absolute;
-                top: 0;
-                left: 0;
+                top: 0px;
+                left: 0px;
                 width: 100%;
                 height: 100%;
                 background-color: black;
@@ -244,7 +244,7 @@
                         <template is="dom-repeat" items="[[columnInfo]]">
                             <th class="complete">[[item.label]]</th>
                         </template>
-                        <!--此处用一个dom-if是为了和其他th一起初始化，避免换行显示的问题-->
+                        <!--此处用一个dom-if是为了和其他th一起初始化，避免提前加载换行显示的问题-->
                         <template is="dom-if" if="true">
                             <th class="complete">快捷键</th>
                         </template>
@@ -255,7 +255,7 @@
                                 <template is="dom-repeat" items="[[columnInfo]]" as="col">
                                     <td class="complete">[[_getCellValue(row,col)]]</td>
                                 </template>
-                                <td class="complete">[[_genHotKeyLabel(index)]]</td>
+                                <td class="complete">[[_getHotKey(index)]]</td>
                             </tr>
                         </template>
                         </tbody>
@@ -422,7 +422,7 @@
             static get observers() {
                 return [
                     '_valueChange(value,items)',
-                    '_readonlyChange(readonly)',
+                    '_readonlyChange(readonly)'
 
                 ]
             }
@@ -483,7 +483,7 @@
             _searchKeywordChange(searchKeyword) {
                 let selectItems = [];
                 if (!!searchKeyword) {
-                    let searchResult = this.cachePick.search(this.searchKeyword);
+                    let searchResult = this.cachePick.search(searchKeyword);
                     if (searchResult) {
                         let resultItems = searchResult.map(s => JSON.parse(s.content));
                         selectItems = this.items.filter(item => resultItems.some(o => o[this.attrForValue] === item[this.attrForValue]));
@@ -506,15 +506,9 @@
 
                 if (items && items.length > 0) {
                     /*this._hidePlaceholder();*/
-
-                    value += "";
-                    let selectedList = [];
-                    value.toString().split(",").forEach(val => {
-                        let matchItem = this._getItemByValue(val, items);
-                        if (matchItem != null) {
-                            selectedList.push(matchItem);
-                        }
-                    });
+                    let values = (value + "").split(",");
+                    //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
+                    let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
                     this.set("selectedList", selectedList);
                 }
             }
@@ -542,7 +536,7 @@
                 } else {
                     key = event.which;
                 }
-                if (event.ctrlKey == 1 && key == 86) {// 其他按键，不处理
+                if (event.ctrlKey == 1 && key == 86) {// 复制操作，不处理
                     return;
                 }
 
@@ -666,6 +660,7 @@
                 let regExp = new RegExp(tagValue + ",", "g");
                 let valueStr = this.value + ",";
                 let newValue = valueStr.replace(regExp, "");
+                // 去掉最后的逗号
                 this.value = newValue.substr(0, newValue.length - 1);
             }
 
@@ -694,7 +689,7 @@
                 return "max-width:" + _thisMaxWidth + "px";
             }
 
-            _genHotKeyLabel(index) {
+            _getHotKey(index) {
                 return 'Alt+' + (index + 1);
             }
 
@@ -707,17 +702,6 @@
             }
 
             /**
-             * 根据item值获取item
-             */
-            _getItemByValue(value, items) {
-                if (!value) return null;
-                let matchItems = items.filter(item => {
-                    return this._getItemValue(item) == value;
-                });
-                return matchItems[0];
-            }
-
-            /**
              * 获取列值
              * @param row 数据行
              * @param col 数据列属性
@@ -727,6 +711,7 @@
                 return row[col.field];
             }
         }
+
         window.customElements.define(H2Picker.is, H2Picker);
     </script>
 </dom-module>
