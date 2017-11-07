@@ -6,13 +6,19 @@
 
   <title>h2-fetch demo</title>
 
+  <script>
+    if(!window.location.href.endsWith("?mock=mockData.js")) {
+      window.location.href = window.location.href + "?mock=mockData.js";
+    }
+  </script>
+
+  <script type="text/javascript" src="../../utils/mock_setup.js"></script>
+
   <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
   <link rel="import" href="../../h2-fetch.html">
-
-  <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">

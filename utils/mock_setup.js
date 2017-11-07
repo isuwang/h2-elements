@@ -57,7 +57,7 @@
   
     window.MockDataPool = MockDataPool;
     // load init data
-    document.write(`<script type="text/javascript" src="${mockDataSrc}"></script>`)
+    document.write(`<script type="module" src="${mockDataSrc}"></script>`);
   }
   
 })(window);
