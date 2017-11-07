@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
   <title>h2-fetch demo</title>
 
@@ -16,9 +17,9 @@
 
   <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
+  <link rel="import" href="../../h2-fetch.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-fetch.html">
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -39,25 +40,29 @@
   <h3>Basic h2-fetch demo</h3>
   <demo-snippet>
     <template>
+      <div id="responseDiv"></div>
       <h2-fetch id="fetchDemo" handle-response-as="json" response-body="{{responseBody}}"></h2-fetch>
+      <script>
+        fetchDemo.request = {
+          url: "/path/to/index.do",
+          method: "POST",
+          headers: {
+            "content-type": "application/json;charset=utf-8",
+            "Cache-Control": "no-cache"
+          }
+        };
+        fetchDemo.addEventListener("response-body-changed", (e) => {
+          responseDiv.innerHTML = JSON.stringify(e.detail.value);
+        });
+      </script>
     </template>
-    <script>
-      fetchDemo.request = {
-        url: "/path/to/index.do",
-        method: "POST",
-        headers: {
-          "content-type": "application/json;charset=utf-8",
-          "Cache-Control": "no-cache"
-        }
-      };
-
-    </script>
     </template>
   </demo-snippet>
   <h3>Basic h2-fetch demo</h3>
   <demo-snippet>
 
     <template>
+      <div id="responseDiv1"></div>
       <h2-fetch id="fetchDemo1" handle-response-as="json"></h2-fetch>
       <script>
         fetchDemo1.request = {
@@ -67,6 +72,9 @@
             "Cache-Control": "no-cache"
           }
         };
+        fetchDemo1.addEventListener("response-body-changed", (e) => {
+          responseDiv1.innerHTML = JSON.stringify(e.detail.value);
+        });
       </script>
     </template>
   </demo-snippet>
@@ -75,6 +83,7 @@
   <demo-snippet>
 
     <template>
+      <div id="responseDiv2"></div>
       <h2-fetch id="fetchDemo2" handle-response-as="text"></h2-fetch>
       <script>
         fetchDemo2.request = {
@@ -84,6 +93,9 @@
             "test-header": "no-value"
           }
         };
+        fetchDemo2.addEventListener("response-body-changed", (e) => {
+          responseDiv2.innerHTML = JSON.stringify(e.detail.value);
+        });
       </script>
     </template>
   </demo-snippet>
@@ -92,12 +104,21 @@
   <demo-snippet>
 
     <template>
+      <div id="responseDiv3"></div>
+      <div id="responseDiv3_1"></div>
       <h2-fetch id="fetchDemo3" handle-response-as="text"></h2-fetch>
       <script>
         fetchDemo3.request = {
           url: "/path/to/helloworld.do",
           method: "get",
         };
+        fetchDemo3.addEventListener("response-body-changed", (e) => {
+          responseDiv3_1.innerHTML = JSON.stringify(e.detail.value);
+        });
+        fetchDemo3.addEventListener("response-changed", (e) => {
+          const {type, status, statusText} = e.detail.value;
+          responseDiv3.innerHTML = `${type} ${status} ${statusText}`;
+        });
       </script>
     </template>
   </demo-snippet>

@@ -1,7 +1,7 @@
 (function (global) {
   
   const mockSearchParam = window.location.search.replace("?", "").split("&").map(part => part.split("="))
-    .reduce((tmp, part) => Object.assign(tmp, {[part[0]]: part[1]}), {});
+    .reduce((tmp, [key, value]) => Object.assign(tmp, {[key]: value}), {});
   
   const mockDataSrc = mockSearchParam["mock"];
   
@@ -58,6 +58,7 @@
     window.MockDataPool = MockDataPool;
     // load init data
     document.write(`<script type="module" src="${mockDataSrc}"></script>`);
+    document.close();
   }
   
 })(window);
