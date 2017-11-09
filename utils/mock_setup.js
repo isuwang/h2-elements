@@ -26,12 +26,14 @@
           const headersArr = [];
         
           // make sure headers is an instance of Headers
-          if (Headers.prototype.isPrototypeOf(headers)) {
-            for (let h of headers.entries()) {
-              headersArr.push(h);
-            }
+          if (!Headers.prototype.isPrototypeOf(headers)) {
+            headers = new Headers(headers);
           }
-        
+  
+          for (let h of headers.entries()) {
+            headersArr.push(h);
+          }
+          
           const hash = calHash(method, url, headersArr);
           return mockDatas[hash] && mockDatas[hash].response || null;
         },
