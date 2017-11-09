@@ -18,6 +18,7 @@
         <style>
             :host {
                 display: flex;
+                align-items: center;
                 text-align: left;
                 position: relative;
             }
@@ -397,7 +398,7 @@
                 this._collapseToggle();
             }
 
-            _closeCollapse(e){
+            _closeCollapse(e) {
                 e.stopPropagation();
                 this._collapseToggle('close');
             }
@@ -429,8 +430,8 @@
 
                 if (items && items.length > 0) {
                     this.$['placeHolder'].style.display = 'none';
-                    let values = (value+"").split(",");
-                    let selectedList=items.filter(e=>values.some(s=>e[this.attrForValue]==s));
+                    let values = (value + "").split(",");
+                    let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
                     this.set("selectedList", selectedList);
                     this.multi ? "" : this.set("selected", selectedList[0]);
                 }

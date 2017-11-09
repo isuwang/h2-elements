@@ -3,7 +3,10 @@
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<script type="text/javascript" src="../../resource/plugin/cachePick.js"></script>
+<script type="text/javascript" src="../../resource/plugin/dictionary/firstLetterDictionary.js"></script>
+<script type="text/javascript" src="../../resource/plugin/dictionary/commonDictionary.js"></script>
+<script type="text/javascript" src="../../resource/plugin/pinyinUtil.js"></script>
+<script type="text/javascript" src="../../resource/plugin/cacheSearchUtil.js"></script>
 
 <!--
 
@@ -19,6 +22,7 @@
             :host {
                 text-align: center;
                 display: flex;
+                align-items: center;
             }
 
             :host * {
@@ -228,7 +232,7 @@
                         </span>
                     </template>
                 </span>
-                    <iron-input slot="input" bind-value="{{searchKeyword}}" maxlength$="20">
+                    <iron-input slot="input" bind-value="{{userInputKeyword}}" maxlength$="20">
                         <input id="keywordInput"
                                style$="[[_getInputContainerMaxWidth(width)]]"
                                autocomplete="off">
@@ -241,7 +245,7 @@
                 <div class="module-list-wrap">
                     <table class="module-list" cellspacing="0" cellpadding="0" border="0" width="100%">
                         <thead>
-                        <template is="dom-repeat" items="[[columnInfo]]">
+                        <template is="dom-repeat" items="[[displayFields]]">
                             <th class="complete">[[item.label]]</th>
                         </template>
                         <!--此处用一个dom-if是为了和其他th一起初始化，避免提前加载换行显示的问题-->
@@ -250,9 +254,9 @@
                         </template>
                         </thead>
                         <tbody>
-                        <template is="dom-repeat" items="[[selectItems]]" as="row">
+                        <template is="dom-repeat" items="[[displayItems]]" as="row">
                             <tr class="complete" id="[[index]]" on-click="_onDropdownClick">
-                                <template is="dom-repeat" items="[[columnInfo]]" as="col">
+                                <template is="dom-repeat" items="[[displayFields]]" as="col">
                                     <td class="complete">[[_getCellValue(row,col)]]</td>
                                 </template>
                                 <td class="complete">[[_getHotKey(index)]]</td>
@@ -276,12 +280,23 @@
             static get properties() {
                 return {
                     /**
+                     * 中文转拼音插件
+                     */
+                    pinyinUtil: {
+                        type: Object,
+                        readOnly: true,
+                        value: function () {
+                            return new PinyinUtil();
+                        }
+                    },
+                    /**
                      * 缓存搜索插件
                      */
-                    cachePick: {
+                    cacheSearchUtil: {
                         type: Object,
+                        readOnly: true,
                         value: function () {
-                            return new CachePick();
+                            return new CacheSearchUtil();
                         }
                     },
                     /**
@@ -298,8 +313,8 @@
                         value: "170px"
                     },
                     /**
-                     * 组件初始数据集（tags字段是拼音搜索的字符串数组）
-                     * 如：[{"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "kuaisuwang"]},{"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "alibaba"]}]
+                     * 组件初始数据集
+                     * 如：
                      */
                     items: {
                         type: Array,
@@ -308,7 +323,7 @@
                     /**
                      * 下拉面板当前展示的数据集（默认显示items的前10条）
                      */
-                    selectItems: {
+                    displayItems: {
                         type: Array,
                         value: function () {
                             return [];
@@ -321,11 +336,11 @@
                         type: String
                     },
                     /**
-                     * 模糊搜索关键字
+                     * 用户输入的模糊搜索关键字
                      */
-                    searchKeyword: {
+                    userInputKeyword: {
                         type: String,
-                        observer: "_searchKeywordChange"
+                        observer: "_userInputKeywordChange"
                     },
                     /**
                      * 模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
@@ -336,9 +351,8 @@
                     /**
                      * 下拉面板中展示的字段，默认为[{"field": "label", "label": "选项"}]
                      */
-                    columnInfo: {
+                    displayFields: {
                         type: Array,
-                        readyOnly: true,
                         value: [{"field": "label", "label": "选项"}]
                     },
                     /**
@@ -354,6 +368,13 @@
                     attrForValue: {
                         type: String,
                         value: "value"
+                    },
+                    /**
+                     * 是否启用拼音搜索（根据模糊搜索的字段字符串数组对数据集的对应字段做中文转拼音处理），默认启用
+                     */
+                    usePinyinSearch: {
+                        type: Boolean,
+                        value: true
                     },
                     /**
                      * 被选中的数据项集合
@@ -458,40 +479,68 @@
 
             _itemsChange(items) {
                 if (!items) return;
-                this.set('selectItems', items.slice(0, 9));
+                this.set('displayItems', items.slice(0, 9));
                 /**
                  * 当searchFields无值的时候，默认对所有字段做缓存
                  */
                 if (this.searchFields == null || this.searchFields.length === 0) {
-                    items.forEach(item => this.cachePick.setCache(item.tags, item[this.attrForLabel], JSON.stringify(item)));
+                    items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item)));
                     return;
                 }
 
                 /**
                  * 当searchFields有值的时候，只对searchFields中的字段做缓存
                  */
-                items.map(
-                    item => this.searchFields.reduce((obj, searchField) => {
-                        obj[searchField] = item[searchField];
-                        return obj;
-                    }, {tags: item.tags || [], [this.attrForValue]: item[this.attrForValue]})
-                ).forEach(item =>
-                    this.cachePick.setCache(item.tags, item[this.attrForLabel], JSON.stringify(item))
-                );
+                items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
             }
 
-            _searchKeywordChange(searchKeyword) {
-                let selectItems = [];
-                if (!!searchKeyword) {
-                    let searchResult = this.cachePick.search(searchKeyword);
-                    if (searchResult) {
-                        let resultItems = searchResult.map(s => JSON.parse(s.content));
-                        selectItems = this.items.filter(item => resultItems.some(o => o[this.attrForValue] === item[this.attrForValue]));
+            /**
+             * 给对象根据searchFields给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
+             */
+            _loadPinyinKeys(item, searchFields) {
+                let keys = [];
+
+                /**
+                 * 当模糊匹配字段数组：
+                 * 1.不存在的时候，默认为对item的所有字段做缓存
+                 */
+                if (!searchFields) {
+                    let values = Object.values(item);
+                    if (this.usePinyinSearch) {
+                        values.forEach(
+                            value => {
+                                keys = keys.concat(value + "", this.pinyinUtil.converToCompletePinyin(value), this.pinyinUtil.converToFirstLetterPinyin(value));
+                            }
+                        );
+                    } else {
+                        keys = values.map(value => (value + ""));
                     }
-                } else {
-                    selectItems = this.items;
+                    return keys;
                 }
-                this.set('selectItems', selectItems.slice(0, 9));
+
+                /**
+                 * 2.存在的时候，对searchFields里面的所有字段做缓存
+                 */
+                if (this.usePinyinSearch) {
+                    searchFields.forEach(
+                        field => {
+                            keys = keys.concat(item[field] + "", this.pinyinUtil.converToCompletePinyin(item[field]), this.pinyinUtil.converToFirstLetterPinyin(item[field]));
+                        }
+                    );
+                } else {
+                    keys = searchFields.map(field => item[field] + "");
+                }
+                return keys;
+            }
+
+            _userInputKeywordChange(userInputKeyword) {
+                let displayItems = [];
+                if (!!userInputKeyword) {
+                    displayItems = this.cacheSearchUtil.search(userInputKeyword);
+                } else {
+                    displayItems = this.items;
+                }
+                this.set('displayItems', displayItems.slice(0, 9));
             }
 
             /**
@@ -550,12 +599,12 @@
                     this._switchFocusItemAt(this.focusIndex + 1);
                 } else if (key == 32 || key == 13) {// 空格、回车
                     event.preventDefault();
-                    if (this.selectItems.length > 0 && this.focusIndex < this.selectItems.length) {
+                    if (this.displayItems.length > 0 && this.focusIndex < this.displayItems.length) {
                         this.selectItemAt();
                     }
                 } else if (event.altKey) {
                     let ind = String.fromCharCode(key) - 1;
-                    if (ind >= 0 && ind < this.selectItems.length) {
+                    if (ind >= 0 && ind < this.displayItems.length) {
                         this.selectItemAt(ind);
                     }
                 }
@@ -565,7 +614,7 @@
                 if (index >= 0) {
                     this._switchFocusItemAt(index);
                 }
-                this.selectItem(this.selectItems[this.focusIndex]);
+                this.selectItem(this.displayItems[this.focusIndex]);
             }
 
             /**
@@ -584,7 +633,7 @@
                 } else if (value.toString().split(',').every(value => value != item[this.attrForValue])) {
                     this.set('value', this.value + "," + item[this.attrForValue]);
                 }
-                this.searchKeyword = "";
+                this.userInputKeyword = "";
                 this._hideDropdown();
             }
 
@@ -594,7 +643,7 @@
              * @private
              */
             _switchFocusItemAt(index) {
-                let maxIndex = this.selectItems.length;
+                let maxIndex = this.displayItems.length;
                 let newIndex = (maxIndex + index) % maxIndex;
                 this.root.querySelectorAll("tr.complete").forEach(e => e.style.backgroundColor = "");
                 let newFocusItem = this.root.querySelector("tr[id='" + newIndex + "']");

@@ -38,16 +38,16 @@
                  */
                 const attrForValue = "id";
                 const attrForLabel = "label";
-                const columnInfo = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
                 const items = [
-                    {"id": 1, "label": "快塑网", "business": "塑料", "tags": ["ksw", "kuaisuwang"]},
-                    {"id": 2, "label": "阿里巴巴", "business": "电商", "tags": ["albb", "alibaba"]},
-                    {"id": 3, "label": "腾讯", "business": "游戏", "tags": ["tx", "tengxun"]},
-                    {"id": 4, "label": "京东", "business": "电商", "tags": ["jd", "jingdong"]}
+                    {"id": 1, "label": "快塑网", "business": "塑料"},
+                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
+                    {"id": 3, "label": "腾讯", "business": "游戏"},
+                    {"id": 4, "label": "京东", "business": "电商"}
                 ];
                 picker.attrForValue = attrForValue;
                 picker.attrForLabel = attrForLabel;
-                picker.columnInfo = columnInfo;
+                picker.displayFields = displayFields;
                 picker.items = items;
             </script>
         </template>
@@ -61,12 +61,12 @@
             <script>
                 picker1.attrForValue = attrForValue;
                 picker1.attrForLabel = attrForLabel;
-                picker1.columnInfo = columnInfo;
+                picker1.displayFields = displayFields;
                 picker1.items = items;
 
                 picker2.attrForValue = attrForValue;
                 picker2.attrForLabel = attrForLabel;
-                picker2.columnInfo = columnInfo;
+                picker2.displayFields = displayFields;
                 picker2.items = items;
             </script>
         </template>
@@ -80,12 +80,12 @@
             <script>
                 picker3.attrForValue = attrForValue;
                 picker3.attrForLabel = attrForLabel;
-                picker3.columnInfo = columnInfo;
+                picker3.displayFields = displayFields;
                 picker3.items = items;
 
                 picker4.attrForValue = attrForValue;
                 picker4.attrForLabel = attrForLabel;
-                picker4.columnInfo = columnInfo;
+                picker4.displayFields = displayFields;
                 picker4.items = items;
             </script>
         </template>
@@ -100,17 +100,17 @@
             <script>
                 picker5.attrForValue = attrForValue;
                 picker5.attrForLabel = attrForLabel;
-                picker5.columnInfo = columnInfo;
+                picker5.displayFields = displayFields;
                 picker5.items = items;
 
                 picker6.attrForValue = attrForValue;
                 picker6.attrForLabel = attrForLabel;
-                picker6.columnInfo = columnInfo;
+                picker6.displayFields = displayFields;
                 picker6.items = items;
 
                 picker7.attrForValue = attrForValue;
                 picker7.attrForLabel = attrForLabel;
-                picker7.columnInfo = columnInfo;
+                picker7.displayFields = displayFields;
                 picker7.items = items;
             </script>
         </template>
@@ -124,12 +124,13 @@
             <script>
                 picker8.attrForValue = attrForValue;
                 picker8.attrForLabel = attrForLabel;
-                picker8.columnInfo = columnInfo;
+                picker8.displayFields = displayFields;
                 picker8.items = items;
+                picker8.usePinyinSearch = false;
 
                 picker9.attrForValue = attrForValue;
                 picker9.attrForLabel = attrForLabel;
-                picker9.columnInfo = columnInfo;
+                picker9.displayFields = displayFields;
                 picker9.searchFields = ["label"];
                 picker9.items = items;
             </script>
