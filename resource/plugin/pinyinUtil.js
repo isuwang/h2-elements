@@ -6,27 +6,14 @@ class PinyinUtil {
         /**
          * 无加载字典文件的时候抛错提示
          */
-        if (!window.firstLetterDictionary) {
-            console.error("请先加载首字母拼音字典firstLetterDictionary.js");
+        if (!this.firstLetterDictionary) {
+            console.error("拼音插件初始化失败，请先加载首字母拼音字典firstLetterDictionary.js");
             return;
         }
-        if (!window.commonDictionary) {
-            console.error("请先加载通用拼音字典commonDictionary.js");
+        if (!this.commonDictionary) {
+            console.error("拼音插件初始化失败，请先加载通用拼音字典commonDictionary.js");
             return;
         }
-
-        /**
-         * 初始化通用字典和拼音首字母字典
-         */
-        let commonDictionary = {};
-        let commonDict = window.commonDictionary;
-        let pinyinArr = commonDict.split(',');
-        for (let i = 0, len = pinyinArr.length; i < len; i++) {
-            // 这段代码耗时28毫秒左右，对性能影响不大，所以一次性处理完毕
-            commonDictionary[String.fromCharCode(i + 19968)] = pinyinArr[i];
-        }
-        this.commonDictionary = commonDictionary;
-        this.firstLetterDictionary = window.firstLetterDictionary;
     }
 
     /**
@@ -115,3 +102,19 @@ class PinyinUtil {
         return result.map(e => e.toUpperCase());
     }
 }
+
+/**
+ * 初始化通用字典和拼音首字母字典,加载到原型上
+ */
+PinyinUtil.prototype.commonDictionary = (function () {
+    let commonDictionary = {};
+    let commonDict = window.commonDictionary;
+    let pinyinArr = commonDict.split(',');
+    for (let i = 0, len = pinyinArr.length; i < len; i++) {
+        // 这段代码耗时28毫秒左右，对性能影响不大，所以一次性处理完毕
+        commonDictionary[String.fromCharCode(i + 19968)] = pinyinArr[i];
+    }
+    return commonDictionary;
+})();
+
+PinyinUtil.prototype.firstLetterDictionary = window.firstLetterDictionary;
