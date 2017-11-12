@@ -110,8 +110,20 @@
 
       __responseChange(response) {
         const resClone = response.clone();
-        const handleAs = response.ok ? this.handleResponseAs : "text";
-        resClone[handleAs]().then(data => this.responseBody = data);
+        if(response.ok) {
+          const handleAs = response.ok ? this.handleResponseAs : "text";
+
+          if (response.headers.has('Content-length')
+            && response.headers.get('Content-length') == 0) {
+            this.responseBody = {};
+            return;
+          }
+
+          resClone[handleAs]().then(data => this.responseBody = {content: data});
+        } else {
+          resClone.text().then(err => this.error = {content: err});
+        }
+
       }
 
       _mockIt() {
@@ -129,9 +141,9 @@
 
       _fetchIt() {
         const collectedReq = this.__getCollectedRequest(this.request);
-        fetch(collectedReq)
+        window.fetch(collectedReq)
           .then(res => this.response = res)
-          .catch(err => this.error = err);
+          .catch(err => this.error = {content: err});
       }
 
       /**
@@ -140,7 +152,15 @@
        * @return {Promise}
        */
       fetchIt(request) {
+        if (window.__mockEnabled) {
+          const collectedReq = this.__getCollectedRequest(request);
+          const matchedRes = MockDataPool.match(collectedReq);
+          if(matchedRes) {
+            return Promise.resolve(matchedRes);
+          }
+        }
 
+        return window.fetch(request);
       }
 
     }
