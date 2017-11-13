@@ -110,7 +110,7 @@
       <script>
         fetchDemo3.request = {
           url: "/path/to/helloworld.do",
-          method: "get",
+          method: "GET",
         };
         fetchDemo3.addEventListener("response-body-changed", (e) => {
           responseDiv3_1.innerHTML = JSON.stringify(e.detail.value);
@@ -119,6 +119,30 @@
           const {type, status, statusText} = e.detail.value;
           responseDiv3.innerHTML = `${type} ${status} ${statusText}`;
         });
+      </script>
+    </template>
+  </demo-snippet>
+
+  <h3>Basic h2-fetch demo</h3>
+  <demo-snippet>
+
+    <template>
+      <div id="responseDiv4_1"></div>
+      <div id="responseDiv4_1_err"></div>
+      <script>
+        const request = {
+          url: "/path/to/index.do",
+          method: "POST",
+          headers: {
+            "Cache-Control": "no-cache"
+          }
+        };
+
+        new H2Fetch().fetchIt(request)
+          .then(res => res.json())
+          .then(data => responseDiv4_1.innerHTML = JSON.stringify(data))
+          .catch(err => responseDiv4_1_err.innerHTML = err);
+
       </script>
     </template>
   </demo-snippet>
