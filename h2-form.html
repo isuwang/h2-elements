@@ -2,6 +2,7 @@
 <link rel="import" href="behaviors/base-behavior.html">
 <link rel="import" href="behaviors/ajax-behavior.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="h2-fetch.html">
 
 <!--
 
@@ -44,6 +45,8 @@
                 <paper-button raised on-click="reset">重置</paper-button>
             </template>
         </div>
+        <h2-fetch id="fetch" request="{{request}}" handle-response-as="{{handleResponseAs}}"
+                  response-body="{{responseBody}}"></h2-fetch>
     </template>
     </div>
     </template>
@@ -80,16 +83,24 @@
                     },
 
                     /**
+                     * Request method,GRT or POST,default POST
+                     */
+                    method: {
+                        type: String,
+                        value: "POST"
+                    },
+
+                    /**
                      * User-defined submit function,instead of the default method
                      */
                     bindSubmit: {
-                        type: Function
+                        type: Object
                     },
                     /**
                      * User-defined reset function,instead of the default method
                      */
                     bindReset: {
-                        type: Function
+                        type: Object
                     },
                     /**
                      * This form require url
@@ -99,12 +110,28 @@
                     },
                     /**
                      * submit type
-                     * json,jsonAsString,form-data selection is optional
+                     * default,json,formData selection is optional
                      */
-                    submitType:{
-                        type:String,
-                        value:"json"
-                    }
+                    submitType: {
+                        type: String,
+                        value: "default"
+                    },
+                    /**
+                     * How to handle the response body, the handled result will access as the property 'responseBody'.
+                     * json/text/blob/arrayBuffer
+                     */
+                    handleResponseAs: {
+                        type: String,
+                        value: "json"
+                    },
+
+                    /**
+                     * Handled response body.
+                     */
+                    responseBody: {
+                        type: Object,
+                        notify: true
+                    },
                 };
             }
 
@@ -120,30 +147,43 @@
                 if (this.isFunction(this.bindSubmit)) {
                     setTimeout(() => this.bindSubmit(), 0);
                 } else {
-                    let params = {}
+                    let params = {};
+                    let requestInit = {};
                     for (let i = 0; i < this.childElementCount; i++) {
                         params[this.children[i].getAttribute("name")] = this.children[i].value || ""
                     }
                     delete params.null;
-                    if(this.submitType == "form-data"){
-                        let formdata = new FormData();
-                        for(let item in params){
-                            formdata.append(item,params[item])
+
+                    if (this.method == "GET") {
+                        const reqUrl = new URL(window.location.origin + this.url);
+                        Object.keys(params).filter(key => params[key] != undefined).forEach((key) => reqUrl.searchParams.append(key, params[key]));
+                        requestInit = {
+                            method: this.method,
+                            credentials: "include",
+                            cache: 'default'
+                        };
+                        this.set("request", new Request(reqUrl, requestInit));
+                    } else if (this.method == "POST") {
+                        let headers = {}, body = {};
+                        if (this.submitType == "json") {
+                            headers = {
+                                'content-type': 'application/json;charset=utf-8'
+                            };
+                            body = JSON.stringify(params);
+                        } else if (params instanceof FormData) {
+                            body = params;
+                        } else {
+                            const searchParams = new URLSearchParams();
+                            Object.keys(params).forEach((key) => searchParams.append(key, params[key]));
+                            body = searchParams;
                         }
-                        this.post({
-                            url: this.url,
-                            data: formdata,
-                        }, console.log, console.log);
-
-                    }else{
-                        this.post({
-                            url: this.url,
-                            data: params,
-                            sendAsJson:this.submitType ==  "jsonAsString"
-                        }, console.log, console.log);
+                        this.set("request", new Request(this.url, {
+                            method: this.method,
+                            credentials: "include",
+                            headers: headers,
+                            body: body
+                        }));
                     }
-                    console.log(params);
-
                 }
 
             }

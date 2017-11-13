@@ -190,8 +190,8 @@
                 <template is="dom-repeat" items="[[items]]" filter="_hasPermission">
                     <span class="item" selected-item="{{item}}">{{item.label}}</span>
                 </template>
-                <slot></slot>
             </iron-selector>
+            <slot></slot>
         </iron-collapse>
     </template>
     <script>

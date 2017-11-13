@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
-
+<link rel="import" href="h2-label.html">
 <!--
 
 ```javascript
@@ -16,6 +16,10 @@
                 display: inline-block;
                 white-space: nowrap;
                 text-align: left;
+            }
+
+            :host .item-wrap {
+                display: flex;
             }
 
             :host .status-wrap {
@@ -118,16 +122,18 @@
                 border-radius: 4px;
             }
         </style>
-        <label class="label-size radio-label"><span>[[label]]</span>：</label>
-
-        <div class="status-wrap">
-            <iron-selector class="status-items" selected="{{value}}" attr-for-selected="radio-item">
-                <template is="dom-repeat" items="[[items]]">
-                    <span class="status" radio-item="{{__getItemValueByName(item,attrForValue)}}">{{__getItemValueByName(item,attrForLabel)}}</span>
-                </template>
-            </iron-selector>
-            <div class="shade"></div>
+        <div class="item-wrap">
+            <h2-label value="[[label]]" required="[[required]]"></h2-label>
+            <div class="status-wrap">
+                <iron-selector class="status-items" selected="{{value}}" attr-for-selected="radio-item">
+                    <template is="dom-repeat" items="[[items]]">
+                        <span class="status" radio-item="{{__getItemValueByName(item,attrForValue)}}">{{__getItemValueByName(item,attrForLabel)}}</span>
+                    </template>
+                </iron-selector>
+                <div class="shade"></div>
+            </div>
         </div>
+
     </template>
     <script>
         /**
@@ -150,8 +156,7 @@
                      */
                     label: {
                         type: String,
-                        value: "",
-                        observer: '__labelChange'
+                        value: ""
                     },
                     /**
                      *
@@ -177,6 +182,10 @@
                     items: {
                         type: Array,
                         value: []
+                    },
+                    required: {
+                        type: Boolean,
+                        value: false
                     },
                     /**
                      * 是否可编辑,默认可以编辑
@@ -214,22 +223,6 @@
                     this.root.querySelector('.shade').style.display = 'block';
                 } else {
                     this.root.querySelector('.shade').style.display = 'none';
-                }
-            }
-
-            /**
-             * 监听标签名改变
-             * @param label 标签名
-             * @private
-             */
-            __labelChange(label) {
-                let labelElement = this.root.querySelector(".label-size");
-                if (labelElement) {
-                    if (!label) {
-                        labelElement.style.display = "none";
-                    } else {
-                        labelElement.style.display = "";
-                    }
                 }
             }
 

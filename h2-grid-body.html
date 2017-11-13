@@ -11,15 +11,15 @@
 <dom-module id="h2-grid-body">
   <template>
     <style>
-      :host ::slotted h2-grid-row .row:hover{
+      :host ::slotted  .row:hover{
         background-color: #CAF1FF;
       }
       /*定义奇数行背景*/
-      :host ::slotted(h2-grid-row:nth-child(odd)){
+      :host ::slotted(:nth-child(odd)){
         background: #ffffff;
       }
       /*定义偶数行背景*/
-      :host ::slotted(h2-grid-row:nth-child(even)){
+      :host ::slotted(:nth-child(even)){
         background: #efefef;
       }
       :host .body {

@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="h2-label.html">
 
 <!--
 
@@ -19,9 +20,9 @@
             }
 
             :host .item-wrap {
-                display: inline-block;
+                display: flex;
                 position: relative;
-                float: left;
+                /*float: left;*/
             }
 
             :host .shade {
@@ -30,7 +31,7 @@
                 top: 0%;
                 left: 0%;
                 width: 100%;
-                //height: 34px;
+                /* / / height: 34 px;*/
                 background-color: black;
                 z-index: 99;
                 opacity: .00;
@@ -39,11 +40,14 @@
         </style>
         <div>
             <div class="item-wrap">
-                <label class="label-size"><span>[[label]]</span>：</label>
-                <template is="dom-repeat" items="{{items}}">
-                    <paper-checkbox checked="{{item.selected}}">[[__getItemValueByName(item,attrForLabel)]]
-                    </paper-checkbox>
-                </template>
+                <h2-label value="[[label]]" required="[[required]]"></h2-label>
+                <div>
+                    <template is="dom-repeat" items="{{items}}">
+                        <paper-checkbox checked="{{item.selected}}">[[__getItemValueByName(item,attrForLabel)]]
+                        </paper-checkbox>
+                    </template>
+                </div>
+
                 <div class="shade"></div>
             </div>
 
@@ -67,8 +71,7 @@
                      * @type {String}
                      */
                     label: {
-                        type: String,
-                        observer:"__labelChanged"
+                        type: String
                     },
                     /**
                      * checkbox 组成项，例如：[{name:'薄膜',value:0,selected:true},{name:'纤维',value:1}]
@@ -109,6 +112,10 @@
                     attrForLabel: {
                         type: String,
                         value: "label"
+                    },
+                    required: {
+                        type: Boolean,
+                        value: false
                     },
                     /**
                      * 是否可编辑,默认可以编辑
@@ -188,18 +195,6 @@
                     this.root.querySelector('.shade').style.display = 'none';
                 }
             }
-
-            __labelChanged(label){
-                let labelElement = this.root.querySelector(".label-size");
-                if (labelElement) {
-                    if (!label) {
-                        labelElement.style.display = "none";
-                    } else {
-                        labelElement.style.display = "";
-                    }
-                }
-            }
-
         }
         window.customElements.define(H2Checkbox.is, H2Checkbox);
     </script>

@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="h2-label.html">
 
 <!--
 
@@ -36,9 +37,9 @@
             }
         </style>
         <div id="h-form-textarea-container">
-            <label class="label-size"><span>[[label]]</span>：</label>
+            <h2-label value="[[label]]" required="[[required]]"></h2-label>
             <template is="dom-if" if="{{editable}}">
-                <iron-autogrow-textarea bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
+                <iron-autogrow-textarea id="textarea" bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
                                         required="[[required]]" placeholder="[[placeholder]]"></iron-autogrow-textarea>
             </template>
             <template is="dom-if" if="{{!editable}}">
@@ -65,8 +66,7 @@
                      */
                     label: {
                         type: String,
-                        value: "",
-                        observer: '_labelChange'
+                        value: ""
                     },
                     /**
                      * textarea 文本值
@@ -107,7 +107,7 @@
                     }
                     ,
                     /**
-                     * 模式 常量：'Edit','View'
+                     * 模式 是否可编辑true or false
                      */
                     editable: {
                         type: Boolean,
@@ -127,29 +127,11 @@
                 return "h2-textarea";
             }
 
-            /*__isEditable(editable) {
-             return editable;
-             }
-
-             __isViewMode(editable) {
-             return editable == 'View';
-             }*/
-
-            /**
-             * 监听标签名改变
-             * @param label 标签名
-             * @private
-             */
-            _labelChange(label) {
-                var labelElement = this.root.querySelector(".label-size");
-                if (labelElement) {
-                    if (!label) {
-                        labelElement.style.display = "none";
-                    } else {
-                        labelElement.style.display = "inline-block";
-                    }
-                }
+            validate() {
+                return this.editable ? this.root.querySelector("#textarea").validate() : true;
             }
+
+
         }
         window.customElements.define(H2Textarea.is, H2Textarea);
     </script>
