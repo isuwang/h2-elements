@@ -33,26 +33,71 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic h2-select demo</h3>
+    <h3>基本用法 h2-select demo</h3>
     <demo-snippet>
         <template>
-            <h2-select id="select" label="球员" placeholder="球员" multi></h2-select>
+            <h2-select id="select" label="球员" placeholder="选择球员" width="170px"></h2-select>
             <script>
-                select.items = [
+                const items = [
                     {"label": "梅西", "value": 1},
                     {"label": "C罗", "value": 2},
                     {"label": "苏亚雷斯", "value": 3},
                     {"label": "库蒂尼奥", "value": 4},
                     {"label": "特尔斯特根", "value": 5},
                     {"label": "保利尼奥", "value": 6},
-                    {"label": "保利尼奥1", "value": 7},
-                    {"label": "保利尼奥2", "value": 8},
-                    {"label": "保利尼奥3", "value": 9},
-                    {"label": "保利尼奥5", "value": 10},
-                    {"label": "保利尼奥4", "value": 11},
-                    {"label": "保利尼奥6", "value": 12},
                     {"label": "内马尔", "value": 13}
                 ];
+                select.items = items;
+            </script>
+        </template>
+    </demo-snippet>
+    <h3>支持单选、多选</h3>
+    <demo-snippet>
+        <template>
+            <h2-select id="select1" label="球员" placeholder="选择球员"></h2-select>
+            <h2-select id="select2" label="球员" placeholder="选择球员" multi></h2-select>
+            <script>
+                select1.items = items;
+                select2.items = items;
+            </script>
+        </template>
+    </demo-snippet>
+    <h3>支持默认选中</h3>
+    <demo-snippet>
+        <template>
+            <h2-select id="select3" label="球员" placeholder="选择球员"></h2-select>
+            <h2-select id="select4" label="球员" placeholder="选择球员" multi></h2-select>
+            <script>
+                select3.items = items;
+                select3.value = "1";
+                select4.items = items;
+                select4.value = "1,2,3";
+            </script>
+        </template>
+    </demo-snippet>
+    <h3>支持设置输入框宽度和组件宽度</h3>
+    <demo-snippet>
+        <template>
+            <h2-select id="select5" label="球员" placeholder="选择球员" multi width="200px;"></h2-select>
+            <h2-select id="select6" label="球员" placeholder="选择球员" multi style="width:200px;"></h2-select>
+            <script>
+                select5.items = items;
+                select5.value = "1,2,3";
+                select6.items = items;
+                select6.value = "1,2,3";
+            </script>
+        </template>
+    </demo-snippet>
+    <h3>支持只读、必填模式</h3>
+    <demo-snippet>
+        <template>
+            <h2-select id="select7" label="球员" placeholder="选择球员" multi required></h2-select>
+            <h2-select id="select8" label="球员" placeholder="选择球员" multi readonly style="width:200px;"></h2-select>
+            <script>
+                select7.items = items;
+                select7.value = "1,2,3";
+                select8.items = items;
+                select8.value = "1,2,3";
             </script>
         </template>
     </demo-snippet>

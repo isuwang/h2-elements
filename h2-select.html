@@ -54,7 +54,7 @@
                 background: #FFF;
                 padding: 4px;
                 height: 34px;
-                min-width: 170px;
+                /*min-width: 170px;*/
             }
 
             /*标签容器*/
@@ -202,7 +202,7 @@
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <div class="btn-group select-warp">
             <div class="tags-input tags-box" style$="[[_getTagsBoxWidth(width)]]" on-click="_onInputClick">
-                <span id="placeHolder" class="placeholder">[[placeholder]]</span>
+                <span id="placeholder" class="placeholder">[[placeholder]]</span>
                 <span id="tag-content">
                     <template is="dom-repeat" items="{{selectedList}}">
 						<span class="tag" style$="[[_getTagMaxWidth(width)]]">
@@ -393,7 +393,7 @@
                 if (e.target.tagName === "A") {
                     return;
                 }
-                this.$['placeHolder'].style.display = 'none';
+                this.$['placeholder'].style.display = 'none';
                 this.$['tags-input'].focus();
                 this._collapseToggle();
             }
@@ -429,7 +429,7 @@
                 }
 
                 if (items && items.length > 0) {
-                    this.$['placeHolder'].style.display = 'none';
+                    this.$['placeholder'].style.display = 'none';
                     let values = (value + "").split(",");
                     let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
                     this.set("selectedList", selectedList);
@@ -488,6 +488,9 @@
              * @private
              */
             _collapseToggle(toggle) {
+                if (this.selectedList == undefined || this.selectedList.length === 0) {
+                    this.$["placeholder"].style.display = "";
+                }
                 var collapse = this.$['input-collapse'];
                 var buttonGroup = this.root.querySelector('.btn-group');
                 var caret = this.$['caret'];
