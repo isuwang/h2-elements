@@ -110,6 +110,11 @@
                 border-left: 1px solid #0099FF;
             }
 
+            :host .required-input {
+                border: 1px solid red;
+                border-radius: 4px;
+            }
+
             :host .shade {
                 display: none;
                 position: absolute;
@@ -170,7 +175,8 @@
                     value: {
                         type: String,
                         reflectToAttribute: true,
-                        notify: true
+                        notify: true,
+                        observer: "__valueChanged"
                     },
                     /**
                      *
@@ -229,6 +235,28 @@
                 if (item && name) {
                     return item[name]
                 }
+            }
+
+            __valueChanged() {
+                this.validate();
+            }
+
+            validate() {
+                const verify_pss = this.required ? !!this.value : true;
+                let element = this.root.querySelector('.status-items');
+                let clazz = element.getAttribute("class");
+                if (!verify_pss) {
+                    if (clazz.indexOf('required-input') < 0) {
+                        element.setAttribute("class", clazz + " required-input");
+                    }
+                } else {
+                    element.setAttribute("class", clazz.replace(" required-input", ""));
+                }
+                return verify_pss
+            }
+
+            ready() {
+                super.ready();
             }
         }
         window.customElements.define(H2Radio.is, H2Radio);
