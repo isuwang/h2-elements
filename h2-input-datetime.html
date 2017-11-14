@@ -15,7 +15,7 @@
         <h2-input
                 value="{{value}}"
                 label=[[label]]
-                placeholder="[[label]]"
+                placeholder="[[placeholder]]"
                 required=[[required]]
                 min="[[min]]"
                 max="[[max]]"
@@ -57,6 +57,12 @@
                      * 组件标签名
                      */
                     label: {
+                        type: String
+                    },
+                    /**
+                     * 组件占位符
+                     */
+                    placeholder: {
                         type: String
                     },
                     /**
