@@ -26,10 +26,7 @@
             }
 
             :host input {
-                position: relative;
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
+                font-family: 'Roboto', 'Noto', sans-serif;
                 font-size: 14px;
                 height: 34px;
                 padding: 6px 12px;
@@ -41,6 +38,7 @@
                 -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
                 -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
                 transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                @apply --suffix-unit-input;
             }
 
             :host input:focus {
@@ -70,12 +68,15 @@
             }
 
             :host span.input-view {
+                display:inline-block;
                 text-align: left;
                 font-size: 14px;
-                vertical-align: top;
                 line-height: 34px;
+                height:34px;
                 white-space: normal;
                 width: auto;
+                border:1px solid transparent;
+                padding-left:12px;
             }
 
             /*前缀单位*/

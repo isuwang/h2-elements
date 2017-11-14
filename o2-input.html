@@ -16,6 +16,10 @@
                 text-align: left;
                 display: flex;
                 flex-flow: row nowrap;
+                --suffix-unit-input: {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                }
             }
 
             :host * {
@@ -24,22 +28,37 @@
                 box-sizing: border-box;
             }
 
-            :host .btn {
-                width: 34px;
-                height: 100%;
-                border: 1px solid blue;
+            :host .input-container {
+                display: flex;
+            }
+
+            :host div.editBtn {
+                background-color: #eeeeee;
+                display: inline-block;
+                height: 34px;
+                line-height: 22px;
+                padding: 6px 10px;
+                border: 1px solid #ccc;
+                border-left: none;
+                border-radius: 4px;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                font-size: 14px;
+                cursor: pointer;
             }
         </style>
         <h2-label required=[[required]] value="[[label]]"></h2-label>
-        <h2-input
-                value="{{value}}"
-                placeholder="[[placeholder]]"
-                required=[[required]]
-                readonly="[[readonly]]">
-        </h2-input>
-        <!--<template is="dom-if" if="[[!readonly]]">
-            <span class="btn">编辑</span>
-        </template>-->
+        <div class="input-container" tabindex="0">
+            <h2-input
+                    value="{{value}}"
+                    placeholder="[[placeholder]]"
+                    required=[[required]]
+                    readonly="[[readonly]]">
+            </h2-input>
+            <template is="dom-if" if="[[!readonly]]">
+                <div class="editBtn">编辑</div>
+            </template>
+        </div>
     </template>
     <script>
         /**
@@ -60,6 +79,12 @@
                         notify: true
                     },
                     /**
+                     * 组件的上一次value值
+                     */
+                    lastValue: {
+                        type: String
+                    },
+                    /**
                      * 组件标签名
                      */
                     label: {
@@ -75,7 +100,8 @@
                      * 是否必填
                      */
                     required: {
-                        type: Boolean
+                        type: Boolean,
+                        value: false
                     },
                     /**
                      * 是否只读
@@ -93,11 +119,17 @@
 
             connectedCallback() {
                 super.connectedCallback();
-                let input = this.root.querySelector("h2-input");
-                input.addEventListener("mouseover", e => {
+                let container = this.root.querySelector("div.input-container");
+                /*container.addEventListener("mouseout", e => {
+                 /!*this._disableEdit(e);*!/
+                 });*/
+                container.addEventListener("mouseover", e => {
                     this._enableEdit(e);
                 });
-                input.addEventListener("mouseout", e => {
+                container.addEventListener("focus", e => {
+                    this._enableEdit(e);
+                });
+                container.addEventListener("blur", e => {
                     this._disableEdit(e);
                 });
             }
@@ -107,7 +139,11 @@
              * @private
              */
             _enableEdit(e) {
-                this.readonly = false;
+                if (this.readonly) {
+                    this.readonly = false;
+                    this.lastValue = this.value;
+                }
+
             }
 
             /**
@@ -115,7 +151,10 @@
              * @private
              */
             _disableEdit(e) {
-                this.readonly = true;
+                if (!this.readonly) {
+                    this.readonly = true;
+                    this.value = this.lastValue;
+                }
             }
         }
         window.customElements.define(O2Input.is, O2Input);
