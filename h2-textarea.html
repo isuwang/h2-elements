@@ -17,34 +17,28 @@
                 display: inline-block;
             }
 
-            :host label {
-                line-height: 34px;
-            }
-
             :host iron-autogrow-textarea {
                 flex-grow: 1;
                 width: 270px;
                 /*定义了最小宽度后，flex-grow属性才起效。否则当textarea内字符宽度超出textarea的宽度时会撑大textarea*/
             }
 
-            :host span.input-view {
-                text-align: left;
-                line-height: 34px;
-            }
-
             #h-form-textarea-container {
                 text-align: left;
             }
+
+            :host .status-wrap {
+                position: relative;
+            }
+
         </style>
         <div id="h-form-textarea-container">
-            <h2-label value="[[label]]" required="[[required]]"></h2-label>
-            <template is="dom-if" if="{{editable}}">
+            <div class="status-wrap">
+                <h2-label value="[[label]]" required="[[required]]"></h2-label>
                 <iron-autogrow-textarea id="textarea" bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
+                                        readonly="[[readonly]]"
                                         required="[[required]]" placeholder="[[placeholder]]"></iron-autogrow-textarea>
-            </template>
-            <template is="dom-if" if="{{!editable}}">
-                <span class=" input-view">{{value}}</span>
-            </template>
+            </div>
         </div>
     </template>
     <script>
@@ -107,11 +101,11 @@
                     }
                     ,
                     /**
-                     * 模式 是否可编辑true or false
+                     * 模式 是否只读，true or false
                      */
-                    editable: {
+                    readonly: {
                         type: Boolean,
-                        value: true
+                        value: false
                     },
                     /**
                      * 提示符
@@ -128,7 +122,7 @@
             }
 
             validate() {
-                return this.editable ? this.root.querySelector("#textarea").validate() : true;
+                return this.root.querySelector("#textarea").validate();
             }
 
 

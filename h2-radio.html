@@ -116,6 +116,7 @@
                 top: 0%;
                 left: 0%;
                 width: 100%;
+                height: 100%;
                 background-color: black;
                 z-index: 99;
                 opacity: .00;
@@ -190,9 +191,9 @@
                     /**
                      * 是否可编辑,默认可以编辑
                      */
-                    editable: {
+                    readonly: {
                         type: Boolean,
-                        value: true,
+                        value: false,
                         observer: '_modeChange'
                     },
                     /**
@@ -217,9 +218,7 @@
             }
 
             _modeChange(newVal) {
-                if (!newVal) {
-                    let height = this.root.querySelector(".status-wrap").offsetHeight;
-                    this.root.querySelector('.shade').style.height = height + "px";
+                if (newVal) {
                     this.root.querySelector('.shade').style.display = 'block';
                 } else {
                     this.root.querySelector('.shade').style.display = 'none';
