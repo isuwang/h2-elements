@@ -1,0 +1,123 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="h2-input.html">
+
+<!--
+
+```javascript
+
+<o2-input></o2-input>
+```
+-->
+
+<dom-module id="o2-input">
+    <template>
+        <style>
+            :host {
+                text-align: left;
+                display: flex;
+                flex-flow: row nowrap;
+            }
+
+            :host * {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            :host .btn {
+                width: 34px;
+                height: 100%;
+                border: 1px solid blue;
+            }
+        </style>
+        <h2-label required=[[required]] value="[[label]]"></h2-label>
+        <h2-input
+                value="{{value}}"
+                placeholder="[[placeholder]]"
+                required=[[required]]
+                readonly="[[readonly]]">
+        </h2-input>
+        <!--<template is="dom-if" if="[[!readonly]]">
+            <span class="btn">编辑</span>
+        </template>-->
+    </template>
+    <script>
+        /**
+         * `o2-input`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/o2-input/index.html
+         */
+        class O2Input extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * 组件返回的输入框值
+                     */
+                    value: {
+                        type: String,
+                        notify: true
+                    },
+                    /**
+                     * 组件标签名
+                     */
+                    label: {
+                        type: String
+                    },
+                    /**
+                     * 组件占位符
+                     */
+                    placeholder: {
+                        type: String
+                    },
+                    /**
+                     * 是否必填
+                     */
+                    required: {
+                        type: Boolean
+                    },
+                    /**
+                     * 是否只读
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: true
+                    }
+                };
+            }
+
+            static get is() {
+                return "o2-input";
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                let input = this.root.querySelector("h2-input");
+                input.addEventListener("mouseover", e => {
+                    this._enableEdit(e);
+                });
+                input.addEventListener("mouseout", e => {
+                    this._disableEdit(e);
+                });
+            }
+
+            /**
+             * 显示编辑模式，允许输入
+             * @private
+             */
+            _enableEdit(e) {
+                this.readonly = false;
+            }
+
+            /**
+             * 显示只读模式，禁止输入
+             * @private
+             */
+            _disableEdit(e) {
+                this.readonly = true;
+            }
+        }
+        window.customElements.define(O2Input.is, O2Input);
+    </script>
+</dom-module>
