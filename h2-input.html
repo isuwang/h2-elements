@@ -110,6 +110,34 @@
                 padding: 6px 3px;
             }
 
+            /*单位在前front*/
+            :host span.suffix-unit {
+                background-color: #eeeeee;
+                display: inline-block;
+                height: 34px;
+                line-height: 22px;
+                padding: 6px 10px;
+                border: 1px solid #ccc;
+                border-left: none;
+                border-radius: 4px;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                font-size: 14px;
+                vertical-align: top;
+            }
+
+            :host span.suffix-unit.unit-view {
+                border: none;
+                background-color: #ffffff;
+                font-size: 14px;
+                padding: 6px 3px;
+            }
+
             /*单位在后back*/
             :host span.unit-in-b {
                 line-height: 34px;
@@ -119,14 +147,18 @@
                 font-size: 14px;
             }
 
-            :host input.unit-input {
+            :host input.prefix-unit-input {
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+            }
+            :host input.suffix-unit-input {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
             }
 
             :host .input-size {
                 display: inline-block;
-                min-width: 170px;
+                /*min-width: 170px;*/
             }
 
             :host .t-lightblue {
@@ -148,8 +180,8 @@
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <!--可编辑状态-->
         <template is="dom-if" if="[[!readonly]]">
-            <template is="dom-if" if="[[unit]]">
-                <span class="prefix-unit t-lightblue">[[unit]]</span>
+            <template is="dom-if" if="[[prefixUnit]]">
+                <span class="prefix-unit t-lightblue">[[prefixUnit]]</span>
             </template>
             <iron-input bind-value="{{value}}" id="input" slot="input" allowed-pattern="[[allowedPattern]]"
                         maxlength$="[[maxlength]]">
@@ -166,14 +198,20 @@
                        max$="[[max]]"
                        style$="[[_setWidth(width)]]">
             </iron-input>
+            <template is="dom-if" if="[[suffixUnit]]">
+                <span class="suffix-unit t-lightblue">[[suffixUnit]]</span>
+            </template>
         </template>
 
         <!--只读状态-->
         <template is="dom-if" if="[[readonly]]">
-            <template is="dom-if" if="[[unit]]">
-                <span class="prefix-unit unit-view t-lightblue">[[unit]]</span>
+            <template is="dom-if" if="[[prefixUnit]]">
+                <span class="prefix-unit unit-view t-lightblue">[[prefixUnit]]</span>
             </template>
             <span class="input-size input-view">[[value]]</span>
+            <template is="dom-if" if="[[suffixUnit]]">
+                <span class="suffix-unit unit-view t-lightblue">[[suffixUnit]]</span>
+            </template>
         </template>
     </template>
 
@@ -254,9 +292,15 @@
                         value: false
                     },
                     /**
-                     * 单位（￥$元吨托等等）
+                     * 前缀单位（￥$元吨托等等）
                      */
-                    unit: {
+                    prefixUnit: {
+                        type: String
+                    },
+                    /**
+                     * 后缀单位（￥$元吨托等等）
+                     */
+                    suffixUnit: {
                         type: String
                     },
                     /**
@@ -298,7 +342,7 @@
             }
 
             static get observers() {
-                return ['_requiredValueChange(required,value)', '_unitChange(unit)', '_valueChange(value)']
+                return ['_requiredValueChange(required,value)', '_prefixUnitChange(prefixUnit)', '_suffixUnitChange(suffixUnit)','_valueChange(value)']
             }
 
             /**
@@ -331,11 +375,20 @@
             }
 
             /**
-             * 单位改变时，显示输入框单位
+             * 前缀单位改变时，显示输入框单位
              */
-            _unitChange(unit) {
-                if (unit && this.clazz.indexOf("unit-input") < 0) {
-                    this.set("clazz", this.clazz + " unit-input");
+            _prefixUnitChange(prefixUnit) {
+                if (prefixUnit && this.clazz.indexOf("prefix-unit-input") < 0) {
+                    this.set("clazz", this.clazz + " prefix-unit-input");
+                }
+            }
+
+            /**
+             * 后缀单位改变时，显示输入框单位
+             */
+            _suffixUnitChange(suffixUnit) {
+                if (suffixUnit && this.clazz.indexOf("suffix-unit-input") < 0) {
+                    this.set("clazz", this.clazz + " suffix-unit-input");
                 }
             }
 
