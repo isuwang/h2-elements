@@ -28,31 +28,58 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic h2-checkbox demo</h3>
+    <h3>h2-checkbox</h3>
     <demo-snippet>
         <template>
-            <h2-checkbox label="测试" id="checkbox" attr-for-label="name"></h2-checkbox>
+            <h2-checkbox label="材料" id="checkbox"></h2-checkbox>
             <script>
-                checkbox.items = [{name: '薄膜', value: 0, selected: true}, {name: '纤维', value: 1}, {
-                    name: '塑料',
+                checkbox.items = [{label: '薄膜', value: 0, selected: true}, {label: '纤维', value: 1}, {
+                    label: '塑料',
                     value: 2,
                     selected: true
-                }, {name: '其它', value: 3}]
+                }, {label: '其它', value: 3}]
             </script>
         </template>
     </demo-snippet>
-</div>
-<div class="vertical-section-container centered">
-    <h3>h2-checkbox required demo</h3>
+
+    <h3>自定义label、value选取的字段</h3>
     <demo-snippet>
         <template>
-            <h2-checkbox label="测试" id="checkbox3" attr-for-label="name" required></h2-checkbox>
+            <h2-checkbox label="材料" id="checkbox2" attr-for-label="name" attr-for-value="key"></h2-checkbox>
             <script>
-                checkbox3.items = [{name: '薄膜', value: 0, selected: true}, {name: '纤维', value: 1}, {
+                checkbox2.items = [{name: '薄膜', key: 0, selected: true}, {name: '纤维', key: 1}, {
                     name: '塑料',
-                    value: 2,
+                    key: 2,
                     selected: true
-                }, {name: '其它', value: 3}]
+                }, {name: '其它', key: 3}]
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>支持必填属性</h3>
+    <demo-snippet>
+        <template>
+            <h2-checkbox label="材料" id="checkbox3" attr-for-label="name" attr-for-value="key" required></h2-checkbox>
+            <script>
+                checkbox3.items = [{name: '薄膜', key: 0, selected: true}, {name: '纤维', key: 1}, {
+                    name: '塑料',
+                    key: 2,
+                    selected: true
+                }, {name: '其它', key: 3}]
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>支持只读属性</h3>
+    <demo-snippet>
+        <template>
+            <h2-checkbox label="材料" id="checkbox4" attr-for-label="name" attr-for-value="key" readonly></h2-checkbox>
+            <script>
+                checkbox4.items = [{name: '薄膜', key: 0, selected: true}, {name: '纤维', key: 1}, {
+                    name: '塑料',
+                    key: 2,
+                    selected: true
+                }, {name: '其它', key: 3}]
             </script>
         </template>
     </demo-snippet>
