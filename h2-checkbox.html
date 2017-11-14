@@ -24,6 +24,10 @@
                 position: relative;
                 /*float: left;*/
             }
+            :host .required-input {
+                border: 1px solid red;
+                border-radius: 4px;
+            }
 
             :host .shade {
                 display: none;
@@ -41,7 +45,7 @@
         <div>
             <div class="item-wrap">
                 <h2-label value="[[label]]" required="[[required]]"></h2-label>
-                <div>
+                <div id="status-items">
                     <template is="dom-repeat" items="{{items}}">
                         <paper-checkbox checked="{{item.selected}}">[[__getItemValueByName(item,attrForLabel)]]
                         </paper-checkbox>
@@ -146,7 +150,7 @@
                 let newItems = Object.assign([], JSON.parse(JSON.stringify(this.items)));
                 if (this.value && this.value.length > 0) {
                     newItems.forEach((item) => {
-                        if (this.value.split(",").indexOf(item.value + "") > -1) {
+                        if (this.value.split(",").indexOf(this.__getItemValueByName(item, this.attrForValue) + "") > -1) {
                             item.selected = true;
                         } else {
                             item.selected = false;
@@ -157,6 +161,7 @@
                         item.selected = false;
                     })
                 }
+                this.validate();
                 this.set("items", newItems);
             }
 
@@ -193,6 +198,21 @@
                     this.root.querySelector('.shade').style.display = 'none';
                 }
             }
+
+            validate() {
+                const verify_pss = this.required ? !!this.value : true;
+                let element = this.root.querySelector('#status-items');
+                let clazz = element.getAttribute("class");
+                if (!verify_pss) {
+                    if (clazz.indexOf('required-input') < 0) {
+                        element.setAttribute("class", clazz + " required-input");
+                    }
+                } else {
+                    element.setAttribute("class", !!clazz?clazz.replace(" required-input", ""):"");
+                }
+                return verify_pss
+            }
+
         }
         window.customElements.define(H2Checkbox.is, H2Checkbox);
     </script>
