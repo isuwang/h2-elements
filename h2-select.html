@@ -190,7 +190,7 @@
                 -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
                 background-clip: padding-box;
-                border-top: 1px solid #dfdfdf;
+                /*border-top: 1px solid #dfdfdf;*/
             }
 
             /* 占位符样式 */
@@ -442,6 +442,13 @@
                     return;
                 }
                 this.set("value", splices.indexSplices[0].object.map(e => this._getValue(e)).join(","));
+
+                //对外抛一个选定数据变化事件
+                this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+                    composed: true,
+                    bubbles: true,
+                    detail: {value: this.selectedList}
+                }));
             }
 
             _selectedChange(selected) {
@@ -449,6 +456,14 @@
                     return;
                 }
                 this.set("value", this._getValue(selected));
+
+                const selectedList = [];
+                selectedList.push(this.selected);
+                this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+                    composed: true,
+                    bubbles: true,
+                    detail: {value: selectedList}
+                }));
             }
 
             /**

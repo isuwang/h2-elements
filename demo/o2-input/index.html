@@ -11,6 +11,8 @@
     <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../o2-input.html">
+    <link rel="import" href="../../h2-input.html">
+    <link rel="import" href="../../h2-select.html">
 
     <custom-style>
         <style is="custom-style" include="demo-pages-shared-styles">
@@ -41,9 +43,25 @@
     <demo-snippet>
         <template>
             <div class="container">
-                <o2-input label="输入框" placeholder="测试输入" value="梅西"></o2-input>
-                <o2-input label="输入框2" placeholder="测试输入" value=""></o2-input>
+                <o2-input label="输入框">
+                    <h2-input placeholder="测试输入" value="梅西"></h2-input>
+                </o2-input>
+                <o2-input label="输入框">
+                    <h2-select placeholder="测试输入" id = "select" multi></h2-select>
+                </o2-input>
             </div>
+            <script>
+                const items = [
+                    {"label": "梅西", "value": 1},
+                    {"label": "C罗", "value": 2},
+                    {"label": "苏亚雷斯", "value": 3},
+                    {"label": "库蒂尼奥", "value": 4},
+                    {"label": "特尔斯特根", "value": 5},
+                    {"label": "保利尼奥", "value": 6},
+                    {"label": "内马尔", "value": 13}
+                ];
+                select.items = items;
+            </script>
         </template>
     </demo-snippet>
 </div>

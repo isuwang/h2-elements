@@ -152,7 +152,7 @@
                 -moz-appearance: textfield;
             }
         </style>
-        <h2-label value="[[label]]" required="[[required]]"></h2-label>
+        <h2-label id="label" value="[[label]]" required="[[required]]"></h2-label>
         <!--可编辑状态-->
         <template is="dom-if" if="[[!readonly]]">
             <template is="dom-if" if="[[prefixUnit]]">
@@ -375,6 +375,13 @@
              */
             _setWidth(width) {
                 return width ? "width:" + width : "";
+            }
+
+            /**
+             * 输入框获取焦点
+             */
+            doFocus() {
+                this.root.querySelector("#innerInput").focus();
             }
         }
         window.customElements.define(H2Input.is, H2Input);
