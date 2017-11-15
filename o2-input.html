@@ -11,7 +11,6 @@
         <style>
             :host {
                 display: flex;
-                font-family: 'Roboto', 'Noto', sans-serif;
             }
 
             :host * {
@@ -22,7 +21,7 @@
 
             :host span.editBtn {
                 background-color: #eeeeee;
-                display: inline-block;
+                display: none;
                 height: 34px;
                 line-height: 22px;
                 padding: 6px 10px;
@@ -53,8 +52,6 @@
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
             }
-
-
         </style>
 
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
@@ -112,33 +109,43 @@
                 this.$.container.addEventListener("mouseover", e => {
                     if (e.target.id === "displayer") {
                         e.target.classList.add("mouseover");
+                        this._showEditBtn();
                     }
                 });
                 this.$.container.addEventListener("mouseout", e => {
                     if (e.target.id === "displayer") {
                         e.target.classList.remove("mouseover");
+                        this._hideEditBtn();
                     }
                 });
                 this.$.container.addEventListener("click", e => {
                     if (e.target.id === "displayer") {
                         this.isEdit = true;
-                        debugger;
-//                        this.root.querySelector("#h2-input").focus()
+                        this._hideEditBtn();
                         setTimeout(
-                            e => console.log(this),
-                            100
+                            e => this.root.querySelector("h2-input").root.querySelector('input').focus(),
+                            50
                         );
                     }
                 });
                 this.$.container.addEventListener("focusout", e => {
                     if (e.target.id === "editor") {
                         this.isEdit = false;
+                        this._hideEditBtn();
                     }
                 });
             }
 
             static get is() {
                 return "o2-input";
+            }
+
+            _showEditBtn() {
+                this.root.querySelector("span.editBtn").style.display = "inline-block";
+            }
+
+            _hideEditBtn() {
+                this.root.querySelector("span.editBtn").style.display = "none";
             }
         }
         window.customElements.define(O2Input.is, O2Input);
