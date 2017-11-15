@@ -108,10 +108,10 @@
                           value="{{ value }}"></h2-input>
                 <div class="button-container">
                     <div class="buttons">
-                        <button>
+                        <button title="保存">
                             <iron-icon icon="icons:check"></iron-icon>
                         </button>
-                        <button class="cancelBtn">
+                        <button title="取消" class="cancelBtn">
                             <iron-icon icon="icons:clear"></iron-icon>
                         </button>
                     </div>
@@ -120,7 +120,7 @@
 
             <template is="dom-if" if="[[ !isEdit ]]">
                 <span id="displayer" class="view">[[value]]</span>
-                <span id="editBtn" class="editBtn">编辑</span>
+                <span id="editBtn" class="editBtn" title="点击开始编辑">编辑</span>
             </template>
         </div>
     </template>
@@ -188,13 +188,13 @@
                         );
                     }
                 });
-                this.$.container.addEventListener("focusout", e => {
-                    console.log("失去焦点" + e.target.nodeName);
-                    if (e.target.id === "editor") {
-                        this.isEdit = false;
-                        this._hideEditBtn();
-                    }
-                });
+                /*this.$.container.addEventListener("focusout", e => {
+                 console.log("失去焦点" + e.target.nodeName);
+                 if (e.target.id === "editor") {
+                 this.isEdit = false;
+                 this._hideEditBtn();
+                 }
+                 });*/
             }
 
             static get is() {
