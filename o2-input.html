@@ -1,4 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="h2-input.html">
 <!--
 ```javascript
@@ -52,6 +55,50 @@
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
             }
+
+            :host div#container {
+                font-size: 0; /*用来处理inline-block元素之间的6个像素间隙的问题*/
+            }
+
+            :host div.button-container {
+                position: relative;
+            }
+
+            :host .buttons {
+                position: absolute;
+                right: 3px;
+                top: 0px;
+                z-index: 99;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                border-top: none;
+                border-radius: 0 0 3px 3px;
+                box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
+                outline: none;
+                padding: 3px;
+            }
+
+            :host .buttons > button {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                cursor: pointer;
+                border-radius: 4px;
+                padding: 0px;
+            }
+
+            :host .buttons > button:hover {
+                background-color: #ffffff;
+                border-color: #66afe9;
+            }
+
+            :host iron-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            :host .cancelBtn {
+                margin-left: 3px;
+            }
         </style>
 
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
@@ -59,11 +106,21 @@
             <template is="dom-if" if="[[ isEdit ]]">
                 <h2-input placeholder="[[placeholder]]" id="editor"
                           value="{{ value }}"></h2-input>
+                <div class="button-container">
+                    <div class="buttons">
+                        <button>
+                            <iron-icon icon="icons:check"></iron-icon>
+                        </button>
+                        <button class="cancelBtn">
+                            <iron-icon icon="icons:clear"></iron-icon>
+                        </button>
+                    </div>
+                </div>
             </template>
 
             <template is="dom-if" if="[[ !isEdit ]]">
-                <span id="displayer" class="view">[[value]]</span><!--不要删除此注释，用来处理inline-block元素之间的6个像素间隙的问题
-                --><span class="editBtn">编辑</span>
+                <span id="displayer" class="view">[[value]]</span>
+                <span id="editBtn" class="editBtn">编辑</span>
             </template>
         </div>
     </template>
@@ -107,19 +164,22 @@
             ready() {
                 super.ready();
                 this.$.container.addEventListener("mouseover", e => {
-                    if (e.target.id === "displayer") {
-                        e.target.classList.add("mouseover");
+                    console.log("鼠标悬浮" + e.target.nodeName);
+                    if (e.target.id === "displayer" || e.target.id === "editBtn") {
+                        this.root.querySelector("#displayer").classList.add("mouseover");
                         this._showEditBtn();
                     }
                 });
                 this.$.container.addEventListener("mouseout", e => {
-                    if (e.target.id === "displayer") {
-                        e.target.classList.remove("mouseover");
+                    console.log("鼠标离开" + e.target.nodeName);
+                    if (e.target.id === "displayer" || e.target.id === "editBtn") {
+                        this.root.querySelector("#displayer").classList.remove("mouseover");
                         this._hideEditBtn();
                     }
                 });
                 this.$.container.addEventListener("click", e => {
-                    if (e.target.id === "displayer") {
+                    console.log("鼠标点击" + e.target.nodeName);
+                    if (e.target.id === "displayer" || e.target.id === "editBtn") {
                         this.isEdit = true;
                         this._hideEditBtn();
                         setTimeout(
@@ -129,6 +189,7 @@
                     }
                 });
                 this.$.container.addEventListener("focusout", e => {
+                    console.log("失去焦点" + e.target.nodeName);
                     if (e.target.id === "editor") {
                         this.isEdit = false;
                         this._hideEditBtn();
