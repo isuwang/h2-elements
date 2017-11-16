@@ -133,7 +133,6 @@
 
             :host .input-size {
                 display: inline-block;
-                /*min-width: 170px;*/
             }
 
             :host .t-lightblue {
@@ -171,7 +170,8 @@
                        maxlength$="[[maxlength]]"
                        min$="[[min]]"
                        max$="[[max]]"
-                       style$="[[_setWidth(width)]]">
+                       style$="[[_setWidth(width)]]"
+                       spellcheck="false">
             </iron-input>
             <template is="dom-if" if="[[suffixUnit]]">
                 <span class="suffix-unit t-lightblue">[[suffixUnit]]</span>

@@ -15,6 +15,7 @@
         <style>
             :host {
                 display: flex;
+                font-size: 0; /*用来处理inline-block元素之间的6个像素间隙的问题*/
             }
 
             :host * {
@@ -42,6 +43,11 @@
                 border-color: #cccccc;
             }
 
+            :host .viewField {
+                flex: 1;
+                overflow: hidden;
+            }
+
             :host .view {
                 display: inline-block;
                 text-align: left;
@@ -53,15 +59,10 @@
                 border-radius: 4px;
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
-
-                width: 267px; /*此处样式需要优化*/
+                max-width: calc(100% - 27px);
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap
-            }
-
-            :host div#container {
-                font-size: 0; /*用来处理inline-block元素之间的6个像素间隙的问题*/
             }
 
             :host div.button-container {
@@ -110,28 +111,26 @@
         </style>
 
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
-        <div id="container">
-            <div class="editField">
-                <div id="editor">
-                    <slot id="slot"></slot>
-                </div>
-                <div class="button-container">
-                    <div class="buttons">
-                        <button title="保存" on-click="_save">
-                            <iron-icon icon="icons:check"></iron-icon>
-                        </button>
-                        <button title="取消" class="cancelBtn" on-click="_cancel">
-                            <iron-icon icon="icons:clear"></iron-icon>
-                        </button>
-                    </div>
+        <div class="editField">
+            <div id="editor">
+                <slot id="slot"></slot>
+            </div>
+            <div class="button-container">
+                <div class="buttons">
+                    <button title="保存" on-click="_save">
+                        <iron-icon icon="icons:check"></iron-icon>
+                    </button>
+                    <button title="取消" class="cancelBtn" on-click="_cancel">
+                        <iron-icon icon="icons:clear"></iron-icon>
+                    </button>
                 </div>
             </div>
-            <div class="viewField">
-                <span id="displayer" class="view">[[_loadViewFieldValue(valueObj.value,valueObj.selectedList)]]</span>
-                <span id="editBtn" class="editBtn" title="点击开始编辑">
+        </div>
+        <div class="viewField">
+            <span id="displayer" class="view">[[_loadViewFieldValue(valueObj.value,valueObj.selectedList)]]</span>
+            <span id="editBtn" class="editBtn" title="点击开始编辑">
                     <iron-icon icon="editor:mode-edit"></iron-icon>
                 </span>
-            </div>
         </div>
     </template>
 
@@ -261,25 +260,19 @@
                     });
                 });
 
-                this.set("slotNode", slotNodes[0]);
-            }
-
-            connectedCallback() {
-                super.connectedCallback();
                 /**
                  * 组件失去焦点的时候关闭组件
                  */
                 this.addEventListener("focusout", e => {
-                    console.log(e);
-                    console.log(e.target.nodeName + "失去焦点 focusout");
-//                    if (e.target === this.slotNode) {
-//                        return;
-//                    }
+                    if (e.target.nodeName === "H2-SELECT") {// 临时对H2-SELECT处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
+                        return;
+                    }
                     setTimeout(() => {
-                        this._cancel();
-                        console.log("valueObj:", this.valueObj, "lastValueObj:", this.lastValueObj);
+                        this._save();
                     }, 200)
                 });
+
+                this.set("slotNode", slotNodes[0]);
             }
 
             static get is() {
@@ -327,7 +320,6 @@
              * @private
              */
             _save() {
-                console.log("点击保存按钮");
                 this._showViewField();
                 this.set("lastValueObj", JSON.parse(JSON.stringify(this.valueObj)));
                 this.dispatchEvent(new CustomEvent('h2-mask-edit-saved', {
@@ -343,7 +335,6 @@
              * @private
              */
             _cancel() {
-                console.log("点击取消按钮");
                 this._showViewField();
                 this.set("valueObj", JSON.parse(JSON.stringify(this.lastValueObj)));
                 this.slotNode.value = this.lastValueObj.value;
