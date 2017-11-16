@@ -1,0 +1,353 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/editor-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="h2-input.html">
+<!--
+```javascript
+<h2-mask></h2-mask>
+```
+-->
+
+<dom-module id="h2-mask">
+  <template>
+    <style>
+      :host {
+        display: flex;
+      }
+
+      :host * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      :host span.editBtn {
+        background-color: #eeeeee;
+        display: none;
+        height: 34px;
+        line-height: 22px;
+        padding: 5px 3px;
+        border: 1px solid #ccc;
+        border-left: none;
+        border-radius: 4px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        vertical-align: top;
+        cursor: pointer;
+      }
+
+      :host span.mouseover {
+        border-color: #cccccc;
+      }
+
+      :host .view {
+        display: inline-block;
+        text-align: left;
+        font-size: 14px;
+        line-height: 34px;
+        height: 34px;
+        border: 1px solid transparent;
+        padding: 0px 12px;
+        border-radius: 4px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+
+        width: 267px;/*此处样式需要优化*/
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap
+      }
+
+      :host div#container {
+        font-size: 0; /*用来处理inline-block元素之间的6个像素间隙的问题*/
+      }
+
+      :host div.button-container {
+        position: relative;
+      }
+
+      :host .buttons {
+        position: absolute;
+        right: 3px;
+        top: 0px;
+        z-index: 99;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 0 3px 3px;
+        box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
+        outline: none;
+        padding: 3px;
+      }
+
+      :host .buttons > button {
+        background-color: #f0f0f0;
+        border: 1px solid #cccccc;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 0px;
+      }
+
+      :host .buttons > button:hover {
+        background-color: #ffffff;
+        border-color: #66afe9;
+      }
+
+      :host iron-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      :host .cancelBtn {
+        margin-left: 3px;
+      }
+
+      :host .editField {
+        display: none;
+      }
+    </style>
+
+    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+    <div id="container">
+      <div class="editField">
+        <div id="editor">
+          <slot id="slot"></slot>
+        </div>
+        <div class="button-container">
+          <div class="buttons">
+            <button title="保存" on-click="_save">
+              <iron-icon icon="icons:check"></iron-icon>
+            </button>
+            <button title="取消" class="cancelBtn" on-click="_cancel">
+              <iron-icon icon="icons:clear"></iron-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="viewField">
+        <span id="displayer" class="view">[[_loadViewFieldValue(valueObj.value,valueObj.selectedList)]]</span>
+        <span id="editBtn" class="editBtn" title="点击开始编辑">
+                    <iron-icon icon="editor:mode-edit"></iron-icon>
+                </span>
+      </div>
+    </div>
+  </template>
+
+  <script>
+      /**
+       * `h2-mask`
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/h2-mask/index.html
+       */
+      class H2Mask extends Polymer.Element {
+          static get properties() {
+              return {
+                  /**
+                   * 当前的数据
+                   */
+                  valueObj: {
+                      type: Object,
+                      value: function () {
+                          return {
+                              value: undefined,
+                              selectedList: undefined,
+                              time: undefined
+                          }
+                      },
+                      notify: true
+                  },
+                  /**
+                   * 最近一次保存的数据
+                   */
+                  lastValueObj: {
+                      type: Object
+                  },
+                  /**
+                   * 标签
+                   */
+                  label: {
+                      type: String
+                  },
+                  /**
+                   * 占位符
+                   */
+                  placeholder: {
+                      type: String
+                  },
+                  /**
+                   * 是否必填
+                   */
+                  required: {
+                      type: Boolean,
+                      value: false
+                  },
+                  /**
+                   * slot插槽中的组件
+                   */
+                  slotNodes: {
+                      type: Array
+                  }
+              };
+          }
+
+          static get observers() {
+              return [];
+          }
+
+          ready() {
+              super.ready();
+
+              /**
+               * 只读区域事件
+               */
+              const viewField = this.root.querySelector("div.viewField");
+              const slotNodes = this.root.querySelector("slot").assignedNodes()
+                  .filter(n => n.nodeType === Node.ELEMENT_NODE);
+              viewField.addEventListener("mouseover", e => {
+                  e.stopPropagation();
+                  this.root.querySelector("#displayer").classList.add("mouseover");
+                  this._showEditBtn();
+              });
+              viewField.addEventListener("mouseout", e => {
+                  e.stopPropagation();
+                  this.root.querySelector("#displayer").classList.remove("mouseover");
+                  this._hideEditBtn();
+              });
+              viewField.addEventListener("click", e => {
+                  e.stopPropagation();
+                  this._showEditField();
+                  //TODO slot中插入的组件应该增加各自的doFocus逻辑，用来初始化对组件的第一次调用操作
+                  setTimeout(
+                      () => slotNodes.length && slotNodes[0].doFocus(),
+                      50
+                  );
+              });
+
+              /**
+               * 组件失去焦点的时候关闭组件
+               */
+              this.root.querySelector("#container").addEventListener("focusout", e => {
+                  console.log("组件失去焦点");
+                  console.log("valueObj:", this.valueObj, "lastValueObj:", this.lastValueObj);
+                  e.stopPropagation();
+                  setTimeout(() => {
+                      this._showViewField();
+                  }, 200)
+              });
+
+              /**
+               * 监听slot里面的组件的数据变化
+               */
+              slotNodes.forEach(element => {
+                  /**
+                   * 1.因为数据的change事件notify在这段代码之前，所以需要手动从组件里取值，初始化一次valueObj,lastValueObj数据
+                   * 2.其他时候根据事件变化取值
+                   */
+                  this.set("valueObj", {
+                      value: element.value,
+                      selectedList: element.selectedList,
+                      time: element.time
+                  });
+                  this.set("lastValueObj", {
+                      value: element.value,
+                      selectedList: element.selectedList,
+                      time: element.time
+                  });
+
+
+                  element.addEventListener("value-changed", e => {
+                      e.stopPropagation();
+                      this.set("valueObj.value", e.detail.value);
+                  });
+                  element.addEventListener("h2-selected-list-changed", e => {
+                      e.stopPropagation();
+                      this.set("valueObj.selectedList", e.detail.value);
+                  });
+                  element.addEventListener("time-changed", e => {
+                      e.stopPropagation();
+                      this.set("valueObj.time", e.detail.value);
+                  });
+              });
+
+              this.set("slotNodes", slotNodes);
+          }
+
+          static get is() {
+              return "h2-mask";
+          }
+
+          /**
+           * 显示编辑按钮
+           */
+          _showEditBtn() {
+              this.root.querySelector("span.editBtn").style.display = "inline-block";
+          }
+
+
+          /**
+           * 隐藏编辑按钮
+           */
+          _hideEditBtn() {
+              this.root.querySelector("span.editBtn").style.display = "none";
+          }
+
+          /**
+           * 显示只读区域
+           * @private
+           */
+          _showViewField() {
+              this.root.querySelector("div.viewField").style.display = "inline-block";
+              this.root.querySelector("div.editField").style.display = "none";
+              this._hideEditBtn();
+          }
+
+          /**
+           * 显示编辑区域
+           * @private
+           */
+          _showEditField() {
+              this.root.querySelector("div.viewField").style.display = "none";
+              this.root.querySelector("div.editField").style.display = "inline-block";
+              this._hideEditBtn();
+          }
+
+          /**
+           * 保存操作
+           * TODO:点击按钮的时候不知道为何事件顺序是blur->click->blur
+           * @private
+           */
+          _save() {
+              console.log("点击保存按钮");
+              this.set("lastValueObj", JSON.parse(JSON.stringify(this.valueObj)));
+              this.dispatchEvent(new CustomEvent('h2-mask-edit-saved', {
+                  composed: true,
+                  bubbles: true,
+                  detail: {value: this.valueObj}
+              }));
+          }
+
+          /**
+           * 取消操作
+           * TODO:点击按钮的时候不知道为何事件顺序是blur->click->blur
+           * @private
+           */
+          _cancel() {
+              console.log("点击取消按钮");
+              this.set("valueObj", JSON.parse(JSON.stringify(this.lastValueObj)));
+              this.slotNodes[0].value = this.lastValueObj.value;
+          }
+
+          _loadViewFieldValue(value, selectedList) {
+              if (!value) {
+                  return "无";
+              }
+              return selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNodes[0].attrForLabel]).join() : value;
+          }
+      }
+      window.customElements.define(H2Mask.is, H2Mask);
+  </script>
+</dom-module>
