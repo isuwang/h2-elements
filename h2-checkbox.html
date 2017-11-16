@@ -202,13 +202,10 @@
             validate() {
                 const verify_pss = this.required ? !!this.value : true;
                 let element = this.root.querySelector('#status-items');
-                let clazz = element.getAttribute("class");
                 if (!verify_pss) {
-                    if (clazz.indexOf('required-input') < 0) {
-                        element.setAttribute("class", clazz + " required-input");
-                    }
+                    element.classList.add("required-input");
                 } else {
-                    element.setAttribute("class", !!clazz?clazz.replace(" required-input", ""):"");
+                    element.classList.remove("required-input");
                 }
                 return verify_pss
             }

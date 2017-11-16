@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>h2-input demo</title>
+
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../o2-textarea.html">
+
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
+
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+        </style>
+    </custom-style>
+</head>
+<body>
+<div class="vertical-section-container centered">
+    <h3>支持标签</h3>
+    <demo-snippet>
+        <template>
+            <o2-textarea label="测试" value="这是一个text文本"></o2-textarea>
+        </template>
+    </demo-snippet>
+
+</div>
+</body>
+</html>
