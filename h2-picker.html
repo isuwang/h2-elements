@@ -187,12 +187,12 @@
                 font-weight: bold;
                 color: #0273D4;
                 text-decoration: none;
-                font-size: 11px;
+                font-size: 12px;
             }
 
             :host div.tags-input span.tag a:hover {
                 color: #f60;
-                font-size: 13px;
+                font-size: 12px;
             }
 
             :host .shade {
@@ -633,15 +633,15 @@
             /**
              * value属性变化监听函数
              */
-            _valueChange(newValue, oldValue) {
+            _valueChange(value) {
                 //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
-                if (newValue == null || newValue === "") {
+                if (value == null || value === "") {
                     this.set("selectedList", []);
                     return;
                 }
 
                 /**
-                 * 根据已选newValue值装载已选数据集selectedList
+                 * 根据已选value值装载已选数据集selectedList
                  *
                  * 1.配置了itemsQueryUrl字段，从接口获取数据，从displayItems数据集获取已选数据集
                  * 2.没配置itemsQueryUrl字段，从本地获取数据，从items数据集中获取已选数据集
@@ -653,7 +653,7 @@
                      * 单选的时候直接替换旧值
                      */
                     if (!this.multi) {
-                        this.set("selectedList", items.filter(e => e[this.attrForValue] == newValue));
+                        this.set("selectedList", items.filter(e => e[this.attrForValue] == value));
 
                         //对外抛一个选定数据变化事件，提供给h2-mask组件取值
                         this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
@@ -667,19 +667,17 @@
                     /**
                      * 多选，分新增和删除操作
                      */
-                    const newValueStr = newValue + "";
-                    const oldValueStr = (oldValue || "") + "";
-                    let newValues = newValueStr.split(",");
-                    let oldValues = oldValueStr.split(",");
+                    const values = (value + "").split(",");
+                    const oldValues = this.selectedList.map(e => e[this.attrForValue]);
                     /**
                      *  新增选项操作
                      */
-                    if (newValueStr.length > oldValueStr.length) {
+                    if (values.length > oldValues.length) {
                         /**
                          * 1.找到新增的value数组
                          * 2.根据新增的value数组，找到对应的数据集合，数组拼接到上一次保存的selectedList后
                          */
-                        let diffValues = newValues.filter(val => oldValues.every(oldVal => oldVal != val));
+                        let diffValues = values.filter(val => oldValues.every(oldVal => oldVal != val));
                         let newSelectedList = items.filter(e => diffValues.some(val => e[this.attrForValue] == val));
                         this.set("selectedList", this.selectedList.concat(newSelectedList));
                     } else {
@@ -687,7 +685,7 @@
                          * 1.找到删除的value数组
                          * 2.根据删除的value数组，找到对应的数据集合，从上一次保存的selectedList删除对应的数据集
                          */
-                        let diffValues = oldValues.filter(val => newValues.every(oldVal => oldVal != val));
+                        let diffValues = oldValues.filter(val => values.every(oldVal => oldVal != val));
                         let newSelectedList = this.selectedList.filter(e => !diffValues.some(val => e[this.attrForValue] == val));
                         this.set("selectedList", newSelectedList);
                     }
