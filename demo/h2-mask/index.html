@@ -1,69 +1,126 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-  <title>h2-mask demo</title>
+    <title>h2-mask demo</title>
 
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-mask.html">
-  <link rel="import" href="../../h2-input.html">
-  <link rel="import" href="../../h2-select.html">
-
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-      .centered {
-        min-width: 800px;
-      }
-
-      demo-snippet {
-        --demo-snippet-code: {
-          max-height: 500px;
+    <script>
+        if (!window.location.href.endsWith("?mock=mockData.js")) {
+            window.location.href = window.location.href + "?mock=mockData.js";
         }
-      }
+    </script>
 
-      div.container {
-        display: flex;
-        flex-flow: row wrap;
-      }
+    <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
-      div.container > h2-mask {
-        width: 50%;
-      }
-    </style>
-  </custom-style>
+    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../h2-mask.html">
+    <link rel="import" href="../../h2-input.html">
+    <link rel="import" href="../../h2-select.html">
+    <link rel="import" href="../../h2-picker.html">
+
+    <custom-style>
+        <style is="custom-style" include="demo-pages-shared-styles">
+            .centered {
+                min-width: 800px;
+            }
+
+            demo-snippet {
+                --demo-snippet-code: {
+                    max-height: 500px;
+                }
+            }
+
+            div.container {
+                display: flex;
+                flex-flow: row wrap;
+            }
+
+            div.container > h2-mask {
+                width: 50%;
+            }
+        </style>
+    </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>Basic h2-mask demo</h3>
-  <demo-snippet>
-    <template>
-      <div class="container">
-        <h2-mask label="输入框">
-          <h2-input placeholder="测试输入" value="梅西"></h2-input>
-        </h2-mask>
-        <h2-mask label="输入框">
-          <h2-select placeholder="测试输入" id = "select" multi></h2-select>
-        </h2-mask>
-      </div>
-      <script>
-          const items = [
-              {"label": "梅西", "value": 1},
-              {"label": "C罗", "value": 2},
-              {"label": "苏亚雷斯", "value": 3},
-              {"label": "库蒂尼奥", "value": 4},
-              {"label": "特尔斯特根", "value": 5},
-              {"label": "保利尼奥", "value": 6},
-              {"label": "内马尔", "value": 13}
-          ];
-          select.items = items;
-      </script>
-    </template>
-  </demo-snippet>
+    <!--<h3>支持h2-input输入框</h3>
+    <demo-snippet>
+        <template>
+            <h2-mask label="输入框">
+                <h2-input placeholder="测试输入" value="梅西"></h2-input>
+            </h2-mask>
+        </template>
+    </demo-snippet>-->
+
+    <h3>支持h2-select下拉框</h3>
+    <demo-snippet>
+        <template>
+            <h2-mask label="下拉框">
+                <h2-select placeholder="测试输入" id="select" multi></h2-select>
+            </h2-mask>
+            <script>
+                const items1 = [
+                    {"label": "梅西", "value": 1},
+                    {"label": "C罗", "value": 2},
+                    {"label": "苏亚雷斯", "value": 3},
+                    {"label": "库蒂尼奥", "value": 4},
+                    {"label": "特尔斯特根", "value": 5},
+                    {"label": "保利尼奥", "value": 6},
+                    {"label": "内马尔", "value": 13}
+                ];
+                select.items = items1;
+                select.value = "1,2,3";
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>支持h2-picker框</h3>
+    <demo-snippet>
+        <template>
+            <div class="container">
+                <h2-mask label="picker框">
+                    <h2-picker id="picker10"></h2-picker>
+                </h2-mask>
+                <h2-mask label="picker框">
+                    <h2-picker id="picker11" multi></h2-picker>
+                </h2-mask>
+            </div>
+            <script>
+                /**
+                 * 整个demo页面共用这份数据
+                 */
+                const attrForValue = "id";
+                const attrForLabel = "label";
+                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+                const items = [
+                    {"id": 1, "label": "快塑网", "business": "塑料"},
+                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
+                    {"id": 3, "label": "腾讯", "business": "游戏"},
+                    {"id": 4, "label": "京东", "business": "电商"}
+                ];
+                picker10.attrForValue = attrForValue;
+                picker10.attrForLabel = attrForLabel;
+                picker10.displayFields = displayFields;
+                /*picker10.itemsInitQueryUrl = "/init.do";
+                 picker10.itemsQueryUrl = "/query.do";*/
+                picker10.items = items;
+
+                picker11.attrForValue = attrForValue;
+                picker11.attrForLabel = attrForLabel;
+                picker11.displayFields = displayFields;
+                picker11.items = items;
+                /*picker11.itemsQueryUrl = "/query.do";
+                 picker11.itemsInitQueryUrl = "/init.do";
+                 picker11.itemsQueryParams = {limit: 10, code: "business"};*/
+                picker11.value = "1,2,3"
+            </script>
+        </template>
+    </demo-snippet>
 </div>
 </body>
 </html>

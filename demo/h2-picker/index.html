@@ -6,6 +6,14 @@
 
     <title>h2-picker demo</title>
 
+    <script>
+        if(!window.location.href.endsWith("?mock=mockData.js")) {
+            window.location.href = window.location.href + "?mock=mockData.js";
+        }
+    </script>
+
+    <script type="text/javascript" src="../../utils/mock_setup.js"></script>
+
     <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
     <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
@@ -28,7 +36,7 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>基础demo</h3>
+    <!--<h3>基础demo</h3>
     <demo-snippet>
         <template>
             <h2-picker id="picker" label="公司"></h2-picker>
@@ -98,18 +106,6 @@
             <h2-picker id="picker6" label="输入框宽度" multi width="200px"></h2-picker>
             <h2-picker id="picker7" label="组件宽度" multi style="width:150px"></h2-picker>
             <script>
-                /**
-                 * 整个demo页面共用这份数据
-                 */
-                const attrForValue = "id";
-                const attrForLabel = "label";
-                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
-                const items = [
-                    {"id": 1, "label": "快塑网", "business": "塑料"},
-                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
-                    {"id": 3, "label": "腾讯", "business": "游戏"},
-                    {"id": 4, "label": "京东", "business": "电商"}
-                ];
                 picker5.attrForValue = attrForValue;
                 picker5.attrForLabel = attrForLabel;
                 picker5.displayFields = displayFields;
@@ -148,23 +144,38 @@
                 picker9.items = items;
             </script>
         </template>
-    </demo-snippet>
+    </demo-snippet>-->
 
     <h3>支持通过接口查询数据（items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置）</h3>
     <demo-snippet>
         <template>
-            <h2-picker id="picker10" label="公司" multi style="width:250px"></h2-picker>
+            <!--<h2-picker id="picker10" label="公司" style="width:250px"></h2-picker>-->
             <h2-picker id="picker11" label="公司" multi style="width:250px"></h2-picker>
             <script>
-                picker10.attrForValue = attrForValue;
+                /**
+                 * 整个demo页面共用这份数据
+                 */
+                const attrForValue = "id";
+                const attrForLabel = "label";
+                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+                const items = [
+                    {"id": 1, "label": "快塑网", "business": "塑料"},
+                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
+                    {"id": 3, "label": "腾讯", "business": "游戏"},
+                    {"id": 4, "label": "京东", "business": "电商"}
+                ];
+                /*picker10.attrForValue = attrForValue;
                 picker10.attrForLabel = attrForLabel;
                 picker10.displayFields = displayFields;
+                picker10.itemsInitQueryUrl = "/init.do";
                 picker10.itemsQueryUrl = "/query.do";
-
+                picker10.value = "4";
+*/
                 picker11.attrForValue = attrForValue;
                 picker11.attrForLabel = attrForLabel;
                 picker11.displayFields = displayFields;
                 picker11.itemsQueryUrl = "/query.do";
+                picker11.itemsInitQueryUrl = "/init.do";
                 picker11.itemsQueryParams = {limit: 10, code: "business"};
                 picker11.value = "1,2,3"
             </script>

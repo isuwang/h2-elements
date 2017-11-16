@@ -23,7 +23,7 @@
             :host {
                 text-align: center;
                 display: flex;
-                align-items: center;
+                /*align-items: center;*/
             }
 
             :host * {
@@ -303,7 +303,7 @@
                     /**
                      * 发送请求和模拟数据的组件
                      */
-                    fetch: {
+                    fetchUtil: {
                         type: Object,
                         readOnly: true,
                         value: function () {
@@ -320,11 +320,17 @@
                      * 标签盒子宽度
                      */
                     width: {
-                        type: String,
-                        /*value: "170px"*/
+                        type: String
                     },
                     /**
                      * 组件初始数据集查询url
+                     * 注意：当此字段有值的时候，将通过特定接口查询组件的数据集。items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置
+                     */
+                    itemsInitQueryUrl: {
+                        type: String
+                    },
+                    /**
+                     * 组件关键字数据集查询url
                      * 注意：当此字段有值的时候，将通过特定接口查询组件的数据集。items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置
                      */
                     itemsQueryUrl: {
@@ -420,7 +426,8 @@
                     value: {
                         type: String,
                         reflectToAttribute: true,
-                        notify: true
+                        notify: true,
+                        observer: "_valueChange"
                     },
                     /**
                      * 是否只读
@@ -467,8 +474,7 @@
             static get observers() {
                 return [
                     '_readonlyChange(readonly)',
-                    '_itemsQueryUrlChange(itemsQueryUrl)',
-                    '_valueChange(value)'
+                    '_itemsInitQueryUrlChange(itemsInitQueryUrl)'
                 ]
             }
 
@@ -501,9 +507,25 @@
                 !!readonly ? shade.style.display = 'block' : shade.style.display = 'none';
             }
 
-            _itemsQueryUrlChange(itemsQueryUrl) {
-                if (itemsQueryUrl) {
-                    this._queryItems(itemsQueryUrl, this.itemsQueryParams, "");
+            _itemsInitQueryUrlChange(itemsInitQueryUrl) {
+                if (itemsInitQueryUrl) {
+                    this._queryItems(
+                        itemsInitQueryUrl,
+                        {value: this.value},
+                        data => {
+                            let displayItems = data.rows || data;
+                            let oldLength = this.displayItems.length;
+                            this.set('displayItems', displayItems.slice(0, 9));
+                            /**
+                             * 1.此时手动调用一次_valueChange函数，处理displayItems是还没查回来数据的时候，_valueChange监听函数先执行，导致默认value值无法正常被初始化的问题
+                             * 2.此时手动修改一次userInputKeyword的值，触发一次下拉面板数据查询
+                             */
+                            if (oldLength === 0) {
+                                this._valueChange(this.value);
+                                this.userInputKeyword = "";
+                            }
+                        }
+                    );
                 }
             }
 
@@ -578,14 +600,29 @@
                  * 1.通过接口去查询数据
                  */
                 if (this.itemsQueryUrl) {
-                    this._queryItems(this.itemsQueryUrl, this.itemsQueryParams, userInputKeyword);
+                    // 装载查询参数
+                    let queryParams;
+                    if (!!this.itemsQueryParams) {
+                        queryParams = Object.assign({}, this.itemsQueryParams);
+                        queryParams.keyword = userInputKeyword;
+                    } else {
+                        queryParams = {"keyword": userInputKeyword}
+                    }
+                    this._queryItems(
+                        this.itemsQueryUrl,
+                        queryParams,
+                        data => {
+                            let displayItems = data.rows || data;
+                            this.set('displayItems', displayItems.slice(0, 9));
+                        }
+                    );
                     return;
                 }
 
                 /**
                  * 2.查询本地数据
                  */
-                if (!!userInputKeyword) {
+                if (userInputKeyword != undefined) {
                     displayItems = this.cacheSearchUtil.search(userInputKeyword);
                 } else {
                     displayItems = this.items;
@@ -596,15 +633,15 @@
             /**
              * value属性变化监听函数
              */
-            _valueChange(value) {
+            _valueChange(newValue, oldValue) {
                 //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
-                if (value == null || value === "") {
+                if (newValue == null || newValue === "") {
                     this.set("selectedList", []);
                     return;
                 }
 
                 /**
-                 * 根据已选value值装载已选数据集selectedList
+                 * 根据已选newValue值装载已选数据集selectedList
                  *
                  * 1.配置了itemsQueryUrl字段，从接口获取数据，从displayItems数据集获取已选数据集
                  * 2.没配置itemsQueryUrl字段，从本地获取数据，从items数据集中获取已选数据集
@@ -612,48 +649,67 @@
                 const items = !!this.itemsQueryUrl ? this.displayItems : this.items;
                 if (items && items.length > 0) {
                     /*this._hidePlaceholder();*/
-                    let values = (value + "").split(",");
-                    //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
-                    let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
-                    this.set("selectedList", selectedList);
+                    /**
+                     * 单选的时候直接替换旧值
+                     */
+                    if (!this.multi) {
+                        this.set("selectedList", items.filter(e => e[this.attrForValue] == newValue));
+
+                        //对外抛一个选定数据变化事件，提供给h2-mask组件取值
+                        this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+                            composed: true,
+                            bubbles: true,
+                            detail: {value: this.selectedList}
+                        }));
+                        return;
+                    }
+
+                    /**
+                     * 多选，分新增和删除操作
+                     */
+                    const newValueStr = newValue + "";
+                    const oldValueStr = (oldValue || "") + "";
+                    let newValues = newValueStr.split(",");
+                    let oldValues = oldValueStr.split(",");
+                    /**
+                     *  新增选项操作
+                     */
+                    if (newValueStr.length > oldValueStr.length) {
+                        /**
+                         * 1.找到新增的value数组
+                         * 2.根据新增的value数组，找到对应的数据集合，数组拼接到上一次保存的selectedList后
+                         */
+                        let diffValues = newValues.filter(val => oldValues.every(oldVal => oldVal != val));
+                        let newSelectedList = items.filter(e => diffValues.some(val => e[this.attrForValue] == val));
+                        this.set("selectedList", this.selectedList.concat(newSelectedList));
+                    } else {
+                        /**
+                         * 1.找到删除的value数组
+                         * 2.根据删除的value数组，找到对应的数据集合，从上一次保存的selectedList删除对应的数据集
+                         */
+                        let diffValues = oldValues.filter(val => newValues.every(oldVal => oldVal != val));
+                        let newSelectedList = this.selectedList.filter(e => !diffValues.some(val => e[this.attrForValue] == val));
+                        this.set("selectedList", newSelectedList);
+                    }
+                    //对外抛一个选定数据变化事件，提供给h2-mask组件取值
+                    this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+                        composed: true,
+                        bubbles: true,
+                        detail: {value: this.selectedList}
+                    }));
                 }
             }
 
-            _queryItems(url, queryParams, userInputKeyword) {
-                queryParams == undefined ? queryParams = {"keyword": userInputKeyword} : queryParams.keyword = userInputKeyword;
+            _queryItems(url, queryParams, successCallback) {
                 const reqUrl = new URL(window.location.origin + url);
                 Object.keys(queryParams).filter(key => queryParams[key] != undefined).forEach((key) => reqUrl.searchParams.append(key, queryParams[key]));
                 const request = new Request(reqUrl, {
-                    method: "GET",
-                    headers: {
-                        "content-type": "application/json;charset=utf-8",
-                        "Cache-Control": "no-cache"
-                    }
+                    method: "GET"
                 });
-                //TODO 待开发，先屏蔽
-                /*this.fetch.fetchIt(request)*/
-                window.fetch(request)
-                    .then(res => {
-                        let oldLength = this.displayItems.length;
-                        // 临时数据
-                        let displayItems = [
-                            {"id": 1, "label": "快塑网", "business": "塑料"},
-                            {"id": 2, "label": "唯品会", "business": "电商"},
-                            {"id": 3, "label": "腾讯", "business": "游戏"},
-                            {"id": 4, "label": "京东", "business": "电商"},
-                            {"id": 5, "label": "淘宝", "business": "电商"}
-                        ];
-                        this.set('displayItems', displayItems.slice(0, 9));
-                        /**
-                         * 此时手动调用一次_valueChange函数，处理displayItems是还没查回来数据的时候，_valueChange监听函数先执行，导致默认value值无法正常被初始化的问题
-                         */
-                        if (oldLength === 0) {
-                            this._valueChange(this.value);
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                    });
+                this.fetchUtil.fetchIt(request)
+                    .then(res => res.json())
+                    .then(successCallback)
+                    .catch(err => console.error(err));
             }
 
             /**
@@ -723,7 +779,7 @@
                  */
                 let value = this.value;
                 if (value == undefined || !this.multi) {
-                    this.set('value', item[this.attrForValue]);
+                    this.set('value', item[this.attrForValue] + "");
                 } else if (value.toString().split(',').every(value => value != item[this.attrForValue])) {
                     this.set('value', this.value + "," + item[this.attrForValue]);
                 }
@@ -778,12 +834,12 @@
                 this._switchFocusItemAt(0);
             }
 
-            /**
-             * 隐藏占位符
-             */
-            _hidePlaceholder() {
-                this.$['placeholder'].style.display = 'none';
-            }
+//            /**
+//             * 隐藏占位符
+//             */
+//            _hidePlaceholder() {
+//                this.$['placeholder'].style.display = 'none';
+//            }
 
             /**
              * 下拉面板点击事件
@@ -851,6 +907,13 @@
              */
             _getCellValue(row, col) {
                 return row[col.field];
+            }
+
+            /**
+             * 输入框获取焦点
+             */
+            doFocus() {
+                this.root.querySelector("div.tags-input").click();
             }
         }
 

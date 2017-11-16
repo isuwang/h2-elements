@@ -433,6 +433,14 @@
                     let values = (value + "").split(",");
                     let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
                     this.set("selectedList", selectedList);
+
+                    //对外抛一个选定数据变化事件，提供给h2-mask组件取值
+                    this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+                        composed: true,
+                        bubbles: true,
+                        detail: {value: this.selectedList}
+                    }));
+
                     this.multi ? "" : this.set("selected", selectedList[0]);
                 }
             }
@@ -442,13 +450,6 @@
                     return;
                 }
                 this.set("value", splices.indexSplices[0].object.map(e => this._getValue(e)).join(","));
-
-                //对外抛一个选定数据变化事件
-                this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-                    composed: true,
-                    bubbles: true,
-                    detail: {value: this.selectedList}
-                }));
             }
 
             _selectedChange(selected) {

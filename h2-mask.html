@@ -193,10 +193,6 @@
                 };
             }
 
-            static get observers() {
-                return [];
-            }
-
             ready() {
                 super.ready();
 
@@ -264,7 +260,10 @@
                  * 组件失去焦点的时候关闭组件
                  */
                 this.addEventListener("focusout", e => {
-                    if (e.target.nodeName === "H2-SELECT") {// 临时对H2-SELECT处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
+                    console.log(e.target.nodeName + "失去焦点");
+                    console.log("valueObj:", this.valueObj, "lastValueObj:", this.lastValueObj);
+                    // 临时对H2-SELECT,H2-PICKER处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
+                    if (e.target.nodeName === "H2-SELECT"||e.target.nodeName === "H2-PICKER") {
                         return;
                     }
                     setTimeout(() => {
