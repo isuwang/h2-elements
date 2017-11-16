@@ -1,0 +1,104 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="./h2-input.html">
+<!--
+
+```javascript
+
+<h2-mask-input-demo></h2-mask-input-demo>
+```
+-->
+
+<dom-module id="h2-mask-input-demo">
+  <template>
+    <style>
+      .mask {
+
+      }
+
+      .mouseover {
+        border: solid 1px black;
+      }
+
+    </style>
+
+    <div id="container">
+      <template is="dom-if" if="[[ isEdit ]]">
+        <div class="mask">
+          <h2-input id="editor" value="{{ value }}"></h2-input>
+        </div>
+      </template>
+
+      <template is="dom-if" if="[[ !isEdit ]]">
+        <div id="displayer" class="mask">[[value]]</div>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `h2-mask-input-demo`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-mask-input-demo/index.html
+     */
+    class H2MaskInputDemo extends Polymer.Element {
+      static get properties() {
+        return {
+          isEdit: {
+            type: Boolean,
+            value: false
+          },
+          value: {
+            type: String,
+            value: "asdf"
+          }
+
+        };
+      }
+
+      static get observers() {
+        return [];
+      }
+
+      ready() {
+        super.ready();
+
+        this.$.container.addEventListener("mouseover", e => {
+          if (e.target.id === "displayer") {
+            e.target.classList.add("mouseover");
+          }
+        });
+
+        this.$.container.addEventListener("mouseout", e => {
+          if (e.target.id === "displayer") {
+            e.target.classList.remove("mouseover");
+          }
+        });
+
+        this.$.container.addEventListener("click", e => {
+          if (e.target.id === "displayer") {
+            this.isEdit = true;
+            //TODO set focus to input element
+//            setTimeout(() => {
+//              this.shadowRoot.querySelector("#editor").focus();
+//            }, 100);
+          }
+        });
+
+        this.$.container.addEventListener("focusout", e => {
+          if (e.target.id === "editor") {
+            this.isEdit = false;
+          }
+        });
+
+      }
+
+      static get is() {
+        return "h2-mask-input-demo";
+      }
+    }
+
+    window.customElements.define(H2MaskInputDemo.is, H2MaskInputDemo);
+  </script>
+</dom-module>
