@@ -583,6 +583,13 @@
                 let realWidth = ((span.offsetWidth || 0) + 5 );
                 return (realWidth > maxWidth ? maxWidth : realWidth) + "px";
             }
+
+            /**
+             * 模拟点击一次输入框，触发展示下拉面板行为
+             */
+            doFocus(){
+                this.root.querySelector("div.tags-box").click();
+            }
         }
         window.customElements.define(H2Select.is, H2Select);
     </script>

@@ -232,10 +232,11 @@
                  */
                 this.root.querySelector("#container").addEventListener("focusout", e => {
                     console.log("组件失去焦点");
-                    console.log("valueObj:", this.valueObj, "lastValueObj:", this.lastValueObj);
                     e.stopPropagation();
                     setTimeout(() => {
+                        this._cancel();
                         this._showViewField();
+                        console.log("valueObj:", this.valueObj, "lastValueObj:", this.lastValueObj);
                     }, 200)
                 });
 
