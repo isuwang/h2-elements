@@ -648,7 +648,7 @@
                             this.itemsInitQueryUrl,
                             {ids: value},
                             data => {
-                                // 处理数据模拟的问题，临时过滤，正式代码要删除此行
+                                // 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
                                 const rows = (data.rows || data || []).filter(e => value == e[this.attrForValue]);
                                 this.set("selectedList", rows);
                                 this._dispatchSelectedList();
@@ -680,7 +680,7 @@
                     this.itemsInitQueryUrl,
                     {ids: diffValues.join()},
                     data => {
-                        // 处理数据模拟的问题，临时过滤，正式代码要删除此行
+                        // 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
                         const rows = (data.rows || data || []).filter(e => diffValues.some(s => s == e[this.attrForValue]));
                         this.set("selectedList", unionSelectedList.concat(rows));
                         this._dispatchSelectedList();
