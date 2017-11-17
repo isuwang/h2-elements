@@ -1,7 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="h2-label.html">
 <link rel="import" href="h2-fetch.html">
 <script type="text/javascript" src="../../resource/plugin/dictionary/firstLetterDictionary.js"></script>
@@ -73,7 +71,7 @@
                 font-size: 12px;
                 border-left: 1px solid #ddd;
                 border-top: 1px solid #ddd;
-                z-index: 9999;
+                z-index: 999;
                 padding: 5px 0 0 0;
                 background: white;
                 color: black;
@@ -211,18 +209,11 @@
             :host .float-r {
                 float: right;
             }
-
-            /* 占位符样式 */
-            :host .placeholder {
-                opacity: 0.5;
-                font-size: 14px;
-            }
         </style>
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <div class="input-wrap">
             <div class="input-container">
                 <div class="tags-input" style$="{{_getTagsBoxWidth(width)}}">
-                    <!--<span id="placeholder" class="placeholder">[[placeholder]]</span>-->
                     <span id="tag-content">
                     <template is="dom-repeat" items="[[selectedList]]">
                         <span class="tag" style$="[[_getInputContainerMaxWidth(width)]]">
@@ -238,7 +229,6 @@
                                style$="[[_getInputContainerMaxWidth(width)]]"
                                autocomplete="off">
                     </iron-input>
-                    <!--<iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>-->
                 </div>
                 <div class="shade"></div>
             </div>
@@ -323,27 +313,26 @@
                         type: String
                     },
                     /**
-                     * 组件初始数据集查询url
-                     * 注意：当此字段有值的时候，将通过特定接口查询组件的数据集。items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置
+                     * （接口查询模式）组件默认value值时，初始数据集的查询url
+                     * 注意：当此字段有值的时候，将启用接口查询模式，通过接口查询组件的数据集。items，searchFields，usePinyinSearch(本地查询模式)配置字段的将失效，无需配置
                      */
                     itemsInitQueryUrl: {
                         type: String
                     },
                     /**
-                     * 组件关键字数据集查询url
-                     * 注意：当此字段有值的时候，将通过特定接口查询组件的数据集。items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置
+                     * （接口查询模式）组件关键字数据集查询url
                      */
                     itemsQueryUrl: {
                         type: String
                     },
                     /**
-                     * 组件初始数据集查询参数,跟组件初始数据集查询url搭配使用
+                     * （接口查询模式）组件初始数据集查询参数,跟组件初始数据集查询url搭配使用
                      */
                     itemsQueryParams: {
                         type: Object
                     },
                     /**
-                     * （本地）组件初始数据集
+                     * （本地查询模式）组件初始数据集
                      * 如：[{"id": 1, "label": "快塑网", "business": "塑料"},{"id": 2, "label": "阿里巴巴", "business": "电商"}]
                      */
                     items: {
@@ -360,12 +349,6 @@
                         }
                     },
                     /**
-                     * 输入框占位符
-                     */
-                    placeholder: {
-                        type: String
-                    },
-                    /**
                      * 用户输入的模糊搜索关键字
                      */
                     userInputKeyword: {
@@ -373,7 +356,7 @@
                         observer: "_userInputKeywordChange"
                     },
                     /**
-                     * （本地）模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
+                     * （本地查询模式）模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
                      */
                     searchFields: {
                         type: Array
@@ -400,7 +383,7 @@
                         value: "value"
                     },
                     /**
-                     * （本地）是否启用拼音搜索（根据模糊搜索的字段字符串数组对数据集的对应字段做中文转拼音处理），默认启用
+                     * （本地查询模式）是否启用拼音搜索（根据模糊搜索的字段字符串数组对数据集的对应字段做中文转拼音处理），默认启用
                      */
                     usePinyinSearch: {
                         type: Boolean,
@@ -482,9 +465,10 @@
             connectedCallback() {
                 super.connectedCallback();
                 /**
-                 * focus事件用来控制下拉面板打开；
-                 * keydown事件用来控制快捷键选中；
-                 * blur事件用来控制下拉面板关闭
+                 * 事件说明：
+                 * 1.keydown事件用来控制快捷键选中；
+                 * 2.click事件用来控制下拉面板打开；
+                 * 3.blur事件用来控制下拉面板关闭
                  */
                 let input = this.root.querySelector('#keywordInput');
                 input.addEventListener("keydown", e => {
@@ -509,23 +493,7 @@
 
             _itemsInitQueryUrlChange(itemsInitQueryUrl) {
                 if (itemsInitQueryUrl) {
-                    this._queryItems(
-                        itemsInitQueryUrl,
-                        {value: this.value},
-                        data => {
-                            let displayItems = data.rows || data;
-                            let oldLength = this.displayItems.length;
-                            this.set('displayItems', displayItems.slice(0, 9));
-                            /**
-                             * 1.此时手动调用一次_valueChange函数，处理displayItems是还没查回来数据的时候，_valueChange监听函数先执行，导致默认value值无法正常被初始化的问题
-                             * 2.此时手动修改一次userInputKeyword的值，触发一次下拉面板数据查询
-                             */
-                            if (oldLength === 0) {
-                                this._valueChange(this.value);
-                                this.userInputKeyword = "";
-                            }
-                        }
-                    );
+                    this.userInputKeyword = "";
                 }
             }
 
@@ -612,8 +580,7 @@
                         this.itemsQueryUrl,
                         queryParams,
                         data => {
-                            let displayItems = data.rows || data;
-                            this.set('displayItems', displayItems.slice(0, 9));
+                            this.set('displayItems', (data.rows || data || []).slice(0, 9));
                         }
                     );
                     return;
@@ -622,11 +589,7 @@
                 /**
                  * 2.查询本地数据
                  */
-                if (userInputKeyword != undefined) {
-                    displayItems = this.cacheSearchUtil.search(userInputKeyword);
-                } else {
-                    displayItems = this.items;
-                }
+                displayItems = userInputKeyword != undefined ? this.cacheSearchUtil.search(userInputKeyword) : this.items;
                 this.set('displayItems', displayItems.slice(0, 9));
             }
 
@@ -641,61 +604,99 @@
                 }
 
                 /**
-                 * 根据已选value值装载已选数据集selectedList
-                 *
-                 * 1.配置了itemsQueryUrl字段，从接口获取数据，从displayItems数据集获取已选数据集
-                 * 2.没配置itemsQueryUrl字段，从本地获取数据，从items数据集中获取已选数据集
+                 * 1.本地模式
                  */
-                const items = !!this.itemsQueryUrl ? this.displayItems : this.items;
-                if (items && items.length > 0) {
-                    /*this._hidePlaceholder();*/
+                if (!this.itemsInitQueryUrl) {
                     /**
-                     * 单选的时候直接替换旧值
+                     * 单选，直接替换旧值
                      */
                     if (!this.multi) {
-                        this.set("selectedList", items.filter(e => e[this.attrForValue] == value));
-
-                        //对外抛一个选定数据变化事件，提供给h2-mask组件取值
-                        this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-                            composed: true,
-                            bubbles: true,
-                            detail: {value: this.selectedList}
-                        }));
+                        //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
+                        this.set("selectedList", this.items.filter(e => e[this.attrForValue] == value));
+                        this._dispatchSelectedList();
                         return;
                     }
 
                     /**
-                     * 多选，分新增和删除操作
+                     * 多选，直接从items里面取值
                      */
-                    const values = (value + "").split(",");
-                    const oldValues = this.selectedList.map(e => e[this.attrForValue]);
-                    /**
-                     *  新增选项操作
-                     */
-                    if (values.length > oldValues.length) {
-                        /**
-                         * 1.找到新增的value数组
-                         * 2.根据新增的value数组，找到对应的数据集合，数组拼接到上一次保存的selectedList后
-                         */
-                        let diffValues = values.filter(val => oldValues.every(oldVal => oldVal != val));
-                        let newSelectedList = items.filter(e => diffValues.some(val => e[this.attrForValue] == val));
-                        this.set("selectedList", this.selectedList.concat(newSelectedList));
-                    } else {
-                        /**
-                         * 1.找到删除的value数组
-                         * 2.根据删除的value数组，找到对应的数据集合，从上一次保存的selectedList删除对应的数据集
-                         */
-                        let diffValues = oldValues.filter(val => values.every(oldVal => oldVal != val));
-                        let newSelectedList = this.selectedList.filter(e => !diffValues.some(val => e[this.attrForValue] == val));
-                        this.set("selectedList", newSelectedList);
-                    }
-                    //对外抛一个选定数据变化事件，提供给h2-mask组件取值
-                    this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-                        composed: true,
-                        bubbles: true,
-                        detail: {value: this.selectedList}
-                    }));
+                    let values = (value + "").split(",");
+                    //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
+                    let selectedList = this.items.filter(e => values.some(s => e[this.attrForValue] == s));
+                    this.set("selectedList", selectedList);
+                    this._dispatchSelectedList();
+                    return;
                 }
+
+                /**
+                 * 2.接口查询模式
+                 * 将当前的展示数据集合和已选数据集拼接成当前的可选数据集（先去重）
+                 */
+                const items = this.selectedList.concat(this.displayItems.filter(item => !this.selectedList.some(s => s[this.attrForValue] === item[this.attrForValue])));
+                /**
+                 * 单选：
+                 * 1.在当前的可选数据集中能找到对应项就直接取
+                 * 2.找不到就通过接口去查询
+                 */
+                if (!this.multi) {
+                    const newSelectedList = items.filter(e => e[this.attrForValue] == value);
+                    if (newSelectedList.length > 0) {
+                        this.set("selectedList", newSelectedList);
+                        this._dispatchSelectedList();
+                    } else {
+                        this._queryItems(
+                            this.itemsInitQueryUrl,
+                            {ids: value},
+                            data => {
+                                // 处理数据模拟的问题，临时过滤，正式代码要删除此行
+                                const rows = (data.rows || data || []).filter(e => value == e[this.attrForValue]);
+                                this.set("selectedList", rows);
+                                this._dispatchSelectedList();
+                            }
+                        );
+                    }
+                    return;
+                }
+
+                /**
+                 * 多选
+                 * 1.这里先得到value数组与可选数据集的并集，value数组与可选数据集数组的差集
+                 * 2.并集对应的数据可以从可选数据集中直接取
+                 * 3.差集数据需要通过接口查询获得
+                 * 4.最后将并集数据集和差集数据集concat到一起，得到最后的已选数据集selectedList
+                 */
+                const values = (value + "").split(",");
+                const itemValues = items.map(e => e[this.attrForValue]);
+                const unionValues = values.filter(val => itemValues.some(itemVal => itemVal == val));
+                const diffValues = values.filter(val => itemValues.every(oldVal => oldVal != val));
+                const unionSelectedList = items.filter(item => unionValues.some(val => val == item[this.attrForValue]));
+                if (diffValues.length === 0) {
+                    this.set("selectedList", unionSelectedList);
+                    this._dispatchSelectedList();
+                    return;
+                }
+
+                this._queryItems(
+                    this.itemsInitQueryUrl,
+                    {ids: diffValues.join()},
+                    data => {
+                        // 处理数据模拟的问题，临时过滤，正式代码要删除此行
+                        const rows = (data.rows || data || []).filter(e => diffValues.some(s => s == e[this.attrForValue]));
+                        this.set("selectedList", unionSelectedList.concat(rows));
+                        this._dispatchSelectedList();
+                    }
+                );
+            }
+
+            /**
+             * 对外抛一个选定数据变化事件，提供给h2-mask组件取值
+             */
+            _dispatchSelectedList() {
+                this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+                    composed: true,
+                    bubbles: true,
+                    detail: {value: this.selectedList}
+                }));
             }
 
             _queryItems(url, queryParams, successCallback) {
@@ -805,7 +806,6 @@
              * 隐藏下拉面板
              */
             _hideDropdown() {
-                /*this.$['caret'].icon = 'icons:arrow-drop-down';*/
                 // 延迟100ms，为了让点击事件先触发
                 setTimeout(
                     () => {
@@ -821,9 +821,6 @@
              */
             _showDropdown(e) {
                 e.stopPropagation();
-                /*this._hidePlaceholder();*/
-                /*this.$['caret'].icon = 'icons:arrow-drop-up';*/
-
                 // 显示下拉面板
                 let dropdown = this.$['dropdown'];
                 dropdown.className += " show";
@@ -831,13 +828,6 @@
                 // 每次打开默认选中第一条选项
                 this._switchFocusItemAt(0);
             }
-
-//            /**
-//             * 隐藏占位符
-//             */
-//            _hidePlaceholder() {
-//                this.$['placeholder'].style.display = 'none';
-//            }
 
             /**
              * 下拉面板点击事件

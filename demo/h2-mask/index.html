@@ -48,14 +48,14 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <!--<h3>支持h2-input输入框</h3>
+    <h3>支持h2-input输入框</h3>
     <demo-snippet>
         <template>
             <h2-mask label="输入框">
                 <h2-input placeholder="测试输入" value="梅西"></h2-input>
             </h2-mask>
         </template>
-    </demo-snippet>-->
+    </demo-snippet>
 
     <h3>支持h2-select下拉框</h3>
     <demo-snippet>
@@ -83,17 +83,20 @@
     <demo-snippet>
         <template>
             <div class="container">
-                <h2-mask label="picker框">
-                    <h2-picker id="picker10"></h2-picker>
+                <h2-mask label="本地模式单选框">
+                    <h2-picker id="picker"></h2-picker>
                 </h2-mask>
-                <h2-mask label="picker框">
-                    <h2-picker id="picker11" multi></h2-picker>
+                <h2-mask label="本地模式多选框">
+                    <h2-picker id="picker1" multi></h2-picker>
+                </h2-mask>
+                <h2-mask label="接口模式单选框">
+                    <h2-picker id="picker2"></h2-picker>
+                </h2-mask>
+                <h2-mask label="接口模式多选框">
+                    <h2-picker id="picker3" multi></h2-picker>
                 </h2-mask>
             </div>
             <script>
-                /**
-                 * 整个demo页面共用这份数据
-                 */
                 const attrForValue = "id";
                 const attrForLabel = "label";
                 const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
@@ -103,21 +106,30 @@
                     {"id": 3, "label": "腾讯", "business": "游戏"},
                     {"id": 4, "label": "京东", "business": "电商"}
                 ];
-                picker10.attrForValue = attrForValue;
-                picker10.attrForLabel = attrForLabel;
-                picker10.displayFields = displayFields;
-                /*picker10.itemsInitQueryUrl = "/init.do";
-                 picker10.itemsQueryUrl = "/query.do";*/
-                picker10.items = items;
+                picker.attrForValue = attrForValue;
+                picker.attrForLabel = attrForLabel;
+                picker.displayFields = displayFields;
+                picker.items = items;
 
-                picker11.attrForValue = attrForValue;
-                picker11.attrForLabel = attrForLabel;
-                picker11.displayFields = displayFields;
-                picker11.items = items;
-                /*picker11.itemsQueryUrl = "/query.do";
-                 picker11.itemsInitQueryUrl = "/init.do";
-                 picker11.itemsQueryParams = {limit: 10, code: "business"};*/
-                picker11.value = "1,2,3"
+                picker1.attrForValue = attrForValue;
+                picker1.attrForLabel = attrForLabel;
+                picker1.displayFields = displayFields;
+                picker1.items = items;
+
+                picker2.attrForValue = attrForValue;
+                picker2.attrForLabel = attrForLabel;
+                picker2.displayFields = displayFields;
+                picker2.itemsInitQueryUrl = "/init.do";
+                picker2.itemsQueryUrl = "/query.do";
+                picker2.value = "1";
+
+                picker3.attrForValue = attrForValue;
+                picker3.attrForLabel = attrForLabel;
+                picker3.displayFields = displayFields;
+                picker3.itemsQueryUrl = "/query.do";
+                picker3.itemsInitQueryUrl = "/init.do";
+                picker3.itemsQueryParams = {limit: 10, code: "business"};
+                picker3.value = "1,2,3";
             </script>
         </template>
     </demo-snippet>
