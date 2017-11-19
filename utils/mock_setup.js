@@ -37,17 +37,33 @@
           const hash = calHash(method, url, headersArr);
           return mockDatas[hash] && mockDatas[hash].response || null;
         },
-      
+  
+        /**
+         *
+         * @param {string} method , http method i.e. GET|POST
+         * @param {string} url
+         * @return {*}
+         */
         when(method, url) {
           // fix url
           const fixedUrl = new URL(url, window.location.href).href;
           const headers = [];
         
           return {
+            /**
+             *
+             * @param {string} key, http header key
+             * @param {string} value , http header value
+             * @return {MockDataPool}
+             */
             withExpectedHeader(key, value) {
               headers.push([key, value]);
               return this;
             },
+            /**
+             *
+             * @param {object|Response} response
+             */
             responseWith(response) {
               let hash = calHash(method, fixedUrl, headers);
               mockDatas[hash] = {request: {url: fixedUrl, method, headers}, response};
