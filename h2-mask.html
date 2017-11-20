@@ -319,7 +319,7 @@
             _save() {
                 this._showViewField();
                 this.set("lastValueObj", JSON.parse(JSON.stringify(this.valueObj)));
-                this.dispatchEvent(new CustomEvent('h2-mask-edit-saved', {
+                this.dispatchEvent(new CustomEvent('h2-mask-saved', {
                     composed: true,
                     bubbles: true,
                     detail: {value: this.valueObj}
