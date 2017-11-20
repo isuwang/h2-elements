@@ -562,7 +562,6 @@
             }
 
             _userInputKeywordChange(userInputKeyword) {
-                let displayItems = [];
                 /**
                  * 通过配置的数据来源获取数据
                  * 1.通过接口去查询数据
@@ -589,7 +588,7 @@
                 /**
                  * 2.查询本地数据
                  */
-                displayItems = userInputKeyword != undefined ? this.cacheSearchUtil.search(userInputKeyword) : this.items;
+                const displayItems = userInputKeyword != undefined ? this.cacheSearchUtil.search(userInputKeyword) : this.items;
                 this.set('displayItems', displayItems.slice(0, 9));
             }
 
@@ -646,7 +645,10 @@
                     } else {
                         this._queryItems(
                             this.itemsInitQueryUrl,
-                            {ids: value},
+                            {
+                                ids: value,
+                                businessCode: this.itemsQueryParams && this.itemsQueryParams.businessCode
+                            },
                             data => {
                                 // 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
                                 const rows = (data.rows || data || []).filter(e => value == e[this.attrForValue]);
@@ -678,7 +680,10 @@
 
                 this._queryItems(
                     this.itemsInitQueryUrl,
-                    {ids: diffValues.join()},
+                    {
+                        ids: diffValues.join(),
+                        businessCode: this.itemsQueryParams && this.itemsQueryParams.businessCode
+                    },
                     data => {
                         // 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
                         const rows = (data.rows || data || []).filter(e => diffValues.some(s => s == e[this.attrForValue]));
