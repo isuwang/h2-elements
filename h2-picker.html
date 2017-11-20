@@ -2,10 +2,10 @@
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="h2-label.html">
 <link rel="import" href="h2-fetch.html">
-<script type="text/javascript" src="../../resource/plugin/dictionary/firstLetterDictionary.js"></script>
-<script type="text/javascript" src="../../resource/plugin/dictionary/commonDictionary.js"></script>
-<script type="text/javascript" src="../../resource/plugin/pinyinUtil.js"></script>
-<script type="text/javascript" src="../../resource/plugin/cacheSearchUtil.js"></script>
+<script type="text/javascript" src="./resource/plugin/dictionary/firstLetterDictionary.js"></script>
+<script type="text/javascript" src="./resource/plugin/dictionary/commonDictionary.js"></script>
+<script type="text/javascript" src="./resource/plugin/pinyinUtil.js"></script>
+<script type="text/javascript" src="./resource/plugin/cacheSearchUtil.js"></script>
 
 <!--
 
@@ -708,7 +708,8 @@
                 const reqUrl = new URL(window.location.origin + url);
                 Object.keys(queryParams).filter(key => queryParams[key] != undefined).forEach((key) => reqUrl.searchParams.append(key, queryParams[key]));
                 const request = new Request(reqUrl, {
-                    method: "GET"
+                    method: "GET",
+                    credentials: "include"
                 });
                 this.fetchUtil.fetchIt(request)
                     .then(res => res.json())
