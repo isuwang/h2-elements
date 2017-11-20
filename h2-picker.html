@@ -783,7 +783,7 @@
                  * 3.当该选项没被选中时,直接赋值
                  */
                 let value = this.value;
-                if (value == undefined || !this.multi) {
+                if (value == undefined || value === "" || !this.multi) {
                     this.set('value', item[this.attrForValue] + "");
                 } else if (value.toString().split(',').every(value => value != item[this.attrForValue])) {
                     this.set('value', this.value + "," + item[this.attrForValue]);
@@ -853,8 +853,8 @@
                 let regExp = new RegExp(tagValue + ",", "g");
                 let valueStr = this.value + ",";
                 let newValue = valueStr.replace(regExp, "");
-                // 去掉最后的逗号
-                this.value = newValue.substr(0, newValue.length - 1);
+                // 如果newValue无值，就直接赋值undefined，有值，就去掉最后的逗号
+                this.value = newValue.length === 0 ? undefined : newValue.substr(0, newValue.length - 1);
             }
 
             /**
