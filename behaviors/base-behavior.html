@@ -77,7 +77,16 @@
       const key = this.orElse(...keys);
       return this.getValueByKey(model, key);
     },
-
+    /**
+     * 等价于 model[key1 || key2 || ...] 如果找不到值，返回null
+     * @param {Object} model
+     * @param {...String} keys
+     * @returns {*}
+     */
+    getValueOrElseNull(model, ...keys) {
+      const key = this.orElse(...keys);
+      return this.getValueByKey(model, key, null);
+    },
     /**
      * 通过路径获取对象字段值
      * @param {Object} model eg. { foo: { bar: 1} }
