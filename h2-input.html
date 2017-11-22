@@ -337,7 +337,7 @@
              * 根据maxlength来控制数字框的最大输入长度
              */
             _valueChange(value) {
-                if (this.type !== 'number' || value == undefined || value == undefined) {
+                if (this.type !== 'number' || value == undefined) {
                     return;
                 }
                 if (this.maxlength > 0 && this.value.length > this.maxlength) {

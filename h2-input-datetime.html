@@ -117,7 +117,7 @@
              */
             _timeChange(time) {
                 if (!time) {
-                    this.set("value", "");
+                    this.set("value", undefined);
                     return;
                 }
                 let date = new Date(time);

@@ -116,7 +116,7 @@
             </div>
             <div class="button-container">
                 <div class="buttons">
-                    <button title="保存" on-click="_save">
+                    <button title="提交" on-click="_submit">
                         <iron-icon icon="icons:check"></iron-icon>
                     </button>
                     <button title="取消" class="cancelBtn" on-click="_cancel">
@@ -126,7 +126,7 @@
             </div>
         </div>
         <div class="viewField">
-            <span id="displayer" class="view">[[_loadViewFieldValue(valueObj.value,valueObj.selectedList)]]</span>
+            <span id="displayer" class="view">[[viewValue]]</span>
             <span id="editBtn" class="editBtn" title="点击开始编辑">
                     <iron-icon icon="editor:mode-edit"></iron-icon>
                 </span>
@@ -145,6 +145,14 @@
             static get properties() {
                 return {
                     /**
+                     * mataui统一用来保存组件当前数据的字段，时间组件存储的是time时间戳，其他组件保存的都是其value值
+                     * 提示：此处不加notify:true是为了避免在初始化组件数据的时候就对外抛一次value-changed事件，导致多余的保存操作。
+                     * 此组件只有在用户做保存操作的时候才会手动触发一次value-changed事件，将数据传递到外部
+                     */
+                    value: {
+                        type: String
+                    },
+                    /**
                      * 当前的数据
                      * {value: 组件的value值,
                      *  selectedList: 多选类组件的已选数据集,
@@ -162,16 +170,8 @@
                     lastValueObj: {
                         type: Object
                     },
-                    /**
-                     * 是否已经初始化最近一次保存的数据
-                     */
-                    hasInitLastValueObj: {
-                        type: Object,
-                        value: {
-                            hasInitValue: false,
-                            hasInitSelectedList: false,
-                            hasInitTime: false
-                        }
+                    viewValue: {
+                        type: String
                     },
                     /**
                      * 标签
@@ -276,7 +276,7 @@
                         return;
                     }
                     setTimeout(() => {
-                        this._cancel(e);
+                        this._save(e);
                     }, 200);
                 });
 
@@ -285,6 +285,23 @@
 
             static get is() {
                 return "h2-mask";
+            }
+
+            static get observers() {
+                return [
+                    "_valueObjChange(valueObj.value,valueObj.selectedList)"
+                ];
+            }
+
+            /**
+             * valueObj数据变化监视器
+             */
+            _valueObjChange(value, selectedList) {
+                if (!value) {
+                    this.set("viewValue", "无");
+                    return;
+                }
+                this.set("viewValue", selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNode.attrForLabel]).join() : value);
             }
 
             /**
@@ -323,19 +340,35 @@
             }
 
             /**
-             * 保存操作
-             * @private
+             * 保存但是不提交
              */
             _save(e) {
                 e.stopPropagation();
                 this._showViewField();
                 this.set("lastValueObj", this._deepClone(this.valueObj));
+                this.value = this.valueObj.time || this.valueObj.value;
 
+                // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示数据有误的问题
+                if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
+                    this.set("viewValue", "无");
+                }
+
+                console.log("保存", this.valueObj, this.lastValueObj, this.value);
+            }
+
+            /**
+             * 提交操作
+             * @private
+             */
+            _submit(e) {
+                this._save(e);
                 this.dispatchEvent(new CustomEvent('value-changed', {
                     composed: true,
                     bubbles: true,
-                    detail: {value: this.valueObj.time || this.valueObj.value}
+                    detail: {value: this.value}
                 }));
+
+                console.log("提交", this.valueObj, this.lastValueObj, this.value);
             }
 
             /**
@@ -347,13 +380,13 @@
                 this._showViewField();
                 this.set("valueObj", this._deepClone(this.lastValueObj));
                 this.slotNode.value = this.lastValueObj.value;
-            }
 
-            _loadViewFieldValue(value, selectedList) {
-                if (!value) {
-                    return "无";
+                // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示数据有误的问题
+                if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
+                    this.set("viewValue", "无");
                 }
-                return selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNode.attrForLabel]).join() : value;
+
+                console.log("取消", this.valueObj, this.lastValueObj, this.value);
             }
 
             _deepClone(obj) {

@@ -644,7 +644,7 @@
                                 businessCode: this.itemsQueryParams && this.itemsQueryParams.businessCode
                             },
                             data => {
-                                // 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
+                                //TODO 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
                                 const rows = (data.rows || data || []).filter(e => value == e[this.attrForValue]);
                                 this.set("selectedList", rows);
                                 this._dispatchSelectedList();
@@ -679,7 +679,7 @@
                         businessCode: this.itemsQueryParams && this.itemsQueryParams.businessCode
                     },
                     data => {
-                        // 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
+                        //TODO 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
                         const rows = (data.rows || data || []).filter(e => diffValues.some(s => s == e[this.attrForValue]));
                         this.set("selectedList", unionSelectedList.concat(rows));
                         this._dispatchSelectedList();
