@@ -1,0 +1,404 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-icons/editor-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="h2-input.html">
+<link rel="import" href="h2-picker.html">
+<!--
+
+```javascript
+
+<o2-more-input></o2-more-input>
+```
+-->
+
+<dom-module id="o2-more-input">
+    <template>
+        <style>
+            :host {
+                display: flex;
+            }
+
+            :host .editField {
+                /*抛出一个样式钩子，让用户控制o2-more-input内部所有输入框和选择框的label宽度，以实现label对齐效果*/
+                --h2-label: {
+                    width: var(--o2-more-input-h2-label-width);
+                };
+            }
+
+            :host .input-container {
+                display: flex;
+                flex-flow: row wrap;
+            }
+
+            :host * {
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            :host .input-container > h2-input {
+                width: 50%;
+                margin-bottom: 3px;
+            }
+
+            :host .edit-container {
+                width: 100%;
+                padding: 5px 0px;
+            }
+
+            :host div.highlight {
+                border-color: #66afe9;
+                outline: 0;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            }
+
+            :host .editField {
+                width: 100%;
+                padding: 5px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+            }
+
+            /*保存和取消按钮样式*/
+            :host div.button-container {
+                position: relative;
+                display: none;
+            }
+
+            :host .buttons {
+                position: absolute;
+                right: 3px;
+                top: 0px;
+                z-index: 99;
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                border-top: none;
+                border-radius: 0 0 3px 3px;
+                box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
+                outline: none;
+                padding: 3px;
+            }
+
+            :host .buttons > button {
+                background-color: #f0f0f0;
+                border: 1px solid #cccccc;
+                cursor: pointer;
+                border-radius: 4px;
+                padding: 0px;
+            }
+
+            :host .buttons > button:hover {
+                background-color: #ffffff;
+                border-color: #66afe9;
+            }
+
+            :host iron-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            :host .cancelBtn {
+                margin-left: 3px;
+            }
+        </style>
+        <h2-label value="[[label]]" required="[[required]]"></h2-label>
+        <div id="editContainer" class="edit-container">
+            <div class="editField">
+                <div id="inputContainer" class="input-container">
+                    <template is="dom-repeat" items="[[selectedList]]">
+                        <h2-input label="[[_getLabel(item)]]" id="[[_getId(item)]]"
+                                  value="[[_getValue(item)]]"></h2-input>
+                    </template>
+                </div>
+                <h2-picker label="更多"
+                           value="{{moreValue}}"
+                           items="[[moreItems]]"
+                           attr-for-label="[[attrForLabel]]"
+                           attr-for-value="[[attrForMoreValue]]"
+                           display-fields="[[displayFields]]"
+                           multi>
+                </h2-picker>
+            </div>
+            <div class="button-container">
+                <div class="buttons">
+                    <button title="提交" on-click="_submit">
+                        <iron-icon icon="icons:check"></iron-icon>
+                    </button>
+                    <button title="取消" class="cancelBtn" on-click="_cancel">
+                        <iron-icon icon="icons:clear"></iron-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        /**
+         * `o2-more-input`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/o2-more-input/index.html
+         */
+        class O2MoreInput extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * 本组件的值
+                     */
+                    value: {
+                        type: Array,
+                        value: null
+                    },
+                    /**
+                     * 更多选择框已选数据数据集
+                     */
+                    selectedList: {
+                        type: Array,
+                        value: null
+                    },
+                    /**
+                     * 更多选择框初始数据集
+                     */
+                    moreItems: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    /**
+                     * 更多选择框的值
+                     */
+                    moreValue: {
+                        type: String
+                    },
+                    /**
+                     * 默认为"label"
+                     * 1.输入框label的取值字段
+                     * 2.更多选择框已选数据项标签展示字段
+                     *
+                     */
+                    attrForLabel: {
+                        type: String,
+                        value: "label"
+                    },
+                    /**
+                     * 默认为"id"
+                     * 1.更多选择框已选项对应的取值字段
+                     * 2.输入框id的取值字段
+                     */
+                    attrForMoreValue: {
+                        type: String,
+                        value: "id"
+                    },
+                    /**
+                     * 默认为"value"
+                     * 输入框的取值字段
+                     */
+                    attrForInputValue: {
+                        type: String,
+                        value: "value"
+                    },
+                    /**
+                     * 更多选择框下拉面板中展示的字段
+                     */
+                    displayFields: {
+                        type: Array
+                    },
+                    /**
+                     * 标签
+                     */
+                    label: {
+                        type: String
+                    },
+                    /**
+                     * 是否只读
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * 是否必填
+                     */
+                    required: {
+                        type: Boolean,
+                        value: false
+                    }
+                };
+            }
+
+            static get is() {
+                return "o2-more-input";
+            }
+
+            static get observers() {
+                return [
+                    "_moreValueChange(moreValue)",
+                    "_valueChange(value)"
+                ];
+            }
+
+            ready() {
+                super.ready();
+
+                /**
+                 * editContainer事件绑定说明：
+                 * mouseover:用来控制按钮组的显示
+                 * mouseout:用来控制按钮组的隐藏
+                 *
+                 * inputContainer事件绑定说明：
+                 * keyup:用来控制输入值的变化，调用_addValue方法给value数组的对应项，修改其输入值
+                 */
+                const editContainer = this.root.querySelector("#editContainer");
+                editContainer.addEventListener("mouseover", e => {
+                    e.stopPropagation();
+                    console.log(e.target, "鼠标悬浮");
+                    this._showButtons();
+                });
+                editContainer.addEventListener("mouseout", e => {
+                    e.stopPropagation();
+                    console.log(e.target, "鼠标离开");
+                    this._hideButtons();
+                });
+
+                this.root.querySelector("#inputContainer").addEventListener("keyup", e => {
+                    e.stopPropagation();
+                    if (e.target.nodeName !== "H2-INPUT") {
+                        return;
+                    }
+                    this._addValue(e);
+                });
+            }
+
+            /**
+             * 更多选择框组件值变化监视器
+             */
+            _moreValueChange(moreValue) {
+                if (moreValue == undefined || moreValue === "") {
+                    this.set("selectedList", null);
+                    this.set("value", null);
+                    return;
+                }
+
+                // s == e[this.attrForMoreValue]这里用2个等号，是因为s是字符串,e[this.attrForMoreValue]可以是字符串或者数字
+                const selectedList = this.moreItems.filter(e => moreValue.split(",").some(s => s == e[this.attrForMoreValue]));
+                if (this.value && this.value.length > 0) {
+                    selectedList.map(e => {
+                        this.value.forEach(val => {
+                                if (val[this.attrForMoreValue] === e[this.attrForMoreValue]) {
+                                    e[this.attrForInputValue] = val[this.attrForInputValue];
+                                    return false;
+                                }
+                            }
+                        );
+                        return e;
+                    });
+                }
+                this.set("selectedList", selectedList);
+                this.set("value", selectedList);
+            }
+
+            /**
+             * value变化监视器回调
+             */
+            _valueChange(value) {
+                if (value == null) {
+                    return;
+                }
+                this.moreValue = value.map(e => e[this.attrForMoreValue]).join();
+            }
+
+            _getLabel(item) {
+                return item[this.attrForLabel];
+            }
+
+            _getId(item) {
+                return item[this.attrForMoreValue];
+            }
+
+            _getValue(item) {
+                return item[this.attrForInputValue];
+            }
+
+            _hideButtons() {
+                this.root.querySelector(".button-container").style.display = "none";
+                this.root.querySelector(".editField").classList.remove("highlight");
+            }
+
+            _showButtons() {
+                this.root.querySelector(".button-container").style.display = "block";
+                this.root.querySelector(".editField").classList.add("highlight");
+            }
+
+            /**
+             * 给value数组的对应项，修改其输入值
+             */
+            _addValue(e) {
+                this.value.forEach(
+                    val => {
+                        if (val[this.attrForMoreValue] == e.id) {
+                            val[this.attrForInputValue] = e.value;
+                            return false;
+                        }
+                    }
+                );
+            }
+
+            _save() {
+                console.log("保存");
+                this._hideButtons();
+                const inputElements = this.root.querySelectorAll("h2-input");
+                const inputs = [];
+                inputElements.forEach(e => inputs.push({
+                    [this.attrForMoreValue]: e.id,
+                    [this.attrForInputValue]: e.value
+                }));
+
+                /**
+                 * 1.如果用户没选择任何选项，直接返回value的默认值null
+                 */
+                if (inputs.length === 0) {
+                    this.dispatchEvent(new CustomEvent('value-changed', {
+                        composed: true,
+                        bubbles: true,
+                        detail: {value: this.value}
+                    }));
+                    return;
+                }
+
+                /**
+                 * 2.给value更新所有选项及其值
+                 */
+                const value = this.value.map(e => {
+                        inputs.forEach(s => {
+                                if (s[this.attrForMoreValue] == e[this.attrForMoreValue]) {
+                                    e[this.attrForInputValue] = s[this.attrForInputValue];
+                                    return false;
+                                }
+                            }
+                        );
+                        return e;
+                    }
+                );
+                this.set("value", value);
+            }
+
+            _submit(){
+                this._save();
+                this.dispatchEvent(new CustomEvent('value-changed', {
+                    composed: true,
+                    bubbles: true,
+                    detail: {value: this.value}
+                }));
+            }
+
+            _cancel() {
+                console.log("取消");
+                this._hideButtons();
+            }
+        }
+        window.customElements.define(O2MoreInput.is, O2MoreInput);
+    </script>
+</dom-module>
