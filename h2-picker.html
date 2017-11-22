@@ -21,7 +21,6 @@
             :host {
                 text-align: center;
                 display: flex;
-                /*align-items: center;*/
             }
 
             :host * {
@@ -37,6 +36,7 @@
                 background-color: #fff;
                 border: none;
                 outline: medium;
+                width: var(--h2-picker-input-width, 100%);
             }
 
             :host input::-moz-placeholder {
@@ -145,7 +145,7 @@
                 padding: 4px;
                 height: auto;
                 min-height: 34px;
-                /*min-width: 170px;*/
+                width: var(--h2-picker-tags-box-width, 100%);
             }
 
             :host .tags-input:focus {
@@ -173,6 +173,7 @@
                 border: 1px solid #ccc;
                 color: #666;
                 white-space: normal;
+                max-width: calc(var(--h2-picker-tags-box-width, 100%) - 15px);
             }
 
             :host div.tags-input span.tag span.tag-name {
@@ -213,20 +214,19 @@
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <div class="input-wrap">
             <div class="input-container">
-                <div class="tags-input" style$="{{_getTagsBoxWidth(width)}}">
+                <div class="tags-input">
                     <span id="tag-content">
                     <template is="dom-repeat" items="[[selectedList]]">
-                        <span class="tag" style$="[[_getInputContainerMaxWidth(width)]]">
+                        <span class="tag">
                             <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
                             <a class="tag-delete" style="float: right" data-args="[[_getItemValue(item)]]"
                                href="javascript:void(0);"
                                title="删除选项" on-click="_deleteTag">x</a>
                         </span>
                     </template>
-                </span>
+                    </span>
                     <iron-input slot="input" bind-value="{{userInputKeyword}}" maxlength$="20">
                         <input id="keywordInput"
-                               style$="[[_getInputContainerMaxWidth(width)]]"
                                autocomplete="off">
                     </iron-input>
                 </div>
@@ -304,12 +304,6 @@
                      * 标签
                      */
                     label: {
-                        type: String
-                    },
-                    /**
-                     * 标签盒子宽度
-                     */
-                    width: {
                         type: String
                     },
                     /**
@@ -855,30 +849,6 @@
                 let newValue = valueStr.replace(regExp, "");
                 // 如果newValue无值，就直接赋值undefined，有值，就去掉最后的逗号
                 this.value = newValue.length === 0 ? undefined : newValue.substr(0, newValue.length - 1);
-            }
-
-            /**
-             * 获取标签盒子宽度
-             * @param width
-             * @returns {string}
-             * @private
-             */
-            _getTagsBoxWidth(width) {
-                return ("min-width:" + width) || "";
-            }
-
-            /**
-             * 获取标签的最大宽度
-             * @param width
-             * @returns {string}
-             */
-            _getInputContainerMaxWidth(width) {
-                if (!width) {
-                    return "";
-                }
-                let paddingBorderWidth = 10;
-                let _thisMaxWidth = Number(width.substr(0, width.indexOf("px"))) - paddingBorderWidth;
-                return "max-width:" + _thisMaxWidth + "px";
             }
 
             _getHotKey(index) {

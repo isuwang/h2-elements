@@ -32,6 +32,8 @@
                 -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
                 -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
                 transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                width: 100%;
+                @apply (--h2-input);
             }
 
             :host * {
@@ -67,15 +69,15 @@
             }
 
             :host span.input-view {
-                display:inline-block;
+                display: inline-block;
                 text-align: left;
                 font-size: 14px;
                 line-height: 34px;
-                height:34px;
+                height: 34px;
                 white-space: normal;
                 width: auto;
-                border:1px solid transparent;
-                padding-left:12px;
+                border: 1px solid transparent;
+                padding-left: 12px;
             }
 
             /*前缀单位*/
@@ -126,6 +128,7 @@
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
             }
+
             :host input.suffix-unit-input {
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
@@ -170,7 +173,6 @@
                        maxlength$="[[maxlength]]"
                        min$="[[min]]"
                        max$="[[max]]"
-                       style$="[[_setWidth(width)]]"
                        spellcheck="false">
             </iron-input>
             <template is="dom-if" if="[[suffixUnit]]">
@@ -302,12 +304,6 @@
                      */
                     max: {
                         type: String
-                    },
-                    /**
-                     * 自定义输入框宽度
-                     */
-                    width:{
-                        type:String
                     }
                 };
             }
@@ -317,7 +313,7 @@
             }
 
             static get observers() {
-                return ['_requiredValueChange(required,value)', '_prefixUnitChange(prefixUnit)', '_suffixUnitChange(suffixUnit)','_valueChange(value)']
+                return ['_requiredValueChange(required,value)', '_prefixUnitChange(prefixUnit)', '_suffixUnitChange(suffixUnit)', '_valueChange(value)']
             }
 
             /**
@@ -365,16 +361,6 @@
                 if (suffixUnit && this.clazz.indexOf("suffix-unit-input") < 0) {
                     this.set("clazz", this.clazz + " suffix-unit-input");
                 }
-            }
-
-            /**
-             * 自定义输入框宽度
-             * @param width
-             * @returns {string}
-             * @private
-             */
-            _setWidth(width) {
-                return width ? "width:" + width : "";
             }
 
             /**

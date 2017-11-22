@@ -438,7 +438,7 @@
                     this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
                         composed: true,
                         bubbles: true,
-                        detail: {value: this.selectedList}
+                        detail: {value: selectedList}
                     }));
 
                     this.multi ? "" : this.set("selected", selectedList[0]);

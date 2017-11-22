@@ -20,6 +20,8 @@
     <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../h2-mask.html">
     <link rel="import" href="../../h2-input.html">
+    <link rel="import" href="../../h2-input-date.html">
+    <link rel="import" href="../../h2-input-datetime.html">
     <link rel="import" href="../../h2-select.html">
     <link rel="import" href="../../h2-picker.html">
 
@@ -54,6 +56,23 @@
             <h2-mask label="输入框">
                 <h2-input placeholder="测试输入" value="梅西"></h2-input>
             </h2-mask>
+            <script>
+                this.addEventListener('value-changed', e => console.log("h2-mask保存的值是：", e.detail.value));
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>支持h2-input-date日期框</h3>
+    <demo-snippet>
+        <template>
+            <div class="container">
+                <h2-mask label="日期框">
+                    <h2-input-date placeholder="日期" value="2017-12-05"></h2-input-date>
+                </h2-mask>
+                <h2-mask label="时间框">
+                    <h2-input-datetime placeholder="时间"></h2-input-datetime>
+                </h2-mask>
+            </div>
         </template>
     </demo-snippet>
 
@@ -62,6 +81,9 @@
         <template>
             <h2-mask label="下拉框">
                 <h2-select placeholder="测试输入" id="select" multi></h2-select>
+            </h2-mask>
+            <h2-mask label="下拉框">
+                <h2-select placeholder="测试输入" id="select1"></h2-select>
             </h2-mask>
             <script>
                 const items1 = [
@@ -75,6 +97,9 @@
                 ];
                 select.items = items1;
                 select.value = "1,2,3";
+
+                select1.items = items1;
+                select1.value = "1";
             </script>
         </template>
     </demo-snippet>

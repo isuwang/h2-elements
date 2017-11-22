@@ -23,6 +23,12 @@
                     max-height: 500px;
                 }
             }
+
+            #input {
+                --h2-input: {
+                    width: 200px;
+                };
+            }
         </style>
     </custom-style>
 </head>
@@ -46,7 +52,7 @@
             <h2-input label="文件框" type="file"></h2-input>
             <h2-input label="颜色框" type="color"></h2-input>
             <h2-input label="日期框" type="date"></h2-input>
-            <h2-input label="日期时间框" width="180px" type="datetime-local"></h2-input>
+            <h2-input label="日期时间框" type="datetime-local" style="width:260px;"></h2-input>
         </template>
     </demo-snippet>
 
@@ -92,6 +98,23 @@
             <h2-input label="数量" type="number" maxlength="2"></h2-input>
             <h2-input label="名字" maxlength="5"></h2-input>
             <h2-input label="URL" type="url" maxlength="10"></h2-input>
+        </template>
+    </demo-snippet>
+
+    <h3>支持控制宽度（建议使用直接给h2-input组件写宽度的方式来控制组件宽度）</h3>
+    <demo-snippet>
+        <template>
+            <h2-input label="原始宽度"></h2-input>
+            <!--
+            通过此样式钩子修改了输入框宽度
+            #input {
+                --h2-input: {
+                    width: 200px;
+                };
+            }
+            -->
+            <h2-input label="输入框宽度" id="input"></h2-input>
+            <h2-input label="组件宽度" style="width:250px;"></h2-input>
         </template>
     </demo-snippet>
 </div>

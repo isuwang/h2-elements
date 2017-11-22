@@ -2,7 +2,6 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/editor-icons.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
-<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="h2-input.html">
 <!--
 ```javascript
@@ -147,23 +146,32 @@
                 return {
                     /**
                      * 当前的数据
+                     * {value: 组件的value值,
+                     *  selectedList: 多选类组件的已选数据集,
+                     *  time: 时间组件的时间戳}
                      */
                     valueObj: {
                         type: Object,
                         value: function () {
-                            return {
-                                value: undefined,
-                                selectedList: undefined,
-                                time: undefined
-                            }
-                        },
-                        notify: true
+                            return {}
+                        }
                     },
                     /**
                      * 最近一次保存的数据
                      */
                     lastValueObj: {
                         type: Object
+                    },
+                    /**
+                     * 是否已经初始化最近一次保存的数据
+                     */
+                    hasInitLastValueObj: {
+                        type: Object,
+                        value: {
+                            hasInitValue: false,
+                            hasInitSelectedList: false,
+                            hasInitTime: false
+                        }
                     },
                     /**
                      * 标签
@@ -215,7 +223,7 @@
                 viewField.addEventListener("click", e => {
                     e.stopPropagation();
                     this._showEditField();
-                    //TODO slot中插入的组件应该增加各自的doFocus逻辑，用来初始化对组件的第一次调用操作
+                    // slot中插入的组件应该增加各自的doFocus逻辑，用来初始化对组件的第一次调用操作
                     setTimeout(
                         () => slotNodes.length && typeof(slotNodes[0].doFocus) === "function" && slotNodes[0].doFocus(),
                         50
@@ -225,22 +233,23 @@
                 /**
                  * 监听slot里面的组件的数据变化
                  */
-                slotNodes.forEach(element => {
+                setTimeout(e => slotNodes.forEach(element => {
                     /**
-                     * 1.因为数据的change事件notify在这段代码之前，所以需要手动从组件里取值，初始化一次valueObj,lastValueObj数据
+                     * 1.给slot里面的组件新增事件监听器之前，组件就已经notify了数据changed事件。
+                     *   所以此时手动从组件里取值，初始化一次valueObj,lastValueObj数据
                      * 2.其他时候根据事件变化取值
                      */
                     this.set("valueObj", {
                         value: element.value,
-                        selectedList: element.selectedList,
-                        time: element.time
-                    });
-                    this.set("lastValueObj", {
-                        value: element.value,
-                        selectedList: element.selectedList,
+                        selectedList: this._deepClone(element.selectedList),
                         time: element.time
                     });
 
+                    this.set("lastValueObj", {
+                        value: element.value,
+                        selectedList: this._deepClone(element.selectedList),
+                        time: element.time
+                    });
 
                     element.addEventListener("value-changed", e => {
                         e.stopPropagation();
@@ -254,19 +263,21 @@
                         e.stopPropagation();
                         this.set("valueObj.time", e.detail.value);
                     });
-                });
+                }), 200);
+
 
                 /**
                  * 组件失去焦点的时候关闭组件
                  */
                 this.addEventListener("focusout", e => {
+                    e.stopPropagation();
                     // 对H2-SELECT,H2-PICKER特殊处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
-                    if (e.target.nodeName === "H2-SELECT"||e.target.nodeName === "H2-PICKER") {
+                    if (e.target.nodeName === "H2-SELECT" || e.target.nodeName === "H2-PICKER") {
                         return;
                     }
                     setTimeout(() => {
-                        this._save();
-                    }, 200)
+                        this._cancel(e);
+                    }, 200);
                 });
 
                 this.set("slotNode", slotNodes[0]);
@@ -313,27 +324,28 @@
 
             /**
              * 保存操作
-             * TODO:点击按钮的时候不知道为何事件顺序是blur->click->blur
              * @private
              */
-            _save() {
+            _save(e) {
+                e.stopPropagation();
                 this._showViewField();
-                this.set("lastValueObj", JSON.parse(JSON.stringify(this.valueObj)));
-                this.dispatchEvent(new CustomEvent('h2-mask-saved', {
+                this.set("lastValueObj", this._deepClone(this.valueObj));
+
+                this.dispatchEvent(new CustomEvent('value-changed', {
                     composed: true,
                     bubbles: true,
-                    detail: {value: this.valueObj}
+                    detail: {value: this.valueObj.time || this.valueObj.value}
                 }));
             }
 
             /**
              * 取消操作
-             * TODO:点击按钮的时候不知道为何事件顺序是blur->click->blur
              * @private
              */
-            _cancel() {
+            _cancel(e) {
+                e.stopPropagation();
                 this._showViewField();
-                this.set("valueObj", JSON.parse(JSON.stringify(this.lastValueObj)));
+                this.set("valueObj", this._deepClone(this.lastValueObj));
                 this.slotNode.value = this.lastValueObj.value;
             }
 
@@ -342,6 +354,10 @@
                     return "无";
                 }
                 return selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNode.attrForLabel]).join() : value;
+            }
+
+            _deepClone(obj) {
+                return obj == null || typeof(obj) !== "object" ? obj : JSON.parse(JSON.stringify(obj));
             }
         }
         window.customElements.define(H2Mask.is, H2Mask);

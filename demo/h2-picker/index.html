@@ -20,6 +20,7 @@
     <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../h2-picker.html">
 
+
     <custom-style>
         <style is="custom-style" include="demo-pages-shared-styles">
             .centered {
@@ -30,6 +31,11 @@
                 --demo-snippet-code: {
                     max-height: 500px;
                 }
+            }
+
+            #picker6 {
+                --h2-picker-input-width: 170px;
+                --h2-picker-tags-box-width: 180px;
             }
         </style>
     </custom-style>
@@ -103,20 +109,32 @@
     <demo-snippet>
         <template>
             <h2-picker id="picker5" label="原始宽度" multi></h2-picker>
-            <h2-picker id="picker6" label="输入框宽度" multi width="200px"></h2-picker>
-            <h2-picker id="picker7" label="组件宽度" multi style="width:150px"></h2-picker>
+            <h2-picker id="picker6" class="picker" label="输入区宽度" multi></h2-picker>
+            <h2-picker id="picker7" label="组件宽度" multi style="width:250px"></h2-picker>
             <script>
+                /**
+                 * 不给h2-picker写任何宽度样式的时候，组件会自动撑宽
+                 */
                 picker5.attrForValue = attrForValue;
                 picker5.attrForLabel = attrForLabel;
                 picker5.displayFields = displayFields;
                 picker5.items = items;
 
-
+                /**
+                 * 通过样式钩子控制输入区宽度，输入框宽度要比标签盒子宽度少10px
+                 * #picker6 {
+                 *   --h2-picker-input-width: 170px;
+                 *   --h2-picker-tags-box-width: 180px;
+                 * }
+                 */
                 picker6.attrForValue = attrForValue;
                 picker6.attrForLabel = attrForLabel;
                 picker6.displayFields = displayFields;
                 picker6.items = items;
 
+                /**
+                 * 建议直接给h2-picker写宽度样式来控制组件宽度
+                 */
                 picker7.attrForValue = attrForValue;
                 picker7.attrForLabel = attrForLabel;
                 picker7.displayFields = displayFields;
