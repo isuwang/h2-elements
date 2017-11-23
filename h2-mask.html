@@ -26,6 +26,7 @@
             :host span.editBtn {
                 background-color: #eeeeee;
                 display: none;
+                width:28px;
                 height: 34px;
                 line-height: 22px;
                 padding: 5px 3px;
@@ -58,7 +59,7 @@
                 border-radius: 4px;
                 border-top-right-radius: 0;
                 border-bottom-right-radius: 0;
-                max-width: calc(100% - 27px);
+                max-width: calc(100% - 28px);
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap
@@ -80,6 +81,7 @@
                 box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
                 outline: none;
                 padding: 3px;
+                width:55px;
             }
 
             :host .buttons > button {
@@ -88,6 +90,8 @@
                 cursor: pointer;
                 border-radius: 4px;
                 padding: 0px;
+                width: 22px;
+                height: 22px;
             }
 
             :host .buttons > button:hover {
@@ -381,7 +385,7 @@
                 this.set("valueObj", this._deepClone(this.lastValueObj));
                 this.slotNode.value = this.lastValueObj.value;
 
-                // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示数据有误的问题
+                // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示时的数据没有更新的问题
                 if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
                     this.set("viewValue", "无");
                 }
