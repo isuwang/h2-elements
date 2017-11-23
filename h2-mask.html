@@ -356,8 +356,6 @@
                 if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
                     this.set("viewValue", "无");
                 }
-
-                console.log("保存", this.valueObj, this.lastValueObj, this.value);
             }
 
             /**
@@ -371,8 +369,6 @@
                     bubbles: true,
                     detail: {value: this.value}
                 }));
-
-                console.log("提交", this.valueObj, this.lastValueObj, this.value);
             }
 
             /**
@@ -389,8 +385,6 @@
                 if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
                     this.set("viewValue", "无");
                 }
-
-                console.log("取消", this.valueObj, this.lastValueObj, this.value);
             }
 
             _deepClone(obj) {
