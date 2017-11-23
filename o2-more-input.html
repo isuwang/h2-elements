@@ -107,7 +107,7 @@
         <div id="editContainer" class="edit-container">
             <div class="editField">
                 <div id="inputContainer" class="input-container">
-                    <template is="dom-repeat" items="[[selectedList]]">
+                    <template is="dom-repeat" items="[[value]]">
                         <h2-input label="[[_getLabel(item)]]" id="[[_getId(item)]]"
                                   value="[[_getValue(item)]]"></h2-input>
                     </template>
@@ -152,9 +152,9 @@
                         value: null
                     },
                     /**
-                     * 更多选择框已选数据数据集
+                     * 最近一次保存并提交的值
                      */
-                    selectedList: {
+                    lastSubmitValue: {
                         type: Array,
                         value: null
                     },
@@ -243,32 +243,47 @@
             ready() {
                 super.ready();
 
+                // 保存最近一次保存并提交的值，用来回滚数据
+                this.set("lastSubmitValue", this._deepClone(this.value));
+
                 /**
-                 * editContainer事件绑定说明：
-                 * mouseover:用来控制按钮组的显示
-                 * mouseout:用来控制按钮组的隐藏
-                 *
                  * inputContainer事件绑定说明：
                  * keyup:用来控制输入值的变化，调用_addValue方法给value数组的对应项，修改其输入值
+                 *
+                 *
                  */
-                const editContainer = this.root.querySelector("#editContainer");
-                editContainer.addEventListener("mouseover", e => {
-                    e.stopPropagation();
-                    console.log(e.target, "鼠标悬浮");
-                    this._showButtons();
-                });
-                editContainer.addEventListener("mouseout", e => {
-                    e.stopPropagation();
-                    console.log(e.target, "鼠标离开");
-                    this._hideButtons();
-                });
-
                 this.root.querySelector("#inputContainer").addEventListener("keyup", e => {
                     e.stopPropagation();
+                    /**
+                     * 暂时保存value
+                     * 1.输入框输入值的时候，由keyup事件会触发_addValue方法修改保存value
+                     */
                     if (e.target.nodeName !== "H2-INPUT") {
                         return;
                     }
                     this._addValue(e);
+                });
+
+                /**
+                 * editContainer事件绑定说明：
+                 * mouseover:用来控制按钮组的显示
+                 * mouseout:用来控制按钮组的隐藏,并自动做数据暂存操作
+                 */
+                const editContainer = this.root.querySelector("#editContainer");
+                editContainer.addEventListener("mouseover", e => {
+                    e.stopPropagation();
+                    this._showButtons();
+                });
+                editContainer.addEventListener("mouseout", e => {
+                    e.stopPropagation();
+                    /**
+                     * 暂时保存value
+                     * 2.点击H2-PICKER更多框，增减选项的时候，由mouseout事件会触发_save方法保存一次value。
+                     */
+                    if (e.target.nodeName !== "H2-PICKER") {
+                        return;
+                    }
+                    this._save(e);
                 });
             }
 
@@ -277,13 +292,12 @@
              */
             _moreValueChange(moreValue) {
                 if (moreValue == undefined || moreValue === "") {
-                    this.set("selectedList", null);
                     this.set("value", null);
                     return;
                 }
 
                 // s == e[this.attrForMoreValue]这里用2个等号，是因为s是字符串,e[this.attrForMoreValue]可以是字符串或者数字
-                const selectedList = this.moreItems.filter(e => moreValue.split(",").some(s => s == e[this.attrForMoreValue]));
+                let selectedList = this._deepClone(this.moreItems.filter(e => moreValue.split(",").some(s => s == e[this.attrForMoreValue])));
                 if (this.value && this.value.length > 0) {
                     selectedList.map(e => {
                         this.value.forEach(val => {
@@ -296,7 +310,6 @@
                         return e;
                     });
                 }
-                this.set("selectedList", selectedList);
                 this.set("value", selectedList);
             }
 
@@ -305,8 +318,10 @@
              */
             _valueChange(value) {
                 if (value == null) {
+                    this.moreValue = undefined;
                     return;
                 }
+
                 this.moreValue = value.map(e => e[this.attrForMoreValue]).join();
             }
 
@@ -346,8 +361,11 @@
                 );
             }
 
-            _save() {
-                console.log("保存");
+            /**
+             * 保存
+             */
+            _save(e) {
+                console.log(e.target, "保存");
                 this._hideButtons();
                 const inputElements = this.root.querySelectorAll("h2-input");
                 const inputs = [];
@@ -385,8 +403,15 @@
                 this.set("value", value);
             }
 
-            _submit(){
-                this._save();
+
+            /**
+             * 提交
+             */
+            _submit(e) {
+                this._save(e);
+                // 保存最近一次保存并提交的值，用来回滚数据
+                this.set("lastSubmitValue", this._deepClone(this.value));
+
                 this.dispatchEvent(new CustomEvent('value-changed', {
                     composed: true,
                     bubbles: true,
@@ -394,9 +419,24 @@
                 }));
             }
 
-            _cancel() {
+            /**
+             * 取消，回滚数据为上一次暂存的数据
+             */
+            _cancel(e) {
                 console.log("取消");
                 this._hideButtons();
+                // 回滚组件的value值为保存最近一次保存并提交的值
+                this.set("value", this._deepClone(this.lastSubmitValue));
+            }
+
+            /**
+             * 对象深拷贝方法
+             * @param obj
+             * @returns {*}
+             * @private
+             */
+            _deepClone(obj) {
+                return obj == null || typeof(obj) !== "object" ? obj : JSON.parse(JSON.stringify(obj));
             }
         }
         window.customElements.define(O2MoreInput.is, O2MoreInput);

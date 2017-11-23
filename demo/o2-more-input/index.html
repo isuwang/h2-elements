@@ -38,13 +38,14 @@
         <template>
             <o2-more-input id="question"
                            label="问题"
-                           query-url="/query.do?"
                            attr-for-label="suggestionContent"
                            attr-for-more-value="suggestionId"
                            attr-for-input-value="suggestionRemark"
-                           >
+            >
             </o2-more-input>
             <script>
+                this.addEventListener("value-changed", e => console.log("o2-more-input提交的数据：", e.detail.value));
+
                 /**
                  * 整个demo页面共用这份数据
                  */
@@ -58,33 +59,31 @@
                 ];
                 const items = [
                     {suggestionContent: "询价次数",suggestionId: 1,suggestionType: 1,taskId: 1,suggestionRemark: "1000次"},
-                    {suggestionContent: "缺乏信任度", suggestionId: 2, suggestionType: 1, taskId: 1, suggestionRemark: "缺乏"},
-                    {suggestionContent: "价格高", suggestionId: 3, suggestionType: 1, taskId: 1, suggestionRemark: "好高"},
-                    {suggestionContent: "票到付款", suggestionId: 4, suggestionType: 1, taskId: 1, suggestionRemark: "太贵"}
+                    {suggestionContent: "缺乏信任度", suggestionId: 2, suggestionType: 1, taskId: 1, suggestionRemark: "缺乏"}
                 ];
                 const displayFields = [{field: 'suggestionContent', label: '问题'}];
                 question.displayFields = displayFields;
                 question.moreItems = moreItems;
                 question.value = items;
-                this.addEventListener("value-changed", e => console.log("抛出来的数据：", e.detail.value));
             </script>
         </template>
     </demo-snippet>
 
-    <!--<h3>Basic o2-more-input demo</h3>
+    <h3>Basic o2-more-input demo</h3>
     <demo-snippet>
         <template>
-            <o2-more-input id="question1" label="问题2"
+            <o2-more-input id="question1" label="问题"
                            attr-for-label="suggestionContent"
                            attr-for-more-value="suggestionId"
                            attr-for-input-value="suggestionRemark"
-                           query-url="/query.do?">
+            >
             </o2-more-input>
             <script>
                 question1.displayFields = displayFields;
+                question1.moreItems = moreItems;
             </script>
         </template>
-    </demo-snippet>-->
+    </demo-snippet>
 </div>
 </body>
 </html>
