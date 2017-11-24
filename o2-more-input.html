@@ -276,14 +276,16 @@
                 });
                 editContainer.addEventListener("mouseout", e => {
                     e.stopPropagation();
-                    /**
-                     * 暂时保存value
-                     * 2.点击H2-PICKER更多框，增减选项的时候，由mouseout事件会触发_save方法保存一次value。
-                     */
                     if (e.target.nodeName !== "H2-PICKER") {
+                        this._hideButtons();
                         return;
                     }
+                    /**
+                     * 暂时保存value
+                     * 2.点击H2-PICKER更多框，增减选项的时候，由mouseout事件会触发_save方法保存一次value
+                     */
                     this._save(e);
+
                 });
             }
 
@@ -365,13 +367,12 @@
              * 保存
              */
             _save(e) {
-                console.log(e.target, "保存");
                 this._hideButtons();
                 const inputElements = this.root.querySelectorAll("h2-input");
                 const inputs = [];
-                inputElements.forEach(e => inputs.push({
-                    [this.attrForMoreValue]: e.id,
-                    [this.attrForInputValue]: e.value
+                inputElements.forEach(input => inputs.push({
+                    [this.attrForMoreValue]: input.id,
+                    [this.attrForInputValue]: input.value
                 }));
 
                 /**
@@ -389,15 +390,15 @@
                 /**
                  * 2.给value更新所有选项及其值
                  */
-                const value = this.value.map(e => {
+                const value = this.value.map(val => {
                         inputs.forEach(s => {
-                                if (s[this.attrForMoreValue] == e[this.attrForMoreValue]) {
-                                    e[this.attrForInputValue] = s[this.attrForInputValue];
+                                if (s[this.attrForMoreValue] == val[this.attrForMoreValue]) {
+                                    val[this.attrForInputValue] = s[this.attrForInputValue];
                                     return false;
                                 }
                             }
                         );
-                        return e;
+                        return val;
                     }
                 );
                 this.set("value", value);
