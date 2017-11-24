@@ -33,11 +33,16 @@
                 position: relative;
             }
 
+            :host .textarea {
+                border-color: #ccc;
+                border-radius: 4px;
+            }
+
         </style>
         <div id="h-form-textarea-container">
             <div class="status-wrap">
                 <h2-label value="[[label]]" required="[[required]]"></h2-label>
-                <iron-autogrow-textarea id="textarea" bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
+                <iron-autogrow-textarea id="textarea" class="textarea" bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
                                         readonly="[[readonly]]"
                                         required="[[required]]" placeholder="[[placeholder]]"></iron-autogrow-textarea>
             </div>
