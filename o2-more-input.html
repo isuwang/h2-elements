@@ -17,6 +17,7 @@
         <style>
             :host {
                 display: flex;
+                font-size: 0; /*用来处理inline-block元素之间的6个像素间隙的问题*/
             }
 
             :host .editField {
@@ -61,7 +62,7 @@
                 border: 1px solid #ccc;
             }
 
-            /*保存和取消按钮样式*/
+            /*提交和取消按钮样式*/
             :host div.button-container {
                 position: relative;
                 display: none;
@@ -79,6 +80,7 @@
                 box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
                 outline: none;
                 padding: 3px;
+                width:55px;
             }
 
             :host .buttons > button {
@@ -87,6 +89,8 @@
                 cursor: pointer;
                 border-radius: 4px;
                 padding: 0px;
+                width: 22px;
+                height: 22px;
             }
 
             :host .buttons > button:hover {
@@ -225,6 +229,12 @@
                     required: {
                         type: Boolean,
                         value: false
+                    },
+                    /**
+                     * 是否使用提交和取消按钮组（提交按钮：表单提交；取消按钮：回滚组件数据为上一次提交保存的数据）
+                     */
+                    useButtons: {
+                        type: Boolean
                     }
                 };
             }
@@ -243,20 +253,15 @@
             ready() {
                 super.ready();
 
-                // 保存最近一次保存并提交的值，用来回滚数据
-                this.set("lastSubmitValue", this._deepClone(this.value));
-
                 /**
                  * inputContainer事件绑定说明：
                  * keyup:用来控制输入值的变化，调用_addValue方法给value数组的对应项，修改其输入值
-                 *
-                 *
                  */
                 this.root.querySelector("#inputContainer").addEventListener("keyup", e => {
                     e.stopPropagation();
                     /**
                      * 暂时保存value
-                     * 1.输入框输入值的时候，由keyup事件会触发_addValue方法修改保存value
+                     * 输入框输入值的时候，由keyup事件触发_addValue方法修改保存value
                      */
                     if (e.target.nodeName !== "H2-INPUT") {
                         return;
@@ -265,9 +270,16 @@
                 });
 
                 /**
+                 * 不使用提交保存和取消按钮组的时候，不注册mouseover和mouseout的事件绑定
+                 */
+                if (!this.useButtons) {
+                    return;
+                }
+
+                /**
                  * editContainer事件绑定说明：
                  * mouseover:用来控制按钮组的显示
-                 * mouseout:用来控制按钮组的隐藏,并自动做数据暂存操作
+                 * mouseout:用来控制按钮组的隐藏
                  */
                 const editContainer = this.root.querySelector("#editContainer");
                 editContainer.addEventListener("mouseover", e => {
@@ -276,17 +288,21 @@
                 });
                 editContainer.addEventListener("mouseout", e => {
                     e.stopPropagation();
-                    if (e.target.nodeName !== "H2-PICKER") {
-                        this._hideButtons();
-                        return;
-                    }
-                    /**
-                     * 暂时保存value
-                     * 2.点击H2-PICKER更多框，增减选项的时候，由mouseout事件会触发_save方法保存一次value
-                     */
-                    this._save(e);
-
+                    this._hideButtons();
                 });
+
+                // 保存最近一次保存并提交的值，用来回滚数据
+                this.set("lastSubmitValue", this._deepClone(this.value));
+
+                /*this.addEventListener("focusout", e => {
+                    e.stopPropagation();
+                    console.log(e.target, "失去焦点");
+                    /!**
+                     * 表单提交组件数据
+                     * 组件失去焦点，由focusout事件触发_submit方法表单提交一次value
+                     *!/
+                    this._submit(e);
+                });*/
             }
 
             /**
@@ -355,8 +371,8 @@
             _addValue(e) {
                 this.value.forEach(
                     val => {
-                        if (val[this.attrForMoreValue] == e.id) {
-                            val[this.attrForInputValue] = e.value;
+                        if (val[this.attrForMoreValue] == e.target.id) {
+                            val[this.attrForInputValue] = e.target.value;
                             return false;
                         }
                     }
@@ -376,14 +392,9 @@
                 }));
 
                 /**
-                 * 1.如果用户没选择任何选项，直接返回value的默认值null
+                 * 1.如果用户没选择任何选项，不修改value的值
                  */
                 if (inputs.length === 0) {
-                    this.dispatchEvent(new CustomEvent('value-changed', {
-                        composed: true,
-                        bubbles: true,
-                        detail: {value: this.value}
-                    }));
                     return;
                 }
 
@@ -421,7 +432,7 @@
             }
 
             /**
-             * 取消，回滚数据为上一次暂存的数据
+             * 取消，回滚数据为最近一次保存并提交的值
              */
             _cancel(e) {
                 console.log("取消");

@@ -33,15 +33,12 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic o2-more-input demo</h3>
+    <h3>基本用法</h3>
     <demo-snippet>
         <template>
-            <o2-more-input id="question"
-                           label="问题"
-                           attr-for-label="suggestionContent"
-                           attr-for-more-value="suggestionId"
-                           attr-for-input-value="suggestionRemark"
-            >
+            <o2-more-input id="question" label="问题" attr-for-label="suggestionContent"
+                           attr-for-more-value="suggestionId" attr-for-input-value="suggestionRemark"
+                           use-buttons>
             </o2-more-input>
             <script>
                 this.addEventListener("value-changed", e => console.log("o2-more-input提交的数据：", e.detail.value));
@@ -57,30 +54,43 @@
                     {"suggestionContent":"无报价牌号","suggestionId":5,"suggestionRemark":"","suggestionType":1,"taskId":1},
                     {"suggestionContent":"需不含税的货","suggestionId":6,"suggestionRemark":"","suggestionType":1,"taskId":1}
                 ];
-                const items = [
-                    {suggestionContent: "询价次数",suggestionId: 1,suggestionType: 1,taskId: 1,suggestionRemark: "1000次"},
-                    {suggestionContent: "缺乏信任度", suggestionId: 2, suggestionType: 1, taskId: 1, suggestionRemark: "缺乏"}
-                ];
                 const displayFields = [{field: 'suggestionContent', label: '问题'}];
+
                 question.displayFields = displayFields;
                 question.moreItems = moreItems;
-                question.value = items;
             </script>
         </template>
     </demo-snippet>
 
-    <h3>Basic o2-more-input demo</h3>
+    <h3>支持默认值</h3>
     <demo-snippet>
         <template>
-            <o2-more-input id="question1" label="问题"
-                           attr-for-label="suggestionContent"
-                           attr-for-more-value="suggestionId"
-                           attr-for-input-value="suggestionRemark"
-            >
+            <o2-more-input id="question1" label="问题" attr-for-label="suggestionContent"
+                           attr-for-more-value="suggestionId" attr-for-input-value="suggestionRemark"
+                           use-buttons>
             </o2-more-input>
             <script>
+                const items = [
+                    {suggestionContent: "询价次数",suggestionId: 1,suggestionType: 1,taskId: 1,suggestionRemark: "1000次"},
+                    {suggestionContent: "缺乏信任度", suggestionId: 2, suggestionType: 1, taskId: 1, suggestionRemark: "缺乏"}
+                ];
                 question1.displayFields = displayFields;
                 question1.moreItems = moreItems;
+                question1.value = items;
+            </script>
+        </template>
+    </demo-snippet>
+
+    <h3>支持无按钮组模式</h3>
+    <demo-snippet>
+        <template>
+            <o2-more-input id="question2" label="问题" attr-for-label="suggestionContent"
+                           attr-for-more-value="suggestionId" attr-for-input-value="suggestionRemark">
+            </o2-more-input>
+            <script>
+                question2.displayFields = displayFields;
+                question2.moreItems = moreItems;
+                question2.value = items;
             </script>
         </template>
     </demo-snippet>
