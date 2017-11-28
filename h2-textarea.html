@@ -18,130 +18,133 @@
                 font-size: 14px;
             }
 
+            :host *{
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
             :host iron-autogrow-textarea {
                 flex-grow: 1;
                 /*定义了最小宽度后，flex-grow属性才起效。否则当textarea内字符宽度超出textarea的宽度时会撑大textarea*/
-                @apply --textarea-width
-            }
-
-            #h-form-textarea-container {
-                text-align: left;
-            }
-
-            :host .status-wrap {
-                position: relative;
-                display: flex;
-                width: 100%
-            }
-
-            :host .textarea {
+                @apply --textarea-width;
                 border-color: #ccc;
                 border-radius: 4px;
             }
 
+            :host .status-wrap {
+                display: flex;
+                text-align: left;
+                /*width: 100%*/
+            }
+
+
         </style>
-        <div id="h-form-textarea-container">
-            <div class="status-wrap">
-                <h2-label value="[[label]]" required="[[required]]"></h2-label>
-                <iron-autogrow-textarea id="textarea" class="textarea" bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
-                                        readonly="[[readonly]]"
-                                        required="[[required]]" placeholder="[[placeholder]]"></iron-autogrow-textarea>
-            </div>
+        <div class="status-wrap">
+            <h2-label value="[[label]]" required="[[required]]"></h2-label>
+            <iron-autogrow-textarea id="textarea"
+                                    bind-value="{{value}}"
+                                    rows="[[rows]]"
+                                    max-rows="[[maxRows]]"
+                                    readonly="[[readonly]]"
+                                    required="[[required]]"
+                                    placeholder="[[placeholder]]"></iron-autogrow-textarea>
         </div>
     </template>
     <script>
-      /**
-       * `h2-textarea`
-       *
-       * @customElement
-       * @polymer
-       * @demo demo/h2-textarea/index.html
-       */
-      class H2Textarea extends Polymer.Element {
-        static get properties() {
-          return {
-            /**
-             * textarea 前面的标签名字
-             *
-             * @attribute label
-             * @type {String}
-             */
-            label: {
-              type: String,
-              value: ""
-            },
-            /**
-             * textarea 文本值
-             * 双向绷定
-             */
-            value: {
-              notify: true,
-              type: String
-            },
-            /**
-             * textarea 行数
-             *
-             * @attribute rows
-             * @type number
-             * @default 4
-             */
-            rows: {
-              type: Number,
-              value: 1
-            },
-            /**
-             * textarea 最大行数
-             *
-             * @attribute maxRows
-             * @type number
-             * @default 4
-             */
-            maxRows: {
-              type: Number,
-              value: 1
-            },
-            /**
-             * textarea 是否必填
-             * 设置为true的话为必填
-             */
-            required: {
-              type: Boolean
-            }
-            ,
-            /**
-             * 模式 是否只读，true or false
-             */
-            readonly: {
-              type: Boolean,
-              value: false
-            },
-            /**
-             * 提示符
-             */
-            placeholder: {
-              type: String,
-              value: ""
-            }
-          };
-        }
-
-        static get is() {
-          return "h2-textarea";
-        }
-
-        validate() {
-          return this.root.querySelector("#textarea").validate();
-        }
-
         /**
-         * 输入框获取焦点
+         * `h2-textarea`
+         *
+         * @customElement
+         * @polymer
+         * @demo demo/h2-textarea/index.html
          */
-        doFocus() {
-          this.root.querySelector("#textarea").root.querySelector("#textarea").focus();
+        class H2Textarea extends Polymer.Element {
+            static get properties() {
+                return {
+                    /**
+                     * textarea 前面的标签名字
+                     *
+                     * @attribute label
+                     * @type {String}
+                     */
+                    label: {
+                        type: String,
+                        value: ""
+                    },
+                    /**
+                     * textarea 文本值
+                     * 双向绷定
+                     */
+                    value: {
+                        notify: true,
+                        type: String
+                    },
+                    /**
+                     * textarea 行数
+                     *
+                     * @attribute rows
+                     * @type number
+                     * @default 3
+                     */
+                    rows: {
+                        type: Number,
+                        value: 3
+                    },
+                    /**
+                     * textarea 最大行数
+                     *
+                     * @attribute maxRows
+                     * @type number
+                     * @default 3
+                     */
+                    maxRows: {
+                        type: Number,
+                        value: 3
+                    },
+                    /**
+                     * textarea 是否必填
+                     * 设置为true的话为必填
+                     */
+                    required: {
+                        type: Boolean
+                    }
+                    ,
+                    /**
+                     * 模式 是否只读，true or false
+                     */
+                    readonly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * 提示符
+                     */
+                    placeholder: {
+                        type: String,
+                        value: ""
+                    }
+                };
+            }
+
+            static get is() {
+                return "h2-textarea";
+            }
+
+            validate() {
+                return this.root.querySelector("#textarea").validate();
+            }
+
+            /**
+             * 输入框获取焦点
+             */
+            doFocus() {
+                this.root.querySelector("#textarea").root.querySelector("#textarea").focus();
+            }
+
+
         }
 
-
-      }
-      window.customElements.define(H2Textarea.is, H2Textarea);
+        window.customElements.define(H2Textarea.is, H2Textarea);
     </script>
 </dom-module>
