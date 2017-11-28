@@ -121,6 +121,13 @@
                 let value = date.toJSON().substr(0, date.toJSON().indexOf('T'));
                 this.set("value", value);
             }
+
+            /**
+             * 获取输入框焦点
+             */
+            doFocus() {
+                this.root.querySelector("h2-input").doFocus();
+            }
         }
         window.customElements.define(H2InputDate.is, H2InputDate);
     </script>

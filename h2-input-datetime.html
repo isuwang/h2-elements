@@ -123,6 +123,13 @@
                 let date = new Date(time);
                 this.set("value", this.formatDate(date, "yyyy-MM-ddTHH:mm"));
             }
+
+            /**
+             * 获取输入框焦点
+             */
+            doFocus() {
+                this.root.querySelector("h2-input").doFocus();
+            }
         }
         window.customElements.define(H2InputDatetime.is, H2InputDatetime);
     </script>
