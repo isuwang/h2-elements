@@ -519,6 +519,14 @@
             doFocus() {
                 this.root.querySelector("div.tags-box").click();
             }
+
+            /**
+             * 校验
+             * @returns {boolean}
+             */
+            validate(){
+                return this.required ? !!this.value : true;
+            }
         }
         window.customElements.define(H2Select.is, H2Select);
     </script>

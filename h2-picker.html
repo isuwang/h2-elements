@@ -880,6 +880,10 @@
             doFocus() {
                 this.root.querySelector("div.tags-input").click();
             }
+
+            validate(){
+                return this.required ? !!this.value : true;
+            }
         }
 
         window.customElements.define(H2Picker.is, H2Picker);
