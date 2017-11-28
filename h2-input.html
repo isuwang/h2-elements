@@ -153,6 +153,9 @@
             :host input {
                 -moz-appearance: textfield;
             }
+            :host iron-input {
+                width: 100%;
+            }
         </style>
         <h2-label id="label" value="[[label]]" required="[[required]]"></h2-label>
         <!--可编辑状态-->
@@ -225,7 +228,7 @@
                         value: "input-size",
                     },
                     /**
-                     * input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input和chrome一致
+                     * input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input
                      *
                      * @attribute type
                      * @type {String}

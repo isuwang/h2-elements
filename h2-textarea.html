@@ -18,34 +18,37 @@
                 font-size: 14px;
             }
 
+            :host *{
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
             :host iron-autogrow-textarea {
                 flex-grow: 1;
-                width: 270px;
                 /*定义了最小宽度后，flex-grow属性才起效。否则当textarea内字符宽度超出textarea的宽度时会撑大textarea*/
-                @apply --textarea-width
-            }
-
-            #h-form-textarea-container {
-                text-align: left;
-            }
-
-            :host .status-wrap {
-                position: relative;
-            }
-
-            :host .textarea {
+                @apply --textarea-width;
                 border-color: #ccc;
                 border-radius: 4px;
             }
 
+            :host .status-wrap {
+                display: flex;
+                text-align: left;
+                /*width: 100%*/
+            }
+
+
         </style>
-        <div id="h-form-textarea-container">
-            <div class="status-wrap">
-                <h2-label value="[[label]]" required="[[required]]"></h2-label>
-                <iron-autogrow-textarea id="textarea" class="textarea" bind-value="{{value}}" rows="[[rows]]" max-rows="[[maxRows]]"
-                                        readonly="[[readonly]]"
-                                        required="[[required]]" placeholder="[[placeholder]]"></iron-autogrow-textarea>
-            </div>
+        <div class="status-wrap">
+            <h2-label value="[[label]]" required="[[required]]"></h2-label>
+            <iron-autogrow-textarea id="textarea"
+                                    bind-value="{{value}}"
+                                    rows="[[rows]]"
+                                    max-rows="[[maxRows]]"
+                                    readonly="[[readonly]]"
+                                    required="[[required]]"
+                                    placeholder="[[placeholder]]"></iron-autogrow-textarea>
         </div>
     </template>
     <script>
@@ -82,22 +85,22 @@
                      *
                      * @attribute rows
                      * @type number
-                     * @default 4
+                     * @default 3
                      */
                     rows: {
                         type: Number,
-                        value: 1
+                        value: 3
                     },
                     /**
                      * textarea 最大行数
                      *
                      * @attribute maxRows
                      * @type number
-                     * @default 4
+                     * @default 3
                      */
                     maxRows: {
                         type: Number,
-                        value: 1
+                        value: 3
                     },
                     /**
                      * textarea 是否必填
@@ -141,6 +144,7 @@
 
 
         }
+
         window.customElements.define(H2Textarea.is, H2Textarea);
     </script>
 </dom-module>

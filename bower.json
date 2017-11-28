@@ -1,7 +1,7 @@
 {
   "name": "h2-elements",
   "description": "Polymer components for building web apps.",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": [
     "h2-grid.html",
     "h2-tip.html"
