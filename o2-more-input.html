@@ -330,6 +330,17 @@
              * value变化监视器回调
              */
             _valueChange(value) {
+                /**
+                 *  在无按钮模式的时候，在数据变化的时候手动抛value
+                 */
+                if (!this.useButtons) {
+                    this.dispatchEvent(new CustomEvent('value-changed', {
+                        composed: true,
+                        bubbles: true,
+                        detail: {value: this.value}
+                    }));
+                }
+
                 if (!Array.isArray(value) || value.length === 0) {
                     this.moreValue = undefined;
                     return;
@@ -372,6 +383,17 @@
                         }
                     }
                 );
+
+                /**
+                 *  在无按钮模式的时候，在数据变化的时候手动抛value
+                 */
+                if (!this.useButtons) {
+                    this.dispatchEvent(new CustomEvent('value-changed', {
+                        composed: true,
+                        bubbles: true,
+                        detail: {value: this.value}
+                    }));
+                }
             }
 
             /**
