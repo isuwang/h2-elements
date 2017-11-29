@@ -7,7 +7,21 @@
 
 ```javascript
 
-<h2-tip></h2-tip>
+<h2-tip id="tip"></h2-tip>
+<h2-tip type="success" message="success" id="tip2"></h2-tip>
+<h2-tip type="error" message="error" id="tip3"></h2-tip>
+<h2-tip type="confirm" message="confirm?" id="tip4"></h2-tip>
+<h2-tip type="prompt" message="prompt?" id="tip5"></h2-tip>
+<script>
+    tip.open();
+    tip.close();
+    tip4.open(
+        () => {
+            alert("点击确定！");
+        }, () => {
+            alert("点击取消");
+        });
+</script>
 ```
 -->
 
@@ -125,11 +139,10 @@
                 return {
 
                     /**
-                     * 提示框提示信息,默认为hello
+                     * 提示框提示信息
                      */
                     message: {
                         type: String,
-                        value: '',
                     },
                     /**
                      * 提示框的类型，有alert、success、error、confirm、prompt可选，默认为alert
@@ -139,7 +152,7 @@
                         value: 'alert'
                     },
                     /**
-                     * 弹出框备注信息
+                     * prompt类型，确认弹出框中输入信息
                      */
                     remark: {
                         type: String,
@@ -164,9 +177,15 @@
                             return "取消"
                         }
                     },
+                    /**
+                     * confirm、prompt信息框确认按钮点击回调函数
+                     */
                     okFn: {
                         type: Object
                     },
+                    /**
+                     * confirm、prompt信息框取消按钮点击回调函数
+                     */
                     noFn: {
                         type: Object
                     }
@@ -261,6 +280,7 @@
                 });
             }
         }
+
         window.customElements.define(H2Tip.is, H2Tip);
     </script>
 </dom-module>

@@ -7,6 +7,8 @@
 ```javascript
 
 <h2-textarea></h2-textarea>
+<h2-textarea label="备注" rows="3" max-rows="3"></h2-textarea>
+<h2-textarea label="备注" rows="3" max-rows="3" required></h2-textarea>
 ```
 -->
 
@@ -75,7 +77,6 @@
                     },
                     /**
                      * textarea 文本值
-                     * 双向绷定
                      */
                     value: {
                         notify: true,
@@ -104,15 +105,16 @@
                         value: 3
                     },
                     /**
-                     * textarea 是否必填
-                     * 设置为true的话为必填
+                     * textarea 是否必填,默认非必填
+                     * 设置true为必填
                      */
                     required: {
-                        type: Boolean
+                        type: Boolean,
+                        value: false
                     }
                     ,
                     /**
-                     * 模式 是否只读，true or false
+                     * 是否可编辑，默认可编辑
                      */
                     readonly: {
                         type: Boolean,
@@ -122,8 +124,7 @@
                      * 提示符
                      */
                     placeholder: {
-                        type: String,
-                        value: ""
+                        type: String
                     }
                 };
             }
