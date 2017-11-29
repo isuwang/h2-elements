@@ -5,7 +5,12 @@
 
 ```javascript
 
-<h2-radio></h2-radio>
+<h2-radio id="radio" label="性别" value=1></h2-radio>
+<h2-radio id="radio2" label="姓名" attr-for-value="id" attr-for-label="name" value=3></h2-radio>
+<script>
+    radio.items = [{value: 1, label: "男"}, {value: 2, label: "女"}];
+     radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
+</script>
 ```
 -->
 
@@ -190,12 +195,17 @@
                         type: Array,
                         value: []
                     },
+                    /**
+                     * 是否必填，默认非必填
+                     * eg：true
+                     */
                     required: {
                         type: Boolean,
                         value: false
                     },
                     /**
                      * 是否可编辑,默认可以编辑
+                     * eg：true
                      */
                     readonly: {
                         type: Boolean,
@@ -204,6 +214,7 @@
                     },
                     /**
                      * 用来取值的字段，默认为value
+                     * 对应items：[{value:1,label:"全部",count:"19"}] value属性
                      */
                     attrForValue: {
                         type: String,
@@ -211,6 +222,7 @@
                     },
                     /**
                      * 用来展示的字段，默认为label
+                     * 对应items：[{value:1,label:"全部",count:"19"}] label属性
                      */
                     attrForLabel: {
                         type: String,
