@@ -153,6 +153,9 @@
             :host input {
                 -moz-appearance: textfield;
             }
+            :host iron-input {
+                width: 100%;
+            }
         </style>
         <h2-label id="label" value="[[label]]" required="[[required]]"></h2-label>
         <!--可编辑状态-->
@@ -368,6 +371,14 @@
              */
             doFocus() {
                 this.root.querySelector("#innerInput").focus();
+            }
+
+            /**
+             * 校验方法
+             * @returns {*}
+             */
+            validate(){
+                return  this.$.input.validate();
             }
         }
         window.customElements.define(H2Input.is, H2Input);

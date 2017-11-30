@@ -13,6 +13,7 @@
 <dom-module id="h2-input-datetime">
     <template>
         <h2-input
+                id="input"
                 value="{{value}}"
                 label=[[label]]
                 placeholder="[[placeholder]]"
@@ -122,6 +123,20 @@
                 }
                 let date = new Date(time);
                 this.set("value", this.formatDate(date, "yyyy-MM-ddTHH:mm"));
+            }
+
+            /**
+             * 获取输入框焦点
+             */
+            doFocus() {
+                this.root.querySelector("h2-input").doFocus();
+            }
+
+            /**
+             * 校验
+             */
+            validate(){
+                return this.$.input.validate();
             }
         }
         window.customElements.define(H2InputDatetime.is, H2InputDatetime);

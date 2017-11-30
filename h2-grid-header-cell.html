@@ -22,7 +22,7 @@
                 box-sizing: border-box;
                 -moz-box-sizing: border-box; /* Firefox */
                 -webkit-box-sizing: border-box; /* Safari */
-
+                padding: 0 10px;
             }
 
             .inline-block {
@@ -47,22 +47,22 @@
         </div>
     </template>
     <script>
-        /**
-         * `h2-grid-header-cell`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-grid-header-cell/index.html
-         */
-        class H2GridHeaderCell extends Polymer.Element {
-            static get properties() {
-                return {};
-            }
-
-            static get is() {
-                return "h2-grid-header-cell";
-            }
+      /**
+       * `h2-grid-header-cell`
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/h2-grid-header-cell/index.html
+       */
+      class H2GridHeaderCell extends Polymer.Element {
+        static get properties() {
+          return {};
         }
-        window.customElements.define(H2GridHeaderCell.is, H2GridHeaderCell);
+
+        static get is() {
+          return "h2-grid-header-cell";
+        }
+      }
+      window.customElements.define(H2GridHeaderCell.is, H2GridHeaderCell);
     </script>
 </dom-module>

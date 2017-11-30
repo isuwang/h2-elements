@@ -21,6 +21,7 @@
                 align-items: center;
                 text-align: left;
                 position: relative;
+                font-size: 0;
             }
 
             :host * {
@@ -32,7 +33,7 @@
             :host .select-warp {
                 display: inline-block;
                 vertical-align: inherit;
-                /*float: left;*/
+                width: 100%;
             }
 
             :host input {
@@ -41,8 +42,7 @@
                 font-size: 13px;
                 height: 24px;
                 line-height: 24px;
-                min-width: 5px;
-                width: 5px;
+                width: 1px;
                 background-color: #ffffff;
             }
 
@@ -54,12 +54,12 @@
                 background: #FFF;
                 padding: 4px;
                 height: 34px;
-                /*min-width: 170px;*/
             }
 
             /*标签容器*/
             :host div.tags-input.tags-box {
                 height: auto;
+                width: var(--select-tags-box-width, 100%);
             }
 
             /*标签*/
@@ -79,6 +79,7 @@
                 border: 1px solid #ccc;
                 color: #666;
                 white-space: normal;
+                max-width: calc(var(--h2-select-tags-box-width, 100%) - 40px);
             }
 
             :host div.tags-input span.tag span.tag-name {
@@ -115,7 +116,6 @@
             :host iron-collapse {
                 position: absolute;
                 z-index: 10000;
-                width: 170px;
                 text-align: left;
             }
 
@@ -178,7 +178,6 @@
                 position: absolute;
                 z-index: 999;
                 margin: 2px 0 0;
-                min-width: 170px;
                 list-style: none;
                 font-size: 14px;
                 text-align: left;
@@ -190,7 +189,8 @@
                 -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
                 background-clip: padding-box;
-                /*border-top: 1px solid #dfdfdf;*/
+                border-top: 1px solid #dfdfdf;
+                width: var(--h2-select-dropdown-menu-width, 100%);
             }
 
             /* 占位符样式 */
@@ -201,26 +201,27 @@
         </style>
         <h2-label value="[[label]]" required="[[required]]"></h2-label>
         <div class="btn-group select-warp">
-            <div class="tags-input tags-box" style$="[[_getTagsBoxWidth(width)]]" on-click="_onInputClick">
+            <div class="tags-input tags-box" on-click="_onInputClick">
                 <span id="placeholder" class="placeholder">[[placeholder]]</span>
                 <span id="tag-content">
                     <template is="dom-repeat" items="{{selectedList}}">
-						<span class="tag" style$="[[_getTagMaxWidth(width)]]">
+						<span class="tag">
                             <span class="tag-name" title="[[_getLabel(item)]]">[[_getLabel(item)]]</span>
 						    <a class="float-r" data-args="[[_getValue(item)]]" href="javascript:void(0);"
                                title="删除该选项" on-click="_deleteTag">x</a>
 						</span>
                     </template>
                 </span>
-                <iron-input bind-value="{{keyword}}" id="input" slot="input" maxlength$="[[maxlength]]">
+                <iron-input id="input" slot="input" maxlength$="[[maxlength]]">
                     <input id="tags-input"
                            on-keydown="_updatePressed"
+                           readonly$="true"
                            autocomplete$="off">
                 </iron-input>
                 <iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>
             </div>
             <div class="shade"></div>
-            <iron-collapse class="dropdown-menu" id="input-collapse" style$="[[_getTagsBoxWidth(width)]]">
+            <iron-collapse class="dropdown-menu" id="input-collapse">
                 <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
                                selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
                     <template is="dom-repeat" items="[[items]]">
@@ -256,12 +257,6 @@
                      * @type {String}
                      */
                     placeholder: {
-                        type: String
-                    },
-                    /**
-                     * 组件输入框的宽度
-                     */
-                    width: {
                         type: String
                     },
                     /**
@@ -310,11 +305,6 @@
                     selectedList: {
                         type: Array,
                         notify: true
-                    },
-                    keyword: {
-                        type: String,
-                        notify: true,
-                        observer: '_keywordChange'
                     },
                     /**
                      * 是否必填
@@ -369,12 +359,6 @@
                     // make sure other event can happen on slotted element before the iron-collapse closed.
                     setTimeout(this._closeCollapse.bind(this, e), 100);
                 });
-            }
-
-            _keywordChange(newKey) {
-                if (!!newKey && newKey.length > 0) {
-                    this.$['tags-input'].style.width = this._getStrWidth(newKey);
-                }
             }
 
             /**
@@ -489,13 +473,8 @@
              * @private
              */
             _updatePressed(event) {
-                if (event.keyCode == 8) { //退格符8,不用手动控制退一个字符
-                    if (this.keyword && this.keyword.length > 0) {
-                    } else {
-                        if (this.selectedList) {//存在数据才抛出,解决新增时候数据为空时退格Array.length出错问题
-                            this.pop("selectedList");
-                        }
-                    }
+                if (event.keyCode == 8 && this.selectedList) { //退格符8,不用手动控制退一个字符//存在数据才抛出,解决新增时候数据为空时退格Array.length出错问题
+                    this.pop("selectedList");
                 }
             }
 
@@ -529,67 +508,18 @@
             }
 
             /**
-             * 获取标签盒子宽度
-             * @param width
-             * @returns {string}
-             * @private
-             */
-            _getTagsBoxWidth(width) {
-                if (!width) {
-                    return "";
-                }
-                return "width:" + width;
-            }
-
-            /**
-             * 获取span.tag 标签的最大宽度
-             * @param width
-             * @returns {string}
-             */
-            _getTagMaxWidth(width) {
-                if (!width) {
-                    return "";
-                }
-                var _thisMaxWidth = Number(width.substr(0, width.indexOf("px"))) - 44;
-                return "max-width:" + _thisMaxWidth + "px";
-            }
-
-            /**
-             * 获取字符串在网页上边的宽度
-             * @param str
-             * @returns {string}
-             * @private
-             */
-            _getStrWidth(str) {
-                let self = this;
-                let defaultWidth = 170;
-                let otherWidth = 44;
-                let inputWidth = this.width ? Number(this.width.substr(0, this.width.indexOf("px"))) : defaultWidth;
-                var _thisMaxWith = inputWidth - otherWidth;
-
-                function getTagContentWidth() {
-                    let tag = self.querySelectorAll(".tag");
-                    return tag.length > 0 ? Array.prototype.reduce.call(tag, function (a, b) {
-                        return {offsetWidth: a.offsetWidth + b.offsetWidth}
-                    }).offsetWidth : 0;
-                }
-
-                let span = document.createElement("span");
-                document.body.appendChild(span);
-                span.style.visibility = "hidden";
-                span.style.whiteSpace = "nowrap";
-                span.innerText = str;
-                span.style.fontSize = "13px";
-                let maxWidth = _thisMaxWith - getTagContentWidth(); //容许的最大宽度
-                let realWidth = ((span.offsetWidth || 0) + 5 );
-                return (realWidth > maxWidth ? maxWidth : realWidth) + "px";
-            }
-
-            /**
              * 模拟点击一次输入框，触发展示下拉面板行为
              */
-            doFocus(){
+            doFocus() {
                 this.root.querySelector("div.tags-box").click();
+            }
+
+            /**
+             * 校验
+             * @returns {boolean}
+             */
+            validate(){
+                return this.required ? !!this.value : true;
             }
         }
         window.customElements.define(H2Select.is, H2Select);

@@ -28,6 +28,11 @@
                 display: flex;
                 flex-flow: row wrap;
             }
+
+            #select7{
+                --select-tags-box-width:170px;
+                --h2-select-dropdown-menu-width:100px;
+            }
         </style>
     </custom-style>
 </head>
@@ -78,13 +83,22 @@
     <h3>支持设置输入框宽度和组件宽度</h3>
     <demo-snippet>
         <template>
-            <h2-select id="select5" label="球员" placeholder="选择球员" multi width="200px;"></h2-select>
+            <h2-select id="select5" label="球员" placeholder="选择球员" multi></h2-select>
             <h2-select id="select6" label="球员" placeholder="选择球员" multi style="width:200px;"></h2-select>
+            <h2-select id="select7" label="球员" placeholder="选择球员" multi></h2-select>
             <script>
                 select5.items = items;
                 select5.value = "1,2,3";
                 select6.items = items;
                 select6.value = "1,2,3";
+                /**
+                 * 通过样式钩子控制下拉选择框宽度，和下拉面板宽度
+                 * #select7{
+                 *      --select-tags-box-width:170px;
+                 *      --h2-select-dropdown-menu-width:100px;
+                 * }
+                 */
+                select7.items = items;
             </script>
         </template>
     </demo-snippet>

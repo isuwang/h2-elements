@@ -7,6 +7,9 @@
 ```javascript
 
 <h2-checkbox></h2-checkbox>
+<h2-checkbox label="材料" id="checkbox"></h2-checkbox>
+<h2-checkbox label="材料" id="checkbox2" attr-for-label="name" attr-for-value="key"></h2-checkbox>
+<h2-checkbox label="材料" id="checkbox3" attr-for-label="name" attr-for-value="key" required></h2-checkbox>
 ```
 -->
 
@@ -105,6 +108,7 @@
                     },
                     /**
                      * 用来取值的字段，默认为value
+                     * 对应items：[{label:'薄膜',value:0,selected:true},{label:'纤维',value:1}] 中的value属性
                      */
                     attrForValue: {
                         type: String,
@@ -112,17 +116,21 @@
                     },
                     /**
                      * 用来展示的字段，默认为label
+                     * 对应items：[{label:'薄膜',value:0,selected:true},{label:'纤维',value:1}] 中的label属性
                      */
                     attrForLabel: {
                         type: String,
                         value: "label"
                     },
+                    /**
+                     * 是否必填，默认为必填
+                     */
                     required: {
                         type: Boolean,
                         value: false
                     },
                     /**
-                     * 是否只读,默认可以编辑
+                     * 是否可编辑,默认可以编辑
                      */
                     readonly: {
                         type: Boolean,
@@ -199,6 +207,10 @@
                 }
             }
 
+            /**
+             * 校验函数，返回true/false，表示校验是否通过
+             * @returns {boolean}
+             */
             validate() {
                 const verify_pss = this.required ? !!this.value : true;
                 let element = this.root.querySelector('#status-items');

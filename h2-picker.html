@@ -54,6 +54,7 @@
 
             :host div.input-wrap {
                 display: inline-block;
+                width:100%;
             }
 
             :host div.input-container {
@@ -63,6 +64,7 @@
             :host iron-input {
                 margin-left: 0;
                 float: left;
+                width: var(--h2-picker-input-width, 100%);
             }
 
             :host .module-box {
@@ -878,6 +880,10 @@
              */
             doFocus() {
                 this.root.querySelector("div.tags-input").click();
+            }
+
+            validate(){
+                return this.required ? !!this.value : true;
             }
         }
 
