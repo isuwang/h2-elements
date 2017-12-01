@@ -378,7 +378,7 @@
              * @returns {*}
              */
             validate(){
-                return  this.$.input.validate();
+                return  this.root.querySelector("#input").validate();
             }
         }
         window.customElements.define(H2Input.is, H2Input);
