@@ -68,7 +68,7 @@
         </template>
     </demo-snippet>
 
-    <!--<h3>支持单选、多选</h3>
+    <h3>支持单选、多选</h3>
     <demo-snippet>
         <template>
             <h2-picker id="picker1" label="单选框" style="width:250px" value="1"></h2-picker>
@@ -124,8 +124,8 @@
                 /**
                  * 通过样式钩子控制输入区宽度，输入框宽度要比标签盒子宽度少10px
                  * #picker6 {
-                 *   &#45;&#45;h2-picker-input-width: 170px;
-                 *   &#45;&#45;h2-picker-tags-box-width: 180px;
+                 *   --h2-picker-input-width: 170px;
+                 *   --h2-picker-tags-box-width: 180px;
                  * }
                  */
                 picker6.attrForValue = attrForValue;
@@ -154,7 +154,6 @@
                 picker8.attrForLabel = attrForLabel;
                 picker8.displayFields = displayFields;
                 picker8.items = items;
-                picker8.usePinyinSearch = false;
 
                 picker9.attrForValue = attrForValue;
                 picker9.attrForLabel = attrForLabel;
@@ -163,7 +162,7 @@
                 picker9.items = items;
             </script>
         </template>
-    </demo-snippet>-->
+    </demo-snippet>
 
     <h3>支持通过接口查询数据（items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置）</h3>
     <demo-snippet>
