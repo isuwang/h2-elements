@@ -41,7 +41,7 @@
     <h3>基本用法 h2-select demo</h3>
     <demo-snippet>
         <template>
-            <h2-select id="select" label="球员" placeholder="选择球员" width="170px"></h2-select>
+            <h2-select id="select" label="球员" placeholder="选择球员"></h2-select>
             <script>
                 const items = [
                     {"label": "梅西", "value": 1},
@@ -105,13 +105,13 @@
     <h3>支持只读、必填模式</h3>
     <demo-snippet>
         <template>
-            <h2-select id="select7" label="球员" placeholder="选择球员" multi readonly style="width:200px;"></h2-select>
-            <h2-select id="select8" label="球员" placeholder="选择球员" multi required></h2-select>
+            <h2-select id="select8" label="球员" placeholder="选择球员" multi readonly style="width:200px;"></h2-select>
+            <h2-select id="select9" label="球员" placeholder="选择球员" multi required></h2-select>
             <script>
-                select7.items = items;
-                select7.value = "1,2,3";
                 select8.items = items;
                 select8.value = "1,2,3";
+                select9.items = items;
+                select9.value = "1,2,3";
             </script>
         </template>
     </demo-snippet>

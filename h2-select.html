@@ -113,12 +113,6 @@
                 border-radius: 4px;
             }
 
-            :host iron-collapse {
-                position: absolute;
-                z-index: 10000;
-                text-align: left;
-            }
-
             :host iron-selector > * {
                 margin: 0px;
                 padding: 0px;
@@ -173,6 +167,10 @@
                 float: right;
             }
 
+            :host .dropdown-menu-container {
+                position: relative;
+            }
+
             /*下拉列表*/
             :host .dropdown-menu {
                 position: absolute;
@@ -221,14 +219,16 @@
                 <iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>
             </div>
             <div class="shade"></div>
-            <iron-collapse class="dropdown-menu" id="input-collapse">
-                <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
-                               selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
-                    <template is="dom-repeat" items="[[items]]">
-                        <span class="btn-row item" radio-item="[[item]]">[[_getLabel(item)]]</span>
-                    </template>
-                </iron-selector>
-            </iron-collapse>
+            <div class="dropdown-menu-container">
+                <iron-collapse class="dropdown-menu" id="input-collapse">
+                    <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
+                                   selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
+                        <template is="dom-repeat" items="[[items]]">
+                            <span class="btn-row item" radio-item="[[item]]">[[_getLabel(item)]]</span>
+                        </template>
+                    </iron-selector>
+                </iron-collapse>
+            </div>
         </div>
     </template>
     <script>
