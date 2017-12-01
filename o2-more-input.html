@@ -241,12 +241,13 @@
             static get observers() {
                 return [
                     "_moreValueChange(moreValue)",
-                    "_valueChange(value)"
+                    "_valueChange(value)",
+                    "_moreItemsChange(moreItems)"
                 ];
             }
 
-            ready() {
-                super.ready();
+            connectedCallback() {
+                super.connectedCallback();
 
                 /**
                  * inputContainer事件绑定说明：
@@ -288,16 +289,16 @@
 
                 // 保存最近一次保存并提交的值，用来回滚数据
                 this.set("lastSubmitValue", this._deepClone(this.value));
+            }
 
-                /*this.addEventListener("focusout", e => {
-                    e.stopPropagation();
-                    console.log(e.target, "失去焦点");
-                    /!**
-                     * 表单提交组件数据
-                     * 组件失去焦点，由focusout事件触发_submit方法表单提交一次value
-                     *!/
-                    this._submit(e);
-                });*/
+            /**
+             * 更多选择框组件选项数组变化监视器
+             */
+            _moreItemsChange(moreItems) {
+                if (!moreItems) return;
+                if (!this.moreValue) return;
+                //初始化一次更多选择框的选中值
+                this._moreValueChange(this.moreValue);
             }
 
             /**
@@ -310,6 +311,7 @@
                 }
 
                 // s == e[this.attrForMoreValue]这里用2个等号，是因为s是字符串,e[this.attrForMoreValue]可以是字符串或者数字
+                if (!this.moreItems) return;
                 let selectedList = this._deepClone(this.moreItems.filter(e => moreValue.split(",").some(s => s == e[this.attrForMoreValue])));
                 if (this.value && this.value.length > 0) {
                     selectedList.map(e => {

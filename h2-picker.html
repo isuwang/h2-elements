@@ -502,6 +502,9 @@
                 if (!items) return;
                 this.set('displayItems', items.slice(0, 9));
 
+                // 初始化一次选中项
+                this._valueChange(this.value);
+
                 // 清空缓存插件的缓存
                 this.cacheSearchUtil.resetCache();
 
@@ -517,27 +520,6 @@
                  * 当searchFields有值的时候，只对searchFields中的字段做缓存
                  */
                 items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
-
-                /**
-                 * 单选，直接替换旧值
-                 */
-                let value = this.value;
-                if (!this.multi) {
-                    //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
-                    this.set("selectedList", this.items.filter(e => e[this.attrForValue] == value));
-                    this._dispatchSelectedList();
-                    return;
-                }
-
-                /**
-                 * 多选，直接从items里面取值
-                 */
-                let values = (value + "").split(",");
-                //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
-                let selectedList = this.items.filter(e => values.some(s => e[this.attrForValue] == s));
-                this.set("selectedList", selectedList);
-                this._dispatchSelectedList();
-                return;
             }
 
             /**

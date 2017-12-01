@@ -150,9 +150,19 @@
             <h2-picker id="picker8" label="默认" style="width:250px"></h2-picker>
             <h2-picker id="picker9" label="自定义只搜索label字段" style="width:400px"></h2-picker>
             <script>
+                const attrForValue = "id";
+                const attrForLabel = "label";
+                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+                const items = [
+                    {"id": 1, "label": "快塑网", "business": "塑料"},
+                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
+                    {"id": 3, "label": "腾讯", "business": "游戏"},
+                    {"id": 4, "label": "京东", "business": "电商"}
+                ];
                 picker8.attrForValue = attrForValue;
                 picker8.attrForLabel = attrForLabel;
                 picker8.displayFields = displayFields;
+                picker8.value = 1;
                 picker8.items = items;
 
                 picker9.attrForValue = attrForValue;
