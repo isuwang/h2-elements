@@ -104,7 +104,7 @@
                     this.set("time", undefined);
                     return;
                 }
-                let time = new Date(value).getTime();
+                let time = new Date(`${value} 00:00:00`).getTime();
                 this.set("time", time);
             }
 
@@ -118,11 +118,19 @@
                     this.set("value", undefined);
                     return;
                 }
-                let date = new Date(time);
-                let value = date.toJSON().substr(0, date.toJSON().indexOf('T'));
-                this.set("value", value);
+                const date = new Date(time);
+                this.set("value", `${date.getFullYear()}-${this._preReplenish(date.getMonth() + 1, 2, "0")}-${this._preReplenish(date.getDate(), 2, "0")}`);
             }
 
+            /**
+             * 前置填充
+             * @param {*} str
+             * @param {number} totalLen 填充后的长度
+             * @param {string} replenisher 填充的字符
+             */
+            _preReplenish(str, totalLen = 0, replenisher = "") {
+              return `${String(replenisher).repeat(Number(totalLen) - String(str).length)}${String(str)}`;
+            }
             /**
              * 获取输入框焦点
              */
