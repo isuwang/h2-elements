@@ -208,6 +208,7 @@
     __consume(reader) {
       let total = 0;
       return pump();
+
       function pump() {
         return reader.read().then(({done, value}) => {
           if (done) {
