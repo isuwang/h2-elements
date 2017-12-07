@@ -168,7 +168,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
       __responseChange(response) {
         const resClone = response.clone();
         if(response.ok) {
-          const handleAs = response.ok ? this.handleResponseAs : "text";
+          const handleAs = this.handleResponseAs || "text";
 
           if (response.headers.has('Content-length')
             && response.headers.get('Content-length') == 0) {
