@@ -153,7 +153,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
         ];
       }
 
-      __getCollectedRequest(request) {
+      __getCorrectedRequest(request) {
         const req = Request.prototype.isPrototypeOf(request) ? request : new Request(request.url, request);
         //TODO set default value to req
         return req;
@@ -185,7 +185,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
 
       _mockIt() {
         if (window.__mockEnabled && typeof MockDataPool !== "undefined") {
-          const collectedReq = this.__getCollectedRequest(this.request);
+          const collectedReq = this.__getCorrectedRequest(this.request);
           const matchedRes = MockDataPool.match(collectedReq);
           if (matchedRes) {
             this.response = new Response(matchedRes.body, matchedRes);
@@ -197,7 +197,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
       }
 
       _fetchIt() {
-        const collectedReq = this.__getCollectedRequest(this.request);
+        const collectedReq = this.__getCorrectedRequest(this.request);
         window.fetch(collectedReq)
           .then(res => this.response = res)
           .catch(err => this.error = {content: err});
@@ -209,7 +209,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
        * @return {Promise}
        */
       fetchIt(request) {
-        const collectedReq = this.__getCollectedRequest(request);
+        const collectedReq = this.__getCorrectedRequest(request);
         if (window.__mockEnabled) {
           const matchedRes = MockDataPool.match(collectedReq);
           if(matchedRes) {
