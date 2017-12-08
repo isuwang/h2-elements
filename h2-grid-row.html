@@ -32,6 +32,14 @@
                 display: -webkit-flex; /* Safari */
                 display: flex;
             }
+
+            :host ::slotted(*:not(:last-child)) {
+                flex: 1;
+            }
+
+            :host ::slotted(*:last-child) {
+                width: var(--operation-column-width, 120px);
+            }
         </style>
         <div class="row flex-box">
             <slot></slot>

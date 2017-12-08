@@ -23,6 +23,14 @@
         font-weight : bold;
         border-bottom:3px solid #dddddd;
       }
+
+      :host ::slotted(*:not(:last-child)) {
+        flex: 1;
+      }
+
+      :host ::slotted(*:last-child) {
+        width: var(--operation-column-width, 120px);
+      }
     </style>
     <div class="header flex-box">
       <slot></slot>
