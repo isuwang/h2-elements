@@ -33,11 +33,11 @@
                 display: flex;
             }
 
-            :host ::slotted(*:not(:last-child)) {
+            :host ::slotted(h2-grid-cell:not(:last-of-type)) {
                 flex: 1;
             }
 
-            :host ::slotted(*:last-child) {
+            :host ::slotted(h2-grid-cell:last-of-type) {
                 width: var(--operation-column-width, 120px);
             }
         </style>

@@ -43,8 +43,8 @@
             }
 
             /*控制操作列的宽度*/
-            h2-grid{
-                --operation-column-width:300px;
+            h2-grid {
+                --operation-column-width: 300px;
             }
         </style>
     </custom-style>
@@ -68,6 +68,7 @@
                     <h2-grid-header-cell>
                         操作
                     </h2-grid-header-cell>
+                    <template is="dom-repeat"></template>
                 </h2-grid-header>
                 <h2-grid-body>
                     <h2-grid-row>
@@ -86,6 +87,7 @@
                             <paper-button raised>测试按钮3</paper-button>
                         </h2-grid-cell>
                     </h2-grid-row>
+                    <template is="dom-repeat"></template>
                     <h2-grid-row>
                         <h2-grid-cell>
                             li si
@@ -102,6 +104,8 @@
                             <paper-button raised>测试按钮3</paper-button>
                         </h2-grid-cell>
                     </h2-grid-row>
+                    <template is="dom-repeat"></template>
+                    <template is="dom-repeat"></template>
                 </h2-grid-body>
             </h2-grid>
         </template>
