@@ -80,9 +80,12 @@
     
     window.MockDataPool = MockDataPool;
     // load init data
-    document.write(`<script type="module" src="${mockDataSrc}"></script>`);
+    //  Fetched with credentials
+    document.write(`<script type="module" crossorigin src="${mockDataSrc}"></script>`);
+    // Support for non-module-support browsers
+    document.write(`<script nomodule src="${mockDataSrc}"></script>`);
+    
     document.close();
   }
   
 })(window);
-
