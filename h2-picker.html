@@ -54,7 +54,7 @@
 
             :host div.input-wrap {
                 display: inline-block;
-                width:100%;
+                width: 100%;
             }
 
             :host div.input-container {
@@ -891,8 +891,8 @@
                 this.root.querySelector("div.tags-input").click();
             }
 
-            validate(){
-                return this.required ? !!this.value : true;
+            validate() {
+                return this.required ? this.value != undefined : true;
             }
         }
 
