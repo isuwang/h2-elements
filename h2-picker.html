@@ -54,7 +54,7 @@
 
             :host div.input-wrap {
                 display: inline-block;
-                width:100%;
+                width: 100%;
             }
 
             :host div.input-container {
@@ -73,7 +73,7 @@
                 font-size: 12px;
                 border-left: 1px solid #ddd;
                 border-top: 1px solid #ddd;
-                z-index: 999;
+                z-index: 99;
                 padding: 5px 0 0 0;
                 background: white;
                 color: black;
@@ -103,6 +103,10 @@
             :host .module-list {
                 font-size: 12px;
                 background-color: #ffffff;
+            }
+
+            :host .module-list .complete {
+                white-space: nowrap;
             }
 
             :host .module-list th.complete {
@@ -652,7 +656,7 @@
                             },
                             data => {
                                 //TODO 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
-                                const rows = (data.rows || data || []).filter(e => value == e[this.attrForValue]);
+                                const rows = (data.rows || data || [])/*.filter(e => value == e[this.attrForValue])*/;
                                 this.set("selectedList", rows);
                                 this._dispatchSelectedList();
                             }
@@ -687,7 +691,7 @@
                     },
                     data => {
                         //TODO 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
-                        const rows = (data.rows || data || []).filter(e => diffValues.some(s => s == e[this.attrForValue]));
+                        const rows = (data.rows || data || [])/*.filter(e => diffValues.some(s => s == e[this.attrForValue]))*/;
                         this.set("selectedList", unionSelectedList.concat(rows));
                         this._dispatchSelectedList();
                     }
@@ -887,8 +891,8 @@
                 this.root.querySelector("div.tags-input").click();
             }
 
-            validate(){
-                return this.required ? !!this.value : true;
+            validate() {
+                return this.required ? this.value != undefined : true;
             }
         }
 

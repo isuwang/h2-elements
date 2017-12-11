@@ -254,7 +254,7 @@
             }
 
             validate() {
-                const verify_pss = this.required ? !!this.value : true;
+                const verify_pss = this.required ? this.value !=undefined : true;
                 let element = this.root.querySelector('.status-items');
                 if (!verify_pss) {
                     element.classList.add("required-input");
@@ -268,6 +268,7 @@
                 super.ready();
             }
         }
+
         window.customElements.define(H2Radio.is, H2Radio);
     </script>
 </dom-module>

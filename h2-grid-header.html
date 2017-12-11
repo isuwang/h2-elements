@@ -23,6 +23,14 @@
         font-weight : bold;
         border-bottom:3px solid #dddddd;
       }
+
+      :host ::slotted(h2-grid-header-cell:not(:last-of-type)) {
+        flex: 1;
+      }
+
+      :host ::slotted(h2-grid-header-cell:last-of-type) {
+        width: var(--operation-column-width, 120px);
+      }
     </style>
     <div class="header flex-box">
       <slot></slot>
