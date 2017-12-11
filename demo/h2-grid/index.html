@@ -41,6 +41,11 @@
                 text-indent: 2px;
                 padding-left: 5px;
             }
+
+            /*控制操作列的宽度*/
+            h2-grid {
+                --operation-column-width: 300px;
+            }
         </style>
     </custom-style>
 </head>
@@ -60,6 +65,10 @@
                     <h2-grid-header-cell>
                         sex
                     </h2-grid-header-cell>
+                    <h2-grid-header-cell>
+                        操作
+                    </h2-grid-header-cell>
+                    <template is="dom-repeat"></template>
                 </h2-grid-header>
                 <h2-grid-body>
                     <h2-grid-row>
@@ -72,7 +81,13 @@
                         <h2-grid-cell>
                             man
                         </h2-grid-cell>
+                        <h2-grid-cell>
+                            <paper-button raised>测试按钮1</paper-button>
+                            <paper-button raised>测试按钮2</paper-button>
+                            <paper-button raised>测试按钮3</paper-button>
+                        </h2-grid-cell>
                     </h2-grid-row>
+                    <template is="dom-repeat"></template>
                     <h2-grid-row>
                         <h2-grid-cell>
                             li si
@@ -83,7 +98,14 @@
                         <h2-grid-cell>
                             woman
                         </h2-grid-cell>
+                        <h2-grid-cell>
+                            <paper-button raised>测试按钮1</paper-button>
+                            <paper-button raised>测试按钮2</paper-button>
+                            <paper-button raised>测试按钮3</paper-button>
+                        </h2-grid-cell>
                     </h2-grid-row>
+                    <template is="dom-repeat"></template>
+                    <template is="dom-repeat"></template>
                 </h2-grid-body>
             </h2-grid>
         </template>
