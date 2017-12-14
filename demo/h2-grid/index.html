@@ -42,9 +42,9 @@
                 padding-left: 5px;
             }
 
-            /*控制操作列的宽度*/
             h2-grid {
-                --operation-column-width: 300px;
+                --common-column-flex: 1;
+                --last-column-flex: 2;
             }
         </style>
     </custom-style>
@@ -87,16 +87,15 @@
                             <paper-button raised>测试按钮3</paper-button>
                         </h2-grid-cell>
                     </h2-grid-row>
-                    <template is="dom-repeat"></template>
                     <h2-grid-row>
                         <h2-grid-cell>
-                            li si
+                            zhang san
                         </h2-grid-cell>
                         <h2-grid-cell>
-                            26
+                            25
                         </h2-grid-cell>
                         <h2-grid-cell>
-                            woman
+                            man
                         </h2-grid-cell>
                         <h2-grid-cell>
                             <paper-button raised>测试按钮1</paper-button>
@@ -104,7 +103,6 @@
                             <paper-button raised>测试按钮3</paper-button>
                         </h2-grid-cell>
                     </h2-grid-row>
-                    <template is="dom-repeat"></template>
                     <template is="dom-repeat"></template>
                 </h2-grid-body>
             </h2-grid>
@@ -203,15 +201,15 @@
                 </h2-grid-body>
             </h2-grid>
             <script>
-                _openSubItem["onclick"] = () => {
-                    _openSubItem.openSubItem();
-                }
-                _openSubItem2["onclick"] = () => {
-                    _openSubItem2.openSubItem();
-                }
-                rowHaveItem.subParam = {
-                    mess: "subItem accept row Param"
-                }
+              _openSubItem["onclick"] = () => {
+                _openSubItem.openSubItem();
+              }
+              _openSubItem2["onclick"] = () => {
+                _openSubItem2.openSubItem();
+              }
+              rowHaveItem.subParam = {
+                mess: "subItem accept row Param"
+              }
             </script>
         </template>
     </demo-snippet>

@@ -33,134 +33,136 @@
                 display: flex;
             }
 
+            /*普通列的宽度比例，默认1*/
             :host ::slotted(h2-grid-cell:not(:last-of-type)) {
-                flex: 1;
+                flex: var(--common-column-flex, 1);
             }
 
+            /*最后一列的宽度比例，默认2*/
             :host ::slotted(h2-grid-cell:last-of-type) {
-                width: var(--operation-column-width, 120px);
+                flex: var(--last-column-flex, 2);
             }
         </style>
         <div class="row flex-box">
             <slot></slot>
         </div>
-        <iron-collapse id="sub-row" ></iron-collapse>
+        <iron-collapse id="sub-row"></iron-collapse>
     </template>
     <script>
-        /**
-         * `h2-grid-row`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-grid-row/index.html
-         */
-        class H2GridRow extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     * 子页面
-                     * */
-                    subItem: String,
-                    /**
-                     * 子页面参数
-                     * */
-                    subParam: {
-                        type: Object,
-                        value: function () {
-                            return {};
-                        }
-                    },
-
-                    /**
-                     * 子页面是否默认开启
-                     * */
-                    open: {
-                        type: Boolean,
-                        value: false,
-                        observer: "__defaultOpenChange"
-                    },
-                    subItemDoc: {
-                        type: Object,
-                        value: function () {
-                            return {};
-                        }
-                    },
-                    /**
-                     * 当前子页面是否已经加载
-                     * */
-                    loadItem: {
-                        type: Boolean,
-                        value: true
-                    }
-                };
-            }
-
-            static get observers() {
-                return [
-                    'addSubItems(subItemDoc, subParam)',
-                ];
-            }
-
-            static get is() {
-                return "h2-grid-row";
-            }
-
-
-            openChangeItem() {
-                this.$["sub-row"].toggle();
-            }
-
-            __defaultOpenChange(open) {
-                if (open) {
-                    this.querySelectorAll("h2-grid-cell").forEach((item) => item.setAttribute("is-open", true));
-                    this.openSubItem();
-                }
-            }
+      /**
+       * `h2-grid-row`
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/h2-grid-row/index.html
+       */
+      class H2GridRow extends Polymer.Element {
+        static get properties() {
+          return {
+            /**
+             * 子页面
+             * */
+            subItem: String,
+            /**
+             * 子页面参数
+             * */
+            subParam: {
+              type: Object,
+              value: function () {
+                return {};
+              }
+            },
 
             /**
-             * 向子页面传递参数
-             * @param subItemDoc
-             * @param subParam
-             */
-            addSubItems(subItemDoc, subParam) {
-                if (!this.isEmptyObject(subItemDoc) && !this.isEmptyObject(subParam)) {
-                    this.set("subItemDoc.subParam", this.subParam)
-                }
-            }
-
-            isEmptyObject(obj) {
-                if (typeof obj == "object") {
-                    for (let n in obj) {
-                        return false
-                    }
-                } else {
-                    return !obj;
-                }
-                return true;
-            }
-
+             * 子页面是否默认开启
+             * */
+            open: {
+              type: Boolean,
+              value: false,
+              observer: "__defaultOpenChange"
+            },
+            subItemDoc: {
+              type: Object,
+              value: function () {
+                return {};
+              }
+            },
             /**
-             * 打开子页面
-             */
-            openSubItem() {
-                if (this.loadItem) {
-                    if (this.subItem) {
-                        this.subItemDoc = document.createElement(this.subItem);
-                        this.$["sub-row"].appendChild(this.subItemDoc);
-                    }
-                    this.addSubItems(this.subItemDoc, this.subParam);
-                    this.set("loadItem", false);
-                }
-                setTimeout(this.openChangeItem.bind(this), 100);
+             * 当前子页面是否已经加载
+             * */
+            loadItem: {
+              type: Boolean,
+              value: true
             }
-
-            ready() {
-                super.ready();
-                this.addEventListener('open-sub-item', (e) => {
-                    this.openSubItem();
-                });
-            }
+          };
         }
-        window.customElements.define(H2GridRow.is, H2GridRow);
+
+        static get observers() {
+          return [
+            'addSubItems(subItemDoc, subParam)',
+          ];
+        }
+
+        static get is() {
+          return "h2-grid-row";
+        }
+
+
+        openChangeItem() {
+          this.$["sub-row"].toggle();
+        }
+
+        __defaultOpenChange(open) {
+          if (open) {
+            this.querySelectorAll("h2-grid-cell").forEach((item) => item.setAttribute("is-open", true));
+            this.openSubItem();
+          }
+        }
+
+        /**
+         * 向子页面传递参数
+         * @param subItemDoc
+         * @param subParam
+         */
+        addSubItems(subItemDoc, subParam) {
+          if (!this.isEmptyObject(subItemDoc) && !this.isEmptyObject(subParam)) {
+            this.set("subItemDoc.subParam", this.subParam)
+          }
+        }
+
+        isEmptyObject(obj) {
+          if (typeof obj == "object") {
+            for (let n in obj) {
+              return false
+            }
+          } else {
+            return !obj;
+          }
+          return true;
+        }
+
+        /**
+         * 打开子页面
+         */
+        openSubItem() {
+          if (this.loadItem) {
+            if (this.subItem) {
+              this.subItemDoc = document.createElement(this.subItem);
+              this.$["sub-row"].appendChild(this.subItemDoc);
+            }
+            this.addSubItems(this.subItemDoc, this.subParam);
+            this.set("loadItem", false);
+          }
+          setTimeout(this.openChangeItem.bind(this), 100);
+        }
+
+        ready() {
+          super.ready();
+          this.addEventListener('open-sub-item', (e) => {
+            this.openSubItem();
+          });
+        }
+      }
+      window.customElements.define(H2GridRow.is, H2GridRow);
     </script>
 </dom-module>

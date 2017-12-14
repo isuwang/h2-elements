@@ -9,52 +9,53 @@
 -->
 
 <dom-module id="h2-grid-header">
-  <template>
-    <style>
-      .flex-box {
-        display: -webkit-flex; /* Safari */
-        display: flex;
-      }
-      .header {
-        height: 37px;
-        line-height: 34px;
-        background-color: #595959;
-        box-sizing:border-box;
-        font-weight : bold;
-        border-bottom:3px solid #dddddd;
-      }
+    <template>
+        <style>
+            .flex-box {
+                display: -webkit-flex; /* Safari */
+                display: flex;
+            }
 
-      :host ::slotted(h2-grid-header-cell:not(:last-of-type)) {
-        flex: 1;
-      }
+            .header {
+                height: 37px;
+                line-height: 34px;
+                background-color: #595959;
+                box-sizing: border-box;
+                font-weight: bold;
+                border-bottom: 3px solid #dddddd;
+            }
 
-      :host ::slotted(h2-grid-header-cell:last-of-type) {
-        width: var(--operation-column-width, 120px);
-      }
-    </style>
-    <div class="header flex-box">
-      <slot></slot>
-    </div>
-  </template>
-  <script>
-    /**
-     * `h2-grid-header`
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/h2-grid-header/index.html
-     */
-    class H2GridHeader extends Polymer.Element {
-      static get properties() {
-        return {
+            /*普通列的宽度比例，默认1*/
+            :host ::slotted(h2-grid-header-cell:not(:last-of-type)) {
+                flex: var(--common-column-flex, 1);
+            }
 
-        };
-      }
+            /*最后一列的宽度比例，默认2*/
+            :host ::slotted(h2-grid-header-cell:last-of-type) {
+                flex: var(--last-column-flex, 2);
+            }
+        </style>
+        <div class="header flex-box">
+            <slot></slot>
+        </div>
+    </template>
+    <script>
+      /**
+       * `h2-grid-header`
+       *
+       * @customElement
+       * @polymer
+       * @demo demo/h2-grid-header/index.html
+       */
+      class H2GridHeader extends Polymer.Element {
+        static get properties() {
+          return {};
+        }
 
-      static get is() {
-        return "h2-grid-header";
+        static get is() {
+          return "h2-grid-header";
+        }
       }
-    }
-    window.customElements.define(H2GridHeader.is, H2GridHeader);
-  </script>
+      window.customElements.define(H2GridHeader.is, H2GridHeader);
+    </script>
 </dom-module>
