@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="h2-label.html">
 
 <!--
 
@@ -17,30 +18,8 @@
                 display: inline-block;
             }
 
-            :host paper-button[raised].colorful {
-                background: var(--paper-button-backgrount, #4285f4);
-                color: var(--paper-button-color, #fff);
-            }
-
-            #pasted-pane {
-                -webkit-user-select: initial;
-            }
-
-            #copy-tip {
-                -webkit-user-select: initial;
-            }
-
-            .file-input-div {
-                width: 30px;
-                position: absolute;
-                bottom: 5px;
-                /*right: 0;*/
-                right: 5px;
-            }
-
-            .image-upload-tip {
-                display: inline-block;
-                line-height: 20px;
+            :host .image-upload-wrap {
+                display: flex;
             }
 
             /**/
@@ -54,6 +33,7 @@
             }
 
             .ks-image-pane .toolbar {
+                width: 100%;
                 position: absolute;
                 background: rgba(79, 79, 79, 0.33);
                 bottom: 0;
@@ -62,7 +42,28 @@
                 left: 0;
             }
 
+            .copy-tip {
+                -webkit-user-select: initial;
+                height: 100%;
+                width: 100%;
+            }
+
+            .file-input-div {
+                width: 30px;
+                position: absolute;
+                bottom: 5px;
+                right: 5px;
+            }
+
+            .image-upload-tip {
+                display: inline-block;
+                line-height: 20px;
+            }
+
+
+
             .ks-image-pasted-pane {
+                -webkit-user-select: initial;
                 border: 1px dashed #ccc;;
                 text-align: center;
                 font-size: 12px;
@@ -87,7 +88,7 @@
                 border-radius: 3px;
             }
 
-            #ks-image-choose {
+            .ks-image-choose {
                 width: 30px;
                 font-size: 12px;
                 opacity: 0;
@@ -95,17 +96,21 @@
                 left: 0;
                 bottom: 0px;
             }
-        </style>
-        <div class="ks-image-upload-wrap clearfix">
 
+            :host .required {
+                border: 1px dashed red
+            }
+        </style>
+        <div class="image-upload-wrap">
+            <h2-label id="label" value="[[label]]" required="[[required]]"></h2-label>
             <div class="ks-image-pane">
                 <div class="ks-image-pasted-pane" id="pasted-pane">
-                    <div id="copy-tip" style="height:100%;width:100%;">
+                    <div id="copy-tip" class="copy-tip">
                         <span class="image-upload-tip">拖拽文件或者复制到这里</span>
                     </div>
                     <img class="result-img" id="result-img" src="[[src]]"/>
-                    <div class="toolbar" style="width:100%;">
-                        <template is="dom-if" if="{{__showChangeBtn(src,editable)}}">
+                    <div class="toolbar">
+                        <template is="dom-if" if="{{__showChangeBtn(src,readonly)}}">
                             <button class="btn btn-success btn-sm" on-click="cancelImg">取消</button>
                         </template>
                         <template is="dom-if" if="{{__showViewBtn(src)}}">
@@ -114,7 +119,7 @@
                         <paper-dialog id="dialog">
                             <img src="[[src]]"/>
                         </paper-dialog>
-                        <template is="dom-if" if="{{__showFloderIcon(src,editable)}}">
+                        <template is="dom-if" if="{{__showFloderIcon(src,readonly)}}">
                             <div class="file-input-div">
                                 <iron-icon icon="folder-open">
                                 </iron-icon>
@@ -166,16 +171,24 @@
                      */
                     value: {
                         type: Object,
-                        notify: true
+                        notify: true,
+                        observer: '__valueChanged'
                     },
                     /**
                      * 是否可编辑模式：true->可编辑,false->不可编辑
                      */
-                    editable: {
+                    readonly: {
                         type: Boolean,
                         value: false,
                         notify: true,
                         reflectToAttribute: true,
+                    },
+                    label: {
+                        type: String
+                    },
+                    required: {
+                        type: Boolean,
+                        value: false
                     }
                 };
 
@@ -188,7 +201,7 @@
 
             static get observers() {
                 return [
-                    '__showCopyTip(editable,src)'
+                    '__showCopyTip(readonly,src)'
                 ]
             }
 
@@ -221,7 +234,6 @@
 
             _setImageHeight(newValue, oldValue) {
                 if (newValue) {
-
                     this.$['pasted-pane'].style.height = newValue + "px";
                     this.$['copy-tip'].style.lineHeight = newValue + "px";
                 }
@@ -232,7 +244,7 @@
                 ele.addEventListener("dragenter", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    if (!this.editable) {
+                    if (this.readonly) {
                         return;
                     }
                 }, false);
@@ -240,7 +252,7 @@
                 ele.addEventListener("dragleave", (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    if (!this.editable) {
+                    if (this.readonly) {
                         return;
                     }
                 }, false);
@@ -248,12 +260,12 @@
                 ele.addEventListener('dragover', (e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    if (!this.editable) {
+                    if (this.readonly) {
                         return;
                     }
                 }, false);
                 ele.addEventListener('drop', (event) => {
-                    if (!this.editable) {
+                    if (this.readonly) {
                         return;
                     }
                     this.handleDrop(event, ele);
@@ -261,7 +273,7 @@
 
                 // 黏贴事件，处理图片
                 ele.addEventListener('paste', (event) => {
-                    if (!this.editable) {
+                    if (this.readonly) {
                         return;
                     }
                     this.pasteIntoTextArea(event, ele);
@@ -315,11 +327,11 @@
             /**
              * 是否显示取消按钮
              * @param src
-             * @param editable
+             * @param readonly
              * @private
              */
-            __showChangeBtn(src, editable) {
-                return editable && src;
+            __showChangeBtn(src, readonly) {
+                return !readonly && src;
             }
 
             /**
@@ -340,12 +352,12 @@
              * @param src
              * @private
              */
-            __showFloderIcon(src, editable) {
-                return editable && !src;
+            __showFloderIcon(src, readonly) {
+                return !readonly && !src;
             }
 
-            __showCopyTip(editable, src) {
-                if (editable && !src) {
+            __showCopyTip(readonly, src) {
+                if (!readonly && !src) {
                     this.$['copy-tip'].style.display = "";
                 } else {
                     this.$['copy-tip'].style.display = "none";
@@ -360,11 +372,29 @@
                     this.$.dialog.open();
             }
 
+            __valueChanged(value) {
+                if (this.required && !value) {
+                    this.root.querySelector("#pasted-pane").classList.add("required");
+                } else {
+                    this.root.querySelector("#pasted-pane").classList.remove("required");
+                }
+
+            }
+
+            validate() {
+                const isPass = this.required && this.value;
+                if (!isPass) {
+                    this.root.querySelector("#pasted-pane").classList.add("required");
+                }
+                return isPass;
+            }
+
             ready() {
                 super.ready();
                 this._panelListener();
             }
         }
+
         window.customElements.define(H2ImageUpload.is, H2ImageUpload);
     </script>
 </dom-module>

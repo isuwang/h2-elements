@@ -518,10 +518,11 @@
              * 校验
              * @returns {boolean}
              */
-            validate(){
-                return this.required ? !!this.value : true;
+            validate() {
+                return this.required ? this.value != undefined : true;
             }
         }
+
         window.customElements.define(H2Select.is, H2Select);
     </script>
 </dom-module>
