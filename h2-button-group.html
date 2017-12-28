@@ -3,308 +3,239 @@
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
+<link rel="import" href="./behaviors/base-behavior.html">
 
 <!--
 
 ```javascript
 
-<h2-button-group></h2-button-group>
+<h2-button-group label="测试">
+  <div bind-item="1">测试1</div>
+  <div bind-item="2">测试2</div>
+  <div bind-item="3">测试3</div>
+</h2-button-group>
+
+
+<h2-button-group items="[[ items ]]" label="测试" attr-for-label="label"></h2-button-group>
+items = [
+    {label: "测试1", value: "1"},
+    {label: "测试2", value: "2"},
+    {label: "测试3", value: "3"}
+]
+
 ```
 -->
 
 <dom-module id="h2-button-group">
-    <template strip-whitespace>
-        <style include="paper-material-styles">
-            :host {
-                position: relative;
-                font: inherit;
-                width: auto;
-                display: inline-block;
-                min-width: 80px;
-            }
+  <template strip-whitespace>
+    <style include="paper-material-styles">
+      :host {
+        position: relative;
+        font: inherit;
+        display: block;
+        min-width: 80px;
+      }
 
-            :host > button {
-                margin: 0;
-                box-shadow: 0px 2px 0px #888888;
-            }
+      .trigger {
+        min-width: 80px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        height: inherit;
+        display: flex;
+      }
 
-            iron-collapse {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                z-index: 1000;
-                float: left;
-                width: 100%;
-                margin: 2px 0 0;
-                list-style: none;
-                font-size: 1em;
-                text-align: center;
-                background-color: #fff;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border-radius: 4px;
-                -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                box-shadow: var(--paper-material-elevation-1_-_box-shadow);
-                background-clip: padding-box;
-            }
+      .trigger > .btn {
+        margin-left: 0;
+        width: 85%;
+        height: inherit;
+      }
 
-            .trigger {
-                min-width: 80px;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border-radius: 4px;
-                height: inherit;
-            }
+      .trigger > .icon {
+        min-width: 15px;
+        padding: 0;
+        margin-left: -2px;
+        margin-right: 0;
+        width: 15%;
+        height: inherit;
+      }
 
-            .trigger {
-                display: inline-flex;
-            }
+      .icon div iron-icon {
+        width: 100%;
+        height: inherit;
+      }
 
-            .trigger > .btn {
-                margin-left: 0px;
-                width: 85%;
-                height: inherit;
-            }
+      paper-button {
+        background: #fff;
+      }
 
-            .trigger > .icon {
-                min-width: 15px;
-                padding: 0px;
-                margin-left: -2px;
-                margin-right: 0px;
-                width: 15%;
-                height: inherit;
-            }
+      /*下拉列表*/
+      :host .dropdown-menu {
+        position: absolute;
+        display: flex;
+        flex-flow: column nowrap;
+        top: 100%;
+        left: 0;
+        z-index: 99;
+        width: 100%;
+        margin: 2px 0 0;
+        list-style: none;
+        font-size: 1em;
+        text-align: center;
+        background-color: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: var(--paper-material-elevation-1_-_box-shadow);
+        background-clip: padding-box;
+      }
 
-            .icon div iron-icon {
-                width: 100%;
-                height: inherit;
-            }
+      :host .dropdown-menu .item,
+      ::slotted(*) {
+        cursor: pointer;
+        line-height: 30px;
+        /*height: 30px;*/
+        margin: 0;
+        white-space: nowrap;
+        font-size: 0.9em;
+        text-align: center;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.175);
+      }
 
-            paper-button {
-                background: #fff;
-            }
+      /*hover*/
+      .dropdown-menu .item:hover,
+      ::slotted(:hover) {
+        color: #0099FF;
+      }
 
-            ::slotted(*) {
-                cursor: pointer;
-                display: block;
-                line-height: 30px;
-                height: 30px;
-                margin: 0;
-                width: 100%;
-                white-space: nowrap;
-                font-size: 12px;
-                text-align: center;
-                box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.175);
-            }
+    </style>
 
-            /*下拉列表*/
-            :host .dropdown-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                z-index: 1000;
-                float: left;
-                min-width: 100px;
-                margin: 2px 0 0;
-                list-style: none;
-                font-size: 14px;
-                text-align: left;
-                background-color: #fff;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border-radius: 4px;
-                -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                background-clip: padding-box;
-            }
-
-            :host .selector-panel {
-                max-height: 300px;
-                overflow: auto;
-                display: block;
-                padding: 5px;
-                border: 1px solid #dedede;
-                border-top: none;
-                border-bottom-left-radius: 5px;
-                border-bottom-right-radius: 5px;
-                @apply(
-                --shadow-elevation-2dp);
-            }
-
-            :host .dropdown-menu iron-selector .item {
-                cursor: pointer;
-                display: block;
-                line-height: 30px;
-                height: 30px;
-                margin: 0;
-                /*padding: 0 5px;*/
-                width: 100%;
-                white-space: nowrap;
-                font-size: 12px;
-                text-align: center;
-                box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.175);
-            }
-
-            /*hover*/
-            :host .dropdown-menu iron-selector .item:hover {
-                color: #0099FF;
-            }
-
-            /*选中*/
-            :host iron-selector .iron-selected {
-                background-color: #0099FF;
-                color: #fff;
-            }
-
-            /*选中hover*/
-            :host .dropdown-menu iron-selector span.item.iron-selected:hover {
-                background-color: #0099FF;
-                color: #fff;
-            }
-
-            :host iron-collapse iron-selector {
-                vertical-align: middle;
-            }
-
-            :host iron-collapse iron-selector .item {
-                text-align: center;
-            }
-
-        </style>
-
-        <div class="trigger" on-tap="toggle">
-            <paper-button class="btn" raised>
-                [[ label ]]
-            </paper-button>
-            <paper-button class="icon" raised>
-                <div>
-                    <iron-icon icon="[[ __getIcon(opened) ]]"></iron-icon>
-                </div>
-            </paper-button>
+    <div class="trigger" on-tap="toggle">
+      <paper-button class="btn" raised>
+        [[ label ]]
+      </paper-button>
+      <paper-button class="icon" raised>
+        <div>
+          <iron-icon icon="[[ __getIcon(opened) ]]"></iron-icon>
         </div>
+      </paper-button>
+    </div>
 
-        <iron-collapse id="collapse" class="dropdown-menu" opened="[[opened]]" on-click="_onButtonDropdownClick" >
-            <iron-selector class="selector-panel" selected="{{value}}" attr-for-selected="selected-item">
-                <template is="dom-repeat" items="[[items]]" filter="_hasPermission">
-                    <span class="item" selected-item="{{item}}">{{item.label}}</span>
-                </template>
-            </iron-selector>
-            <slot></slot>
-        </iron-collapse>
-    </template>
-    <script>
-        /**
-         * `h2-button-group`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-button-group/index.html
-         */
-        class H2ButtonGroup extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     * Label of the action group.
-                     */
-                    label: {
-                        type: String
-                    },
-                    /**
-                     * True if the action group is expanded.
-                     */
-                    opened: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * The icon when expanded.
-                     */
-                    expandIcon: {
-                        type: String,
-                        value: 'arrow-drop-up'
-                    },
-                    /**
-                     * The icon when collapsed.
-                     */
-                    collapseIcon: {
-                        type: String,
-                        value: 'arrow-drop-down'
-                    },
-                    items: {
-                        type: Array,
-                        value: function () {
-                            return [];
-                        }
-                    },
-                    value: {
-                        type: Object,
-                        value: function () {
-                            return {};
-                        }
-                    }
-                };
-            }
+    <iron-collapse id="collapse" class="dropdown-menu" opened="[[ opened ]]" on-click="_onButtonDropdownClick">
+      <template is="dom-repeat" items="[[ items ]]">
+        <span class="item" bind-item="[[ item ]]">[[ getValueByKey(item, attrForLabel) ]]</span>
+      </template>
+      <slot></slot>
+    </iron-collapse>
+  </template>
+  <script>
+    /**
+     * `h2-button-group`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-button-group/index.html
+     */
+    class H2ButtonGroup extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+      static get properties() {
+        return {
+          /**
+           * Label of the action group.
+           */
+          label: {
+            type: String
+          },
+          /**
+           * True if the action group is expanded.
+           */
+          opened: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * The icon to show when expanded.
+           */
+          expandIcon: {
+            type: String,
+            value: 'arrow-drop-up'
+          },
+          /**
+           * The icon to show when collapsed.
+           */
+          collapseIcon: {
+            type: String,
+            value: 'arrow-drop-down'
+          },
+          /**
+           * The dropdown items.
+           * @type Array
+           */
+          items: {
+            type: Array
+          },
 
-            static get is() {
-                return "h2-button-group";
-            }
+          /**
+           * Attribute name for label.
+           */
+          attrForLabel: {
+            type: String,
+            value: "label"
+          },
+          /**
+           * The Function called when user click on every item on dropdownlist.
+           */
+          onItemClick: {
+            type: Object
+          }
+        };
+      }
 
-            connectedCallback() {
-                super.connectedCallback();
-                this.addEventListener('blur', e => {
-                    // make sure other event can happen on slotted element before the iron-collapse closed.
-                    setTimeout(this.close.bind(this), 100);
-                });
-            }
+      static get is() {
+        return "h2-button-group";
+      }
 
-            /**
-             * Expand the group.
-             */
-            open() {
-                this.opened = true;
-            }
+      connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('blur', e => {
+          // make sure other event can happen on slotted element before the iron-collapse closed.
+          setTimeout(this.close.bind(this), 100);
+        });
+      }
 
-            /**
-             * Collpase the group.
-             */
-            close() {
-                this.opened = false;
-            }
+      /**
+       * Expand the group.
+       */
+      open() {
+        this.opened = true;
+      }
 
-            /**
-             * Toggle the group.
-             */
-            toggle() {
-                this.opened = !this.opened;
-            }
+      /**
+       * Collpase the group.
+       */
+      close() {
+        this.opened = false;
+      }
 
-            __getIcon(opened) {
-                return opened ? this.expandIcon : this.collapseIcon;
-            }
+      /**
+       * Toggle the group.
+       */
+      toggle() {
+        this.opened = !this.opened;
+      }
 
-            /**
-             * 是否有权限
-             * @param item
-             * @returns {*}
-             * @private
-             */
-            _hasPermission(item) {
-                let b = "permission" in item;
-                return !b || (b && item["permission"]);
-            }
+      __getIcon(opened) {
+        return opened ? this.expandIcon : this.collapseIcon;
+      }
 
-            _onButtonDropdownClick() {
-                this.dispatchEvent(new CustomEvent('click', {
-                    detail: {
-                        value: this.value
-                    },
-                    bubbles: true,
-                    composed: true
-                }));
-            }
-        }
-        window.customElements.define(H2ButtonGroup.is, H2ButtonGroup);
-    </script>
+      _onButtonDropdownClick(e) {
+        const target = e.target,
+          bindItem = e.target.bindItem || e.target.getAttribute('bind-item');
+        this.onItemClick && this.onItemClick({target, bindItem});
+      }
+    }
+
+    window.customElements.define(H2ButtonGroup.is, H2ButtonGroup);
+  </script>
 </dom-module>
