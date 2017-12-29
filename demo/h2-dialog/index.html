@@ -35,17 +35,22 @@
         div[slot=container] {
           font-size: 20px;
         }
+
+        #dialog {
+          --h2-dialog-width: 400px;
+          --h2-dialog-height: 500px;
+        }
       </style>
-      <h2-dialog id="dialog" stop-auto-dismiss>
+      <h2-dialog id="dialog">
         <div slot="container">
           Put your Content here inside an element which with [slot=container]
         </div>
       </h2-dialog>
       <button id="btn">Click to open the Dialog</button>
       <script>
-          btn["onclick"] = () => {
-              dialog.open();
-          }
+        btn["onclick"] = () => {
+          dialog.open();
+        };
       </script>
     </template>
   </demo-snippet>
@@ -59,9 +64,36 @@
         div[slot=container] {
           font-size: 20px;
         }
+        [slot=container] > p {
+          margin: 0 0 10px;
+        }
       </style>
-      <h2-dialog id="dialog2" stop-auto-dismiss height="500px" width="500px" title="Dialog demo">
+      <h2-dialog id="dialog2" stop-auto-dismiss title="Dialog demo">
         <div slot="container">
+          <p>It was all very well to say 'Drink me,' but the wise little
+            Alice was not going to do <i>that</i> in a hurry. 'No, I'll look
+            first,' she said, 'and see whether it's marked "<i>poison</i>" or
+            not'; for she had read several nice little histories about
+            children who had got burnt, and eaten up by wild beasts and other
+            unpleasant things, all because they <i>would</i> not remember the
+            simple rules their friends had taught them: such as, that a
+            red-hot poker will burn you if you hold it too long; and that if
+            you cut your finger <i>very</i> deeply with a knife, it usually
+            bleeds; and she had never forgotten that, if you drink much from
+            a bottle marked '<i>poison</i>,' it is almost certain to disagree
+            with you, sooner or later.</p>
+          <p>It was all very well to say 'Drink me,' but the wise little
+            Alice was not going to do <i>that</i> in a hurry. 'No, I'll look
+            first,' she said, 'and see whether it's marked "<i>poison</i>" or
+            not'; for she had read several nice little histories about
+            children who had got burnt, and eaten up by wild beasts and other
+            unpleasant things, all because they <i>would</i> not remember the
+            simple rules their friends had taught them: such as, that a
+            red-hot poker will burn you if you hold it too long; and that if
+            you cut your finger <i>very</i> deeply with a knife, it usually
+            bleeds; and she had never forgotten that, if you drink much from
+            a bottle marked '<i>poison</i>,' it is almost certain to disagree
+            with you, sooner or later.</p>
           <p>It was all very well to say 'Drink me,' but the wise little
             Alice was not going to do <i>that</i> in a hurry. 'No, I'll look
             first,' she said, 'and see whether it's marked "<i>poison</i>" or
@@ -90,9 +122,9 @@
       </h2-dialog>
       <button id="btn2">Click to open the Dialog</button>
       <script>
-          btn2["onclick"] = () => {
-              dialog2.open();
-          }
+        btn2["onclick"] = () => {
+          dialog2.open();
+        };
       </script>
     </template>
   </demo-snippet>

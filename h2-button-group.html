@@ -125,7 +125,7 @@ items = [
 
     <iron-collapse id="collapse" class="dropdown-menu" opened="[[ opened ]]" on-click="_onButtonDropdownClick">
       <template is="dom-repeat" items="[[ items ]]">
-        <span class="item" bind-item="[[ item ]]">[[ getValueByKey(item, attrForLabel) ]]</span>
+        <span class="item" bind-item="[[ item ]]">[[ getValueByKey(item, attrForLabel, 'Unknown') ]]</span>
       </template>
       <slot></slot>
     </iron-collapse>

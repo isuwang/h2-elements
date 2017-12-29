@@ -33,7 +33,8 @@
     "iron-selector": "PolymerElements/iron-selector#^2.0.0",
     "neon-animation": "PolymerElements/neon-animation#^2.0.2",
     "iron-input": "PolymerElements/iron-input#^2.0.1",
-    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^2.2.0"
+    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^2.2.0",
+    "web-animations-js": "web-animations/web-animations-js#^2.3.1"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",

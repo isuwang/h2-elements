@@ -36,7 +36,7 @@
      * @returns {Boolean}
      */
     isFunction(fn) {
-      return fn && Function.prototype.isPrototypeOf(fn);
+      return Function.prototype.isPrototypeOf(fn);
     },
 
     /**
@@ -63,8 +63,8 @@
      * @param {String} defVal  支持任何符合json格式的字符串
      * @returns {*}
      */
-    getValueByKey(model, key, defVal = JSON.stringify("")) {
-      return (model && (key in model)) ? model[key] : JSON.parse(defVal);
+    getValueByKey(model, key, defVal = "") {
+      return (model && (key in model)) ? model[key] : defVal;
     },
 
     /**
@@ -108,6 +108,13 @@
       return copy;
     },
 
+    /**
+     * To boolean.
+     * @param {*} val
+     */
+    toBoolean(val) {
+      return !!val;
+    },
     /**
      * 添加loading
      */

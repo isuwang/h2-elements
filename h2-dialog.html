@@ -4,7 +4,7 @@
 <link rel="import" href="../neon-animation/web-animations.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
-
+<link rel="import" href="./behaviors/base-behavior.html">
 <!--
 
 ```javascript
@@ -14,178 +14,139 @@
 -->
 
 <dom-module id="h2-dialog">
-    <template>
-        <style>
-            :host {
-                position: absolute;
-            }
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
 
-            :host .close-dialog {
-                width: 40px;
-                height: 40px;
-                position: absolute;
-                font-size: 20px;
-                right: -16px;
-                top: -16px;
-                background: white;
-                border: 1px solid #ededed;
-                border-radius: 50%;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            }
+      paper-dialog {
+        display: flex;
+        flex-flow: column nowrap;
+        align-content: stretch;
+        width: var(--h2-dialog-width, 85%);
+        height: var(--h2-dialog-height, 90%);
+      }
 
-            :host .scrollable-container {
-                min-height: 50px;
-                height: auto;
-            }
+      .scrollable-container {
+        flex: 1;
+        overflow: auto;
+      }
 
-            :host .title {
-                padding-top: 12px;
-                font-weight: bolder;
-            }
+      :host .close-dialog {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        font-size: 20px;
+        right: -16px;
+        top: -16px;
+        background: white;
+        border: 1px solid #ededed;
+        border-radius: 50%;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
 
-            :host .dashed-line {
-                border-top: #00686b 1px dashed;
-                overflow: hidden;
-            }
+      .title {
+        margin: 20px 20px 0;
+        text-align: center;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #000;
+      }
 
-        </style>
-        <paper-dialog id="dialog"
-                      modal
-                      entry-animation="scale-up-animation"
-                      exit-animation="fade-out-animation">
-            <div class="close-dialog" on-tap="close">X</div>
-            <template is="dom-if" if="[[__hasTitle(title)]]">
-                <h2 class="title">[[title]]</h2>
-                <div class="dashed-line"></div>
-            </template>
+    </style>
 
-            <paper-dialog-scrollable>
-                <div class="scrollable-container">
-                    <slot name="container"></slot>
-                </div>
-            </paper-dialog-scrollable>
-        </paper-dialog>
-    </template>
-    <script>
+    <paper-dialog id="dialog"
+                  modal
+                  entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation">
+      <div class="close-dialog" on-tap="close">X</div>
+      <template is="dom-if" if="[[ toBoolean(title) ]]">
+        <h2 class="title">[[title]]</h2>
+      </template>
+      <div class="scrollable-container">
+        <slot name="container"></slot>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+    /**
+     * `h2-dialog`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-dialog/index.html
+     */
+    class H2Dialog extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+      static get properties() {
+        return {
+          title: {
+            type: String
+          },
+          /** True to stop auto dismiss. */
+          stopAutoDismiss: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      static get is() {
+        return "h2-dialog";
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+
         /**
-         * `h2-dialog`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-dialog/index.html
+         * @listens iron-overlay-closed
          */
-        class H2Dialog extends Polymer.Element {
-            static get properties() {
-                return {
-                    title: {
-                        type: String
-                    },
-                    /** True to stop auto dismiss. */
-                    stopAutoDismiss: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * set dialog width
-                     */
-                    width: {
-                        type: String,
-                    },
-                    /**
-                     * set dialog height
-                     */
-                    height: {
-                        type: String,
-                    },
-                };
-            }
+        this.addEventListener('iron-overlay-closed', e => {
+          // ignore 'iron-overlay-closed' event fired by other element
+          if (e.path[0] != this.$.dialog) return;
+          e.stopPropagation();
+          /**
+           * @event h2-dialog-closed
+           * Fired when the dialog closed.
+           */
+          this.dispatchEvent(new CustomEvent('h2-dialog-closed'), {
+            composed: true,
+            bubbles: true
+          });
+          if (!this.stopAutoDismiss) {
+            setTimeout(() => {
+              this.parentElement.removeChild(this);
+            }, 100);
+          }
+        });
 
-            static get is() {
-                return "h2-dialog";
-            }
+        /**
+         * @listens h2-dialog-dismiss
+         */
+        this.addEventListener('h2-dialog-dismiss', this.close);
+      }
 
-            static get observers() {
-                return [
-                    'setDialogWithAndHeight(height,width)'
-                ]
-            }
+      /**
+       * Open the dialog.
+       */
+      open() {
+        this.$.dialog.open();
+      }
 
-            connectedCallback() {
-                super.connectedCallback();
+      /**
+       * Close the dialog.
+       */
+      close() {
+        this.$.dialog.close();
+      }
+    }
 
-                /**
-                 * @listens iron-overlay-closed
-                 */
-                this.addEventListener('iron-overlay-closed', e => {
-                    // ignore 'iron-overlay-closed' event fired by other element
-                    if (e.path[0] != this.$.dialog) return;
-                    e.stopPropagation();
-                    /**
-                     * @event h2-dialog-closed
-                     * Fired when the dialog closed.
-                     */
-                    this.dispatchEvent(new CustomEvent('h2-dialog-closed'), {
-                        composed: true,
-                        bubbles: true
-                    });
-                    if (!this.stopAutoDismiss) {
-                        setTimeout(() => {
-                            this.parentElement.removeChild(this);
-                        }, 100);
-                    }
-                });
-
-                /**
-                 * @listens h2-dialog-dismiss
-                 */
-                this.addEventListener('h2-dialog-dismiss', this.close);
-            }
-
-            /**
-             * set paper-dialog style
-             */
-            setDialogWithAndHeight(height, width) {
-                if (height) {
-                    this.root.querySelector(".scrollable-container").style.height = height;
-                }
-                if (width) {
-                    this.root.querySelector(".scrollable-container").style.width = width;
-                }
-            }
-
-            /**
-             * Open the dialog.
-             */
-            open() {
-                this.$.dialog.open();
-            }
-
-            /**
-             * Close the dialog.
-             */
-            close() {
-                this.$.dialog.close();
-            }
-
-            /**
-             * Determine whether the title exists
-             * @param title
-             * @returns {boolean}
-             * @private
-             */
-            __hasTitle(title) {
-                if (title) {
-                    return true;
-                }
-                return false;
-            }
-        }
-        window.customElements.define(H2Dialog.is, H2Dialog);
-    </script>
+    window.customElements.define(H2Dialog.is, H2Dialog);
+  </script>
 </dom-module>
