@@ -4,383 +4,342 @@
 
 <!--
 
-```javascript
+``h2-input``
 
-<h2-input></h2-input>
+```html
+
+<h2-input label="文本框"></h2-input>
+<h2-input label="数字框" type="number"></h2-input>
+<h2-input label="电话" type="tel" maxlength="11"></h2-input>
+<h2-input label="密码框" type="password"></h2-input>
+<h2-input label="颜色框" type="color"></h2-input>
+<h2-input label="日期框" type="date"></h2-input>
+<h2-input label="日期时间框" type="datetime-local"></h2-input>
 
 ```
 -->
 <!--输入框-->
 <dom-module id="h2-input">
-    <template>
-        <style>
-            :host {
-                text-align: left;
-                display: flex;
-            }
+  <template>
+    <style>
+      :host {
+        display: flex;
 
-            :host input {
-                font-family: 'Roboto', 'Noto', sans-serif;
-                font-size: 14px;
-                height: 34px;
-                padding: 6px 12px;
-                background-color: #fff;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-                width: 100%;
-                @apply (--h2-input);
-            }
+        width: 300px;
+        height: 34px;
+        line-height: 34px;
+        font-size: 14px;
+      }
 
-            :host * {
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-            }
+      :host .input__label {
+        @apply --h2-input-label;
+      }
 
-            :host input:focus {
-                border-color: #66afe9;
-                outline: 0;
-                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-            }
+      :host .input__container {
+        flex: 1;
 
-            :host input::-moz-placeholder {
-                color: #999;
-                opacity: 1;
-            }
+        display: flex;
+        line-height: inherit;
+      }
 
-            :host input:-ms-input-placeholder {
-                color: #999;
-            }
+      :host iron-input {
+        height: inherit;
+        display: flex;
+        flex: 1;
+      }
 
-            :host input::-webkit-input-placeholder {
-                color: #999;
-            }
+      :host iron-input > input {
+        flex: 1;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        height: inherit;
+        padding: 4px 8px;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
 
-            /*必填*/
-            :host .require-input {
-                border: solid 1px red;
-                border-radius: 4px;
-            }
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        @apply (--h2-input);
+      }
 
-            :host span.input-view {
-                display: inline-block;
-                text-align: left;
-                font-size: 14px;
-                line-height: 34px;
-                height: 34px;
-                white-space: normal;
-                width: auto;
-                border: 1px solid transparent;
-                padding-left: 12px;
-            }
+      :host(:not([readonly])) input:focus {
+        border-color: #66afe9;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+      }
 
-            /*前缀单位*/
-            :host span.prefix-unit {
-                background-color: #eeeeee;
-                display: inline-block;
-                height: 34px;
-                line-height: 22px;
-                padding: 6px 10px;
-                border: 1px solid #ccc;
-                border-right: none;
-                border-radius: 4px;
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-                font-size: 14px;
-            }
 
-            :host span.prefix-unit.unit-view {
-                border: none;
-                background-color: #ffffff;
-                font-size: 14px;
-                padding: 6px 3px;
-            }
+      :host .input-unit {
+        background-color: #eeeeee;
+        white-space: nowrap;
+        height: inherit;
+        line-height: inherit;
+        padding-left: 8px;
+        padding-right: 8px;
+        color: #2786F7;
+        @apply --h2-input-unit;
+      }
 
-            /*后缀单位*/
-            :host span.suffix-unit {
-                background-color: #eeeeee;
-                display: inline-block;
-                height: 34px;
-                line-height: 22px;
-                padding: 6px 10px;
-                border: 1px solid #ccc;
-                border-left: none;
-                border-radius: 4px;
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                font-size: 14px;
-            }
+      /*前缀单位*/
+      :host div.prefix-unit {
+        border: 1px solid #ccc;
+        border-right: none;
+        border-radius: 4px 0 0 4px;
+      }
 
-            :host span.suffix-unit.unit-view {
-                border: none;
-                background-color: #ffffff;
-                font-size: 14px;
-                padding: 6px 3px;
-            }
+      /*后缀单位*/
+      :host div.suffix-unit {
+        border: 1px solid #ccc;
+        border-left: none;
+        border-radius: 0 4px 4px 0;
+      }
 
-            :host input.prefix-unit-input {
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-            }
+      :host(.h2-input--invalid) input,
+      :host .input--invalid {
+        border: solid 1px red;
+        border-radius: 4px;
+      }
 
-            :host input.suffix-unit-input {
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-            }
+      :host([prefix-unit]) input{
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
 
-            :host .input-size {
-                display: inline-block;
-            }
+      :host([suffix-unit]) input{
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
 
-            :host .t-lightblue {
-                color: #2786F7;
-            }
+      /*隐藏输入框的上下小箭头Chrome*/
+      :host input::-webkit-outer-spin-button,
+      :host input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+      }
 
-            /*隐藏输入框的上下小箭头Chrome*/
-            :host input::-webkit-outer-spin-button,
-            :host input::-webkit-inner-spin-button {
-                -webkit-appearance: none !important;
-                margin: 0;
-            }
+      /*隐藏输入框的上下小箭头Firefox*/
+      :host input {
+        -moz-appearance: textfield;
+      }
 
-            /*隐藏输入框的上下小箭头Firefox*/
-            :host input {
-                -moz-appearance: textfield;
-            }
-            :host iron-input {
-                width: 100%;
-            }
-        </style>
-        <h2-label id="label" value="[[label]]" required="[[required]]"></h2-label>
-        <!--可编辑状态-->
-        <template is="dom-if" if="[[!readonly]]">
-            <template is="dom-if" if="[[prefixUnit]]">
-                <span class="prefix-unit t-lightblue">[[prefixUnit]]</span>
-            </template>
-            <iron-input bind-value="{{value}}" id="input" slot="input" allowed-pattern="[[allowedPattern]]"
-                        maxlength$="[[maxlength]]">
-                <input id="innerInput"
-                       placeholder$="[[placeholder]]"
-                       type$="[[type]]"
-                       class$="[[clazz]]"
-                       step$="any"
-                       prevent-invalid-input$="{{preventInvalidInput}}"
-                       autocomplete$="off"
-                       minlength$="[[minlength]]"
-                       maxlength$="[[maxlength]]"
-                       min$="[[min]]"
-                       max$="[[max]]"
-                       spellcheck="false">
-            </iron-input>
-            <template is="dom-if" if="[[suffixUnit]]">
-                <span class="suffix-unit t-lightblue">[[suffixUnit]]</span>
-            </template>
-        </template>
+      :host input::-moz-placeholder {
+        color: #999;
+        opacity: 1;
+      }
 
-        <!--只读状态-->
-        <template is="dom-if" if="[[readonly]]">
-            <template is="dom-if" if="[[prefixUnit]]">
-                <span class="prefix-unit unit-view t-lightblue">[[prefixUnit]]</span>
-            </template>
-            <span class="input-size input-view">[[value]]</span>
-            <template is="dom-if" if="[[suffixUnit]]">
-                <span class="suffix-unit unit-view t-lightblue">[[suffixUnit]]</span>
-            </template>
-        </template>
-    </template>
+      :host input:-ms-input-placeholder {
+        color: #999;
+      }
 
-    <script>
-        /**
-         * `h2-input`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-input/index.html
-         */
-        class H2Input extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     * 组件前面的标签
-                     * @type {String}
-                     */
-                    label: {
-                        type: String
-                    },
-                    /**
-                     * 占位符
-                     * @type {String}
-                     */
-                    placeholder: {
-                        type: String
-                    },
-                    /**
-                     * 组件输入框的样式
-                     */
-                    clazz: {
-                        type: String,
-                        value: "input-size",
-                    },
-                    /**
-                     * input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input
-                     *
-                     * @attribute type
-                     * @type {String}
-                     */
-                    type: {
-                        type: String,
-                        value: "text"
-                    },
-                    /**
-                     * 匹配的正则表达式
-                     */
-                    allowedPattern: {
-                        type: String
-                    },
-                    /**
-                     * 判断是否用正则匹配校验输入
-                     */
-                    preventInvalidInput: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 组件的value
-                     */
-                    value: {
-                        type: String,
-                        notify: true
-                    },
-                    /**
-                     * 是否必填
-                     */
-                    required: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 是否只读
-                     */
-                    readonly: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 前缀单位（￥$元吨托等等）
-                     */
-                    prefixUnit: {
-                        type: String
-                    },
-                    /**
-                     * 后缀单位（￥$元吨托等等）
-                     */
-                    suffixUnit: {
-                        type: String
-                    },
-                    /**
-                     * 输入的最小长度（暂无实际使用）
-                     */
-                    minlength: {
-                        type: Number
-                    },
-                    /**
-                     * 输入的最大长度
-                     */
-                    maxlength: {
-                        type: Number
-                    },
+      :host input::-webkit-input-placeholder {
+        color: #999;
+      }
 
-                    /**
-                     * 最小输入值(数字或日期时间)
-                     */
-                    min: {
-                        type: String
-                    },
-                    /**
-                     * 最大输入值(数字或日期时间)
-                     */
-                    max: {
-                        type: String
-                    }
-                };
-            }
+      :host([readonly]) input {
+        cursor: default;
+      }
 
-            static get is() {
-                return "h2-input";
-            }
+    </style>
+    <h2-label class="input__label" value="[[label]]" required="[[required]]"></h2-label>
+    <!--可编辑状态-->
+    <div class="input__container">
+      <template is="dom-if" if="[[prefixUnit]]">
+        <div class="prefix-unit input-unit">[[prefixUnit]]</div>
+      </template>
+      <iron-input bind-value="{{value}}" id="input">
+        <input id="innerInput"
+               placeholder$="[[placeholder]]"
+               type$="[[type]]"
+               prevent-invalid-input$="[[preventInvalidInput]]"
+               minlength$="[[minlength]]"
+               maxlength$="[[maxlength]]"
+               min$="[[min]]"
+               max$="[[max]]"
+               readonly$="[[readonly]]"
+               autocomplete="off"
+               step="any"
+               spellcheck="false">
+      </iron-input>
+      <template is="dom-if" if="[[suffixUnit]]">
+        <div class="suffix-unit input-unit">[[suffixUnit]]</div>
+      </template>
+    </div>
+  </template>
 
-            static get observers() {
-                return ['_requiredValueChange(required,value)', '_prefixUnitChange(prefixUnit)', '_suffixUnitChange(suffixUnit)', '_valueChange(value)']
-            }
+  <script>
+    /**
+     * `h2-input`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-input/index.html
+     */
+    class H2Input extends Polymer.Element {
+      static get properties() {
+        return {
+          /**
+           * 组件前面的标签
+           * @type {String}
+           */
+          label: {
+            type: String
+          },
+          /**
+           * 占位符
+           * @type {String}
+           */
+          placeholder: {
+            type: String
+          },
+          /**
+           * input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input
+           *
+           * @attribute type
+           * @type {String}
+           */
+          type: {
+            type: String,
+            value: "text"
+          },
+          /**
+           * 匹配的正则表达式
+           */
+          allowedPattern: {
+            type: String
+          },
+          /**
+           * 判断是否用正则匹配校验输入
+           */
+          preventInvalidInput: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 组件的value
+           */
+          value: {
+            type: String,
+            notify: true
+          },
+          /**
+           * 是否必填
+           */
+          required: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 是否只读
+           */
+          readonly: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 前缀单位（￥$元吨托等等）
+           */
+          prefixUnit: {
+            type: String
+          },
+          /**
+           * 后缀单位（￥$元吨托等等）
+           */
+          suffixUnit: {
+            type: String
+          },
+          /**
+           * 输入的最小长度（暂无实际使用）
+           */
+          minlength: {
+            type: Number
+          },
+          /**
+           * 输入的最大长度
+           */
+          maxlength: {
+            type: Number
+          },
 
-            /**
-             * 当必填字段required=true时，无value就显示红色边框，有则不显示
-             * @param {Object} value
-             */
-            _requiredValueChange(required, value) {
-                if (!required) {
-                    return;
-                }
-                if (!value) {
-                    this.set("clazz", this.clazz + " require-input");
-                    return;
-                }
-                if (this.clazz.indexOf('require-input') > -1) {
-                    this.set("clazz", this.clazz.replace(/ require-input/g, ""));
-                }
-            }
+          /**
+           * 最小输入值(数字或日期时间)
+           */
+          min: {
+            type: Number
+          },
+          /**
+           * 最大输入值(数字或日期时间)
+           */
+          max: {
+            type: Number
+          }
+        };
+      }
 
-            /**
-             * 根据maxlength来控制数字框的最大输入长度
-             */
-            _valueChange(value) {
-                if (this.type !== 'number' || value == undefined) {
-                    return;
-                }
-                if (this.maxlength > 0 && this.value.length > this.maxlength) {
-                    this.set('value', this.value.substr(0, this.maxlength));
-                }
-            }
+      static get is() {
+        return "h2-input";
+      }
 
-            /**
-             * 前缀单位改变时，显示输入框单位
-             */
-            _prefixUnitChange(prefixUnit) {
-                if (prefixUnit && this.clazz.indexOf("prefix-unit-input") < 0) {
-                    this.set("clazz", this.clazz + " prefix-unit-input");
-                }
-            }
+      static get observers() {
+        return [
+          // '_requiredValueChange(required,value)',
+          '__valueChanged(value)'
+        ];
+      }
 
-            /**
-             * 后缀单位改变时，显示输入框单位
-             */
-            _suffixUnitChange(suffixUnit) {
-                if (suffixUnit && this.clazz.indexOf("suffix-unit-input") < 0) {
-                    this.set("clazz", this.clazz + " suffix-unit-input");
-                }
-            }
+      // /**
+      //  * 当必填字段required=true时，无value就显示红色边框，有则不显示
+      //  * @param {Object} value
+      //  */
+      // _requiredValueChange(required, value) {
+      //   if(required) {
+      //     if (!value) {
+      //       this.$.innerInput.classList.add('input--invalid');
+      //     } else {
+      //       this.$.innerInput.classList.remove('input--invalid');
+      //     }
+      //   }
+      // }
 
-            /**
-             * 输入框获取焦点
-             */
-            doFocus() {
-                this.root.querySelector("#innerInput").focus();
-            }
+      __valueChanged(value) {
 
-            /**
-             * 校验方法
-             * @returns {*}
-             */
-            validate(){
-                return  this.root.querySelector("#input").validate();
-            }
+        if (!this.validate()) {
+          this.$.innerInput.classList.add('input--invalid');
+        } else {
+          this.$.innerInput.classList.remove('input--invalid');
         }
-        window.customElements.define(H2Input.is, H2Input);
-    </script>
+
+      }
+      /**
+       * 输入框获取焦点
+       */
+      doFocus() {
+        this.root.querySelector("#innerInput").focus();
+      }
+
+      /**
+       * 校验方法
+       * @returns {*}
+       */
+      validate() {
+        let valid = this.root.querySelector("#input").validate();
+
+        if(this.required) {
+          valid = valid && !!this.value;
+        }
+
+        if(this.allowedPattern) {
+          valid = valid && new RegExp(this.allowedPattern, "g").test(this.value);
+        }
+
+        return valid;
+      }
+    }
+
+    window.customElements.define(H2Input.is, H2Input);
+  </script>
 </dom-module>

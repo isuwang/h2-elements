@@ -1,56 +1,53 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-label demo</title>
+  <title>h2-label demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-label.html">
-    <link rel="import" href="../../h2-input-date.html">
-    <link rel="import" href="../../h2-input.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-label.html">
+  <link rel="import" href="../../h2-input-date.html">
+  <link rel="import" href="../../h2-input.html">
 
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
 
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
 
-            .flex {
-                display: flex;
-            }
-        </style>
-    </custom-style>
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic h2-label demo</h3>
-    <demo-snippet>
-        <template>
-            <div class="flex">
-                <h2-label value="标签"></h2-label>
-                <h2-input></h2-input>
-            </div>
-            <div class="flex">
-                <h2-label value="这是一个名字中等长的标签"></h2-label>
-                <h2-input-date></h2-input-date>
-            </div>
-            <div class="flex">
-                <h2-label value="这是一个名字很长长长长长长长长长长长长长长长长长长的标签"></h2-label>
-                <h2-input></h2-input>
-            </div>
-        </template>
-    </demo-snippet>
+  <h3>Basic h2-label demo</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style is="custom-style">
+          .flex {
+            display: flex;
+          }
+        </style>
+      </custom-style>
+
+      <div class="flex">
+        <h2-label value="标签"></h2-label>
+        <h2-input></h2-input>
+      </div>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>
