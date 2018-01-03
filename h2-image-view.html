@@ -5,7 +5,7 @@
 
 ```javascript
 
-<h2-image-view></h2-image-view>
+<h2-image-view src="https://test.com/test.jpg"></h2-image-view>
 ```
 -->
 
@@ -17,8 +17,6 @@
         width: 150px;
         height: 180px;
         flex-flow: column nowrap;
-        justify-content: stretch;
-        align-items: stretch;
         text-align: center;
         border: 1px dashed #ccc;
         font-size: 12px;
@@ -27,7 +25,7 @@
 
       .img__container {
         flex: 1;
-        cursor: pointer;
+        cursor: zoom-in;
         background-size: contain;
         background: no-repeat center;
       }
@@ -49,15 +47,15 @@
         }
       }
 
-      .img-viewer {
+      .img__viewer {
         display: flex;
-        padding: 0;
-        max-width: 100%;
-        max-height: 100%;
+        overflow: auto;
       }
 
-      .img-viewer > div {
-        flex: 1;
+      .img__viewer > img {
+        cursor: zoom-out;
+        margin: 0;
+        padding: 0;
       }
 
     </style>
@@ -67,11 +65,11 @@
     <div class="toolbar">
       <h2-button on-click="viewZoom">查看大图</h2-button>
     </div>
-    <paper-dialog class="img-viewer"
+    <paper-dialog class="img__viewer"
                   id="dialog"
                   on-click="closeDialog"
                   with-backdrop>
-      <div src="[[src]]" id="viewContainer"></div>
+      <img src="[[src]]"/>
     </paper-dialog>
   </template>
   <script>
@@ -102,10 +100,6 @@
           const style = this.$["result-img"].style;
           style.background = `url(${newValue}) no-repeat center`;
           style.backgroundSize = "contain";
-
-          const style1 = this.$["viewContainer"].style;
-          style1.background = `url(${newValue}) no-repeat center`;
-          style1.backgroundSize = "contain";
         }
       }
 
