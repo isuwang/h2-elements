@@ -32,7 +32,7 @@
 </head>
 <body>
 <div class="vertical-section-container centered">
-  <h3>支持不同类型（H5的input元素所有类型，不支持file类型）</h3>
+  <h3>支持不同类型（H5的input元素所有类型，除file类型）</h3>
   <demo-snippet>
     <template>
       <custom-style>
@@ -70,7 +70,7 @@
             };
 
             --h2-input-unit: {
-              font-size: 16px;
+              font-size: 14px;
               color: seagreen;
             }
           }
@@ -94,8 +94,16 @@
   <h3>支持必填、只读属性</h3>
   <demo-snippet>
     <template>
+      <custom-style>
+        <style is="custom-style">
+          #required-input {
+            height: 50px;
+            line-height: 50px;
+          }
+        </style>
+      </custom-style>
       <h2-input label="有值必填框" value="梅西" required></h2-input>
-      <h2-input label="无值必填框" required></h2-input>
+      <h2-input id="required-input" label="无值必填框" required></h2-input>
       <h2-input label="只读输入框" value="梅西" readonly></h2-input>
     </template>
   </demo-snippet>

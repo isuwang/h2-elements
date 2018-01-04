@@ -24,11 +24,12 @@
     <style>
       :host {
         display: flex;
+        position: relative;
 
         width: 300px;
         height: 34px;
-        line-height: 34px;
         font-size: 14px;
+        line-height: 34px;
       }
 
       :host .input__label {
@@ -76,24 +77,26 @@
 
       :host .input-unit {
         background-color: #eeeeee;
+        color: #2786F7;
         white-space: nowrap;
+
         height: inherit;
         line-height: inherit;
+
         padding-left: 8px;
         padding-right: 8px;
-        color: #2786F7;
         @apply --h2-input-unit;
       }
 
       /*前缀单位*/
-      :host div.prefix-unit {
+      :host .prefix-unit {
         border: 1px solid #ccc;
         border-right: none;
         border-radius: 4px 0 0 4px;
       }
 
       /*后缀单位*/
-      :host div.suffix-unit {
+      :host .suffix-unit {
         border: 1px solid #ccc;
         border-left: none;
         border-radius: 0 4px 4px 0;
@@ -142,6 +145,14 @@
 
       :host([readonly]) input {
         cursor: default;
+      }
+
+      :host([required])::after {
+        content: "*";
+        color: red;
+        position: absolute;
+        right: -15px;
+        line-height: inherit;
       }
 
     </style>
@@ -286,34 +297,27 @@
 
       static get observers() {
         return [
-          // '_requiredValueChange(required,value)',
-          '__valueChanged(value)'
+          '__refreshUIState(required)',
+          '__refreshUIState(value)',
+          '__allowedPatternChanged(allowedPattern)'
         ];
       }
 
-      // /**
-      //  * 当必填字段required=true时，无value就显示红色边框，有则不显示
-      //  * @param {Object} value
-      //  */
-      // _requiredValueChange(required, value) {
-      //   if(required) {
-      //     if (!value) {
-      //       this.$.innerInput.classList.add('input--invalid');
-      //     } else {
-      //       this.$.innerInput.classList.remove('input--invalid');
-      //     }
-      //   }
-      // }
+      __allowedPatternChanged() {
+        if(this.allowedPattern) {
+          this._patternRegExp = new RegExp(this.allowedPattern, "g");
+          this.__refreshUIState();
+        }
+      }
 
-      __valueChanged(value) {
-
+      __refreshUIState() {
         if (!this.validate()) {
           this.$.innerInput.classList.add('input--invalid');
         } else {
           this.$.innerInput.classList.remove('input--invalid');
         }
-
       }
+
       /**
        * 输入框获取焦点
        */
@@ -332,8 +336,8 @@
           valid = valid && !!this.value;
         }
 
-        if(this.allowedPattern) {
-          valid = valid && new RegExp(this.allowedPattern, "g").test(this.value);
+        if(this._patternRegExp) {
+          valid = valid && this._patternRegExp.test(this.value);
         }
 
         return valid;

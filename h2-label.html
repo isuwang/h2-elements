@@ -29,14 +29,10 @@
       :host .color-red {
         color: rgb(255, 100, 100);
       }
+
     </style>
     <template is="dom-if" if="[[value]]">
-      <div>[[value]]
-        <template is="dom-if" if="[[required]]">
-          <span class="color-red">*</span>
-        </template>
-        ：
-      </div>
+      <div>[[value]]：</div>
     </template>
   </template>
   <script>
@@ -52,10 +48,6 @@
         return {
           value: {
             type: String
-          },
-          required: {
-            type: Boolean,
-            value: false
           }
         };
       }
