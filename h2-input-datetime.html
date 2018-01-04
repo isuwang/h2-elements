@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="behaviors/format-behavior.html">
-<link rel="import" href="h2-input.html">
+<link rel="import" href="./behaviors/format-behavior.html">
+<link rel="import" href="./h2-input.html">
 
 <!--
 
@@ -11,134 +11,152 @@
 -->
 <!--日期时间选择框-->
 <dom-module id="h2-input-datetime">
-    <template>
-        <h2-input
-                id="input"
-                value="{{value}}"
-                label=[[label]]
-                placeholder="[[placeholder]]"
-                required=[[required]]
-                min="[[min]]"
-                max="[[max]]"
-                readonly="[[readonly]]"
-                width="180px"
-                type="datetime-local">
-        </h2-input>
-    </template>
-    <script>
-        /**
-         * `h2-input-datetime`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-input-datetime/index.html
-         */
+  <template>
+    <style>
+      :host {
+        display: flex;
+        width: 300px;
+        height: 34px;
+        font-size: 14px;
+        line-height: 34px;
+      }
 
-        class H2InputDatetime extends Polymer.mixinBehaviors([FormatBehavior], Polymer.Element) {
-            static get properties() {
-                return {
-                    /**
-                     * 组件返回的时间字符串，默认格式yyyy-MM-ddTHH:mm，如2017-10-26T12:20
-                     */
-                    value: {
-                        type: String,
-                        notify: true,
-                        observer: "_valueChange"
-                    },
-                    /**
-                     * 根据时间字符串返回的时间戳,long型
-                     * （建议用time属性进行初始化赋值和取值）
-                     */
-                    time: {
-                        type: Number,
-                        notify: true,
-                        observer:"_timeChange"
-                    },
-                    /**
-                     * 组件标签名
-                     */
-                    label: {
-                        type: String
-                    },
-                    /**
-                     * 组件占位符
-                     */
-                    placeholder: {
-                        type: String
-                    },
-                    /**
-                     * 是否必填
-                     */
-                    required: {
-                        type: Boolean
-                    },
-                    /**
-                     * 是否只读
-                     */
-                    readonly: {
-                        type: Boolean
-                    },
-                    /**
-                     * 最小输入值(数字或日期时间)
-                     */
-                    min: {
-                        type: String
-                    },
-                    /**
-                     * 最大输入值(数字或日期时间)
-                     */
-                    max: {
-                        type: String
-                    }
-                };
-            }
+      #input {
+        flex: 1;
+        width: inherit;
+        height: inherit;
+        font-size: inherit;
+        line-height: inherit;
 
-            static get is() {
-                return "h2-input-datetime";
-            }
+        --h2-input-label: {
+          @apply --h2-input-datetime-label;
+        };
+      }
 
-            /**
-             * 返回的时间字符串改变时，设置time为对应的long型的时间戳
-             * @param value
-             * @private
-             */
-            _valueChange(value) {
-                if (!this.value) {
-                    this.set("time", undefined);
-                    return;
-                }
-                let time = new Date(value).getTime();
-                this.set("time", time);
-            }
+    </style>
+    <h2-input
+            id="input"
+            value="{{value}}"
+            label=[[label]]
+            placeholder="[[placeholder]]"
+            required=[[required]]
+            min="[[min]]"
+            max="[[max]]"
+            readonly$="[[readonly]]"
+            type="datetime-local">
+    </h2-input>
+  </template>
+  <script>
+    /**
+     * `h2-input-datetime`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-input-datetime/index.html
+     */
+    class H2InputDatetime extends Polymer.mixinBehaviors([FormatBehavior], Polymer.Element) {
+      static get properties() {
+        return {
+          /**
+           * 组件返回的时间字符串，默认格式yyyy-MM-ddTHH:mm，如2017-10-26T12:20
+           */
+          value: {
+            type: String,
+            notify: true,
+            observer: "_valueChange"
+          },
+          /**
+           * 时间戳
+           */
+          timestamp: {
+            type: Number,
+            notify: true,
+            observer: "_timestampChange"
+          },
+          /**
+           * 组件标签名
+           */
+          label: {
+            type: String
+          },
+          /**
+           * 组件占位符
+           */
+          placeholder: {
+            type: String
+          },
+          /**
+           * 是否必填
+           */
+          required: {
+            type: Boolean
+          },
+          /**
+           * 是否只读
+           */
+          readonly: {
+            type: Boolean
+          },
+          /**
+           * 最小输入值(数字或日期时间)
+           */
+          min: {
+            type: String
+          },
+          /**
+           * 最大输入值(数字或日期时间)
+           */
+          max: {
+            type: String
+          }
+        };
+      }
 
-            /**
-             * long型时间戳改变时，设置value为对应的yyyy-MM-ddTHH:mm格式的时间字符串
-             * @param time
-             * @private
-             */
-            _timeChange(time) {
-                if (!time) {
-                    this.set("value", undefined);
-                    return;
-                }
-                let date = new Date(time);
-                this.set("value", this.formatDate(date, "yyyy-MM-ddTHH:mm"));
-            }
+      static get is() {
+        return "h2-input-datetime";
+      }
 
-            /**
-             * 获取输入框焦点
-             */
-            doFocus() {
-                this.root.querySelector("h2-input").doFocus();
-            }
-
-            /**
-             * 校验
-             */
-            validate(){
-                return this.$.input.validate();
-            }
+      /**
+       * @param value
+       * @private
+       */
+      _valueChange(value) {
+        if (!this.value) {
+          this.set("timestamp", undefined);
+          return;
         }
-        window.customElements.define(H2InputDatetime.is, H2InputDatetime);
-    </script>
+        const time = new Date(value).getTime();
+        this.set("timestamp", time);
+      }
+
+      /**
+       * @param timestamp
+       * @private
+       */
+      _timestampChange(timestamp) {
+        if (!timestamp) {
+          this.set("value", undefined);
+          return;
+        }
+        const date = new Date(timestamp);
+        this.set("value", this.formatDate(date, "yyyy-MM-ddTHH:mm"));
+      }
+
+      /**
+       * 获取输入框焦点
+       */
+      doFocus() {
+        this.$.input.doFocus();
+      }
+
+      /**
+       * 校验
+       */
+      validate() {
+        return this.$.input.validate();
+      }
+    }
+
+    window.customElements.define(H2InputDatetime.is, H2InputDatetime);
+  </script>
 </dom-module>

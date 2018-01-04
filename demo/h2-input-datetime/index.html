@@ -1,58 +1,73 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-input-datetime demo</title>
+  <title>h2-input-datetime demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-input-datetime.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-input-datetime.html">
 
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
 
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
-        </style>
-    </custom-style>
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
+
+      h2-input-datetime {
+        margin-bottom: 10px;
+      }
+
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>基本用法</h3>
-    <demo-snippet>
-        <template>
-            <h2-input-datetime label="无默认日期"></h2-input-datetime>
-            <h2-input-datetime label="默认value" value="2017-10-26T12:20"></h2-input-datetime>
-            <h2-input-datetime label="默认time" time="1509008130349"></h2-input-datetime>
-        </template>
-    </demo-snippet>
+  <h3>基本用法</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style is="custom-style">
+          .datetime {
+            width: 500px;
+            --h2-input-datetime-label: {
+              width: 100px;
+            };
+          }
+        </style>
+      </custom-style>
+      <h2-input-datetime class="datetime" label="无默认日期"></h2-input-datetime>
+      <h2-input-datetime class="datetime" label="默认value" value="2017-10-26T10:20"></h2-input-datetime>
+      <h2-input-datetime class="datetime" label="默认time" timestamp="1509008130349"></h2-input-datetime>
+    </template>
+  </demo-snippet>
 
-    <h3>支持必填、只读</h3>
-    <demo-snippet>
-        <template>
-            <h2-input-datetime label="日期必填" required></h2-input-datetime>
-            <h2-input-datetime label="日期只读" value="2017-10-26T12:20" readonly></h2-input-datetime>
-        </template>
-    </demo-snippet>
+  <h3>支持必填、只读</h3>
+  <demo-snippet>
+    <template>
+      <h2-input-datetime label="日期必填" required></h2-input-datetime>
+      <h2-input-datetime label="日期只读" value="2017-10-26T23:20" readonly></h2-input-datetime>
+    </template>
+  </demo-snippet>
 
-    <h3>支持最大最小日期范围</h3>
-    <demo-snippet>
-        <template>
-            <h2-input-datetime label="最小值" min="2017-10-10T12:20"></h2-input-datetime>
-            <h2-input-datetime label="最大值" max="2017-10-30T12:20"></h2-input-datetime>
-            <h2-input-datetime label="最大值和最小值" min="2017-10-10T12:20" max="2017-10-30T12:20"></h2-input-datetime>
-        </template>
-    </demo-snippet>
+  <h3>支持最大最小日期范围</h3>
+  <demo-snippet>
+    <template>
+      <h2-input-datetime label="最小值" min="2017-10-10T12:20"></h2-input-datetime>
+      <h2-input-datetime label="最大值" max="2017-10-30T12:20"></h2-input-datetime>
+      <h2-input-datetime label="最大值和最小值" min="2017-10-10T12:20" max="2017-10-30T12:20"></h2-input-datetime>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>
