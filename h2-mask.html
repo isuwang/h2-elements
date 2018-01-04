@@ -10,388 +10,407 @@
 -->
 
 <dom-module id="h2-mask">
-    <template>
-        <style>
-            :host {
-                display: flex;
-                font-size: 0; /*用来处理inline-block元素之间的6个像素间隙的问题*/
-            }
+  <template>
+    <style>
+      :host {
+        display: flex;
+        width: 300px;
+        height: 34px;
+        line-height: 34px;
+      }
 
-            :host * {
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-            }
+      .mask__container {
+        position: relative;
+        flex: 1;
+        line-height: inherit;
+        height: inherit;
+      }
+      :host #mask__viewer:hover {
+        border-color: #cccccc;
+      }
 
-            :host span.editBtn {
-                background-color: #eeeeee;
-                display: none;
-                width:28px;
-                height: 34px;
-                line-height: 22px;
-                padding: 5px 3px;
-                border: 1px solid #ccc;
-                border-left: none;
-                border-radius: 4px;
-                border-top-left-radius: 0;
-                border-bottom-left-radius: 0;
-                vertical-align: top;
-                cursor: pointer;
-            }
+      :host #mask__viewer:hover .mask__viewer__editor {
+        display: block;
+      }
 
-            :host span.mouseover {
-                border-color: #cccccc;
-            }
+      :host #mask__viewer {
+        position: absolute;
+        top: -1px;
+        right: 1px;
+        bottom: -1px;
+        left: -1px;
 
-            :host .viewField {
-                flex: 1;
-                overflow: hidden;
-            }
+        border: 1px solid transparent;
+        border-radius: 4px;
 
-            :host .view {
-                display: inline-block;
-                text-align: left;
-                font-size: 14px;
-                line-height: 34px;
-                height: 34px;
-                border: 1px solid transparent;
-                padding: 0px 12px;
-                border-radius: 4px;
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-                max-width: calc(100% - 28px);
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap
-            }
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
 
-            :host div.button-container {
-                position: relative;
-            }
+      }
 
-            :host .buttons {
-                position: absolute;
-                right: 3px;
-                top: 0px;
-                z-index: 99;
-                background-color: #f0f0f0;
-                border: 1px solid #ccc;
-                border-top: none;
-                border-radius: 0 0 3px 3px;
-                box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
-                outline: none;
-                padding: 3px;
-                width:55px;
-            }
+      :host .mask__viewer__editor {
+        display: none;
 
-            :host .buttons > button {
-                background-color: #f0f0f0;
-                border: 1px solid #cccccc;
-                cursor: pointer;
-                border-radius: 4px;
-                padding: 0px;
-                width: 22px;
-                height: 22px;
-            }
+        background-color: #eeeeee;
+        justify-self: flex-end;
+        padding: 0 4px;
+        height: inherit;
+        border-left: 1px solid #ccc;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
 
-            :host .buttons > button:hover {
-                background-color: #ffffff;
-                border-color: #66afe9;
-            }
+        cursor: pointer;
+      }
 
-            :host iron-icon {
-                width: 20px;
-                height: 20px;
-            }
+      :host .mask__viewer__container {
+        flex: 1;
+        text-align: left;
+        font-size: inherit;
+        padding: 4px 8px;
+        white-space: nowrap;
 
-            :host .cancelBtn {
-                margin-left: 3px;
-            }
+        line-height: inherit;
+      }
 
-            :host .editField {
-                display: none;
-                width: 100%;
-            }
-        </style>
+      :host #mask__editor:focus {
+        display: block;
+      }
 
-        <h2-label value="[[label]]" required="[[required]]"></h2-label>
-        <div class="editField">
-            <div id="editor">
-                <slot id="slot"></slot>
-            </div>
-            <div class="button-container">
-                <div class="buttons">
-                    <button title="提交" on-click="_submit">
-                        <iron-icon icon="icons:check"></iron-icon>
-                    </button>
-                    <button title="取消" class="cancelBtn" on-click="_cancel">
-                        <iron-icon icon="icons:clear"></iron-icon>
-                    </button>
-                </div>
-            </div>
+      :host #mask__editor {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        height: inherit;
+        line-height: inherit;
+      }
+
+      :host .button-container {
+        position: absolute;
+        right: 5px;
+        padding: 4px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        background-color: #f0f0f0;
+        box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
+        z-index: 102;
+
+        display: flex;
+        flex-flow: row nowrap;
+      }
+
+      :host .button-container > button {
+        background-color: #f0f0f0;
+        border: 1px solid #cccccc;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 0;
+        width: 22px;
+        height: 22px;
+      }
+
+      :host .button-container > button:hover {
+        background-color: #ffffff;
+        border-color: #66afe9;
+      }
+
+      :host iron-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      :host .btn--cancel {
+        margin-left: 3px;
+      }
+
+      ::slotted(*) {
+        width: inherit;
+        height: inherit;
+        line-height: inherit;
+        font-size: inherit;
+      }
+
+      :host([data-edit-mode]) #mask__viewer {
+        display: none !important;
+      }
+
+      :host([data-edit-mode]) #mask__editor {
+        display: block !important;
+      }
+
+    </style>
+
+    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+
+    <div class="mask__container">
+      <div id="mask__editor">
+        <slot></slot>
+        <div class="button-container">
+          <button title="提交" on-tap="_submit">
+            <iron-icon icon="icons:check"></iron-icon>
+          </button>
+          <button title="取消" class="btn--cancel" on-tap="_cancel">
+            <iron-icon icon="icons:clear"></iron-icon>
+          </button>
         </div>
-        <div class="viewField">
-            <span id="displayer" class="view">[[viewValue]]</span>
-            <span id="editBtn" class="editBtn" title="点击开始编辑">
-                    <iron-icon icon="editor:mode-edit"></iron-icon>
-                </span>
+      </div>
+      <div id="mask__viewer">
+        <div id="displayer" class="mask__viewer__container">[[viewValue]]</div>
+        <div id="editBtn" class="mask__viewer__editor" title="点击开始编辑">
+          <iron-icon icon="editor:mode-edit"></iron-icon>
         </div>
-    </template>
+      </div>
+    </div>
 
-    <script>
-        /**
-         * `h2-mask`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-mask/index.html
-         */
-        class H2Mask extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     * mataui统一用来保存组件当前数据的字段，时间组件存储的是time时间戳，其他组件保存的都是其value值
-                     * 提示：此处不加notify:true是为了避免在初始化组件数据的时候就对外抛一次value-changed事件，导致多余的保存操作。
-                     * 此组件只有在用户做保存操作的时候才会手动触发一次value-changed事件，将数据传递到外部
-                     */
-                    value: {
-                        type: String
-                    },
-                    /**
-                     * 当前的数据
-                     * {value: 组件的value值,
+  </template>
+
+  <script>
+    /**
+     * `h2-mask`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-mask/index.html
+     */
+    class H2Mask extends Polymer.Element {
+      static get properties() {
+        return {
+          /**
+           * mataui统一用来保存组件当前数据的字段，时间组件存储的是time时间戳，其他组件保存的都是其value值
+           * 提示：此处不加notify:true是为了避免在初始化组件数据的时候就对外抛一次value-changed事件，导致多余的保存操作。
+           * 此组件只有在用户做保存操作的时候才会手动触发一次value-changed事件，将数据传递到外部
+           */
+          value: {
+            type: String
+          },
+          /**
+           * 当前的数据
+           * {value: 组件的value值,
                      *  selectedList: 多选类组件的已选数据集,
                      *  time: 时间组件的时间戳}
-                     */
-                    valueObj: {
-                        type: Object,
-                        value: function () {
-                            return {}
-                        }
-                    },
-                    /**
-                     * 最近一次保存的数据
-                     */
-                    lastValueObj: {
-                        type: Object
-                    },
-                    viewValue: {
-                        type: String
-                    },
-                    /**
-                     * 标签
-                     */
-                    label: {
-                        type: String
-                    },
-                    /**
-                     * 占位符
-                     */
-                    placeholder: {
-                        type: String
-                    },
-                    /**
-                     * 是否必填
-                     */
-                    required: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * slot插槽中的组件
-                     */
-                    slotNode: {
-                        type: Object
-                    }
-                };
+           */
+          valueObj: {
+            type: Object,
+            value: function () {
+              return {}
             }
+          },
+          /**
+           * 最近一次保存的数据
+           */
+          lastValueObj: {
+            type: Object
+          },
+          viewValue: {
+            type: String
+          },
+          /**
+           * 标签
+           */
+          label: {
+            type: String
+          },
+          /**
+           * 占位符
+           */
+          placeholder: {
+            type: String
+          },
+          /**
+           * 是否必填
+           */
+          required: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * slot插槽中的组件
+           */
+          slotNode: {
+            type: Object
+          }
+        };
+      }
 
-            ready() {
-                super.ready();
+      ready() {
+        super.ready();
 
-                /**
-                 * 只读区域事件
-                 */
-                const viewField = this.root.querySelector("div.viewField");
-                const slotNodes = this.root.querySelector("slot").assignedNodes()
-                    .filter(n => n.nodeType === Node.ELEMENT_NODE);
-                viewField.addEventListener("mouseover", e => {
-                    e.stopPropagation();
-                    this.root.querySelector("#displayer").classList.add("mouseover");
-                    this._showEditBtn();
-                });
-                viewField.addEventListener("mouseout", e => {
-                    e.stopPropagation();
-                    this.root.querySelector("#displayer").classList.remove("mouseover");
-                    this._hideEditBtn();
-                });
-                viewField.addEventListener("click", e => {
-                    e.stopPropagation();
-                    this._showEditField();
-                    // slot中插入的组件应该增加各自的doFocus逻辑，用来初始化对组件的第一次调用操作
-                    setTimeout(
-                        () => slotNodes.length && typeof(slotNodes[0].doFocus) === "function" && slotNodes[0].doFocus(),
-                        50
-                    );
-                });
+        /**
+         * 只读区域事件
+         */
+        const viewField = this.$["mask__viewer"];
+        const slotNodes = this.root.querySelector("slot").assignedNodes()
+          .filter(n => n.nodeType === Node.ELEMENT_NODE);
 
-                /**
-                 * 监听slot里面的组件的数据变化
-                 */
-                setTimeout(e => slotNodes.forEach(element => {
-                    /**
-                     * 1.给slot里面的组件新增事件监听器之前，组件就已经notify了数据changed事件。
-                     *   所以此时手动从组件里取值，初始化一次valueObj,lastValueObj数据
-                     * 2.其他时候根据事件变化取值
-                     */
-                    this.set("valueObj", {
-                        value: element.value,
-                        selectedList: this._deepClone(element.selectedList),
-                        time: element.time
-                    });
+        viewField.addEventListener("click", e => {
+          e.stopPropagation();
+          this._showEditField();
+          // slot中插入的组件应该增加各自的doFocus逻辑，用来初始化对组件的第一次调用操作
+          setTimeout(
+            () => slotNodes.length && typeof(slotNodes[0].doFocus) === "function" && slotNodes[0].doFocus(),
+            50
+          );
+        });
 
-                    this.set("lastValueObj", {
-                        value: element.value,
-                        selectedList: this._deepClone(element.selectedList),
-                        time: element.time
-                    });
+        /**
+         * 监听slot里面的组件的数据变化
+         */
+        setTimeout(e => slotNodes.forEach(element => {
+          /**
+           * 1.给slot里面的组件新增事件监听器之前，组件就已经notify了数据changed事件。
+           *   所以此时手动从组件里取值，初始化一次valueObj,lastValueObj数据
+           * 2.其他时候根据事件变化取值
+           */
+          this.set("valueObj", {
+            value: element.value,
+            selectedList: this._deepClone(element.selectedList),
+            time: element.time
+          });
 
-                    element.addEventListener("value-changed", e => {
-                        e.stopPropagation();
-                        this.set("valueObj.value", e.detail.value);
-                    });
-                    element.addEventListener("h2-selected-list-changed", e => {
-                        e.stopPropagation();
-                        this.set("valueObj.selectedList", e.detail.value);
-                    });
-                    element.addEventListener("time-changed", e => {
-                        e.stopPropagation();
-                        this.set("valueObj.time", e.detail.value);
-                    });
-                }), 200);
+          this.set("lastValueObj", {
+            value: element.value,
+            selectedList: this._deepClone(element.selectedList),
+            time: element.time
+          });
 
-
-                /**
-                 * 组件失去焦点的时候关闭组件
-                 */
-                this.addEventListener("focusout", e => {
-                    e.stopPropagation();
-                    // 对H2-SELECT,H2-PICKER特殊处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
-                    if (e.target.nodeName === "H2-SELECT" || e.target.nodeName === "H2-PICKER") {
-                        return;
-                    }
-                    setTimeout(() => {
-                        this._save(e);
-                    }, 200);
-                });
-
-                this.set("slotNode", slotNodes[0]);
-            }
-
-            static get is() {
-                return "h2-mask";
-            }
-
-            static get observers() {
-                return [
-                    "_valueObjChange(valueObj.value,valueObj.selectedList)"
-                ];
-            }
-
-            /**
-             * valueObj数据变化监视器
-             */
-            _valueObjChange(value, selectedList) {
-                if (!value) {
-                    this.set("viewValue", "无");
-                    return;
-                }
-                this.set("viewValue", selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNode.attrForLabel]).join() : value);
-            }
-
-            /**
-             * 显示编辑按钮
-             */
-            _showEditBtn() {
-                this.root.querySelector("span.editBtn").style.display = "inline-block";
-            }
+          element.addEventListener("value-changed", e => {
+            e.stopPropagation();
+            this.set("valueObj.value", e.detail.value);
+          });
+          element.addEventListener("h2-selected-list-changed", e => {
+            e.stopPropagation();
+            this.set("valueObj.selectedList", e.detail.value);
+          });
+          element.addEventListener("time-changed", e => {
+            e.stopPropagation();
+            this.set("valueObj.time", e.detail.value);
+          });
+        }), 200);
 
 
-            /**
-             * 隐藏编辑按钮
-             */
-            _hideEditBtn() {
-                this.root.querySelector("span.editBtn").style.display = "none";
-            }
+        /**
+         * 组件失去焦点的时候关闭组件
+         */
+        this.addEventListener("focusout", e => {
+          e.stopPropagation();
+          // 对H2-SELECT,H2-PICKER特殊处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
+          if (e.target.nodeName === "H2-SELECT" || e.target.nodeName === "H2-PICKER") {
+            return;
+          }
+          setTimeout(() => {
+            this._save(e);
+          }, 200);
+        });
 
-            /**
-             * 显示只读区域
-             * @private
-             */
-            _showViewField() {
-                this.root.querySelector("div.viewField").style.display = "inline-block";
-                this.root.querySelector("div.editField").style.display = "none";
-                this._hideEditBtn();
-            }
+        this.set("slotNode", slotNodes[0]);
+      }
 
-            /**
-             * 显示编辑区域
-             * @private
-             */
-            _showEditField() {
-                this.root.querySelector("div.viewField").style.display = "none";
-                this.root.querySelector("div.editField").style.display = "inline-block";
-                this._hideEditBtn();
-            }
+      static get is() {
+        return "h2-mask";
+      }
 
-            /**
-             * 保存但是不提交
-             */
-            _save(e) {
-                e.stopPropagation();
-                this._showViewField();
-                this.set("lastValueObj", this._deepClone(this.valueObj));
-                this.value = this.valueObj.time || this.valueObj.value;
+      static get observers() {
+        return [
+          "_valueObjChange(valueObj.value,valueObj.selectedList)"
+        ];
+      }
 
-                // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示数据有误的问题
-                if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
-                    this.set("viewValue", "无");
-                }
-            }
-
-            /**
-             * 提交操作
-             * @private
-             */
-            _submit(e) {
-                this._save(e);
-                this.dispatchEvent(new CustomEvent('value-changed', {
-                    composed: true,
-                    bubbles: true,
-                    detail: {value: this.value}
-                }));
-            }
-
-            /**
-             * 取消操作
-             * @private
-             */
-            _cancel(e) {
-                e.stopPropagation();
-                this._showViewField();
-                this.set("valueObj", this._deepClone(this.lastValueObj));
-                this.slotNode.value = this.lastValueObj.value;
-
-                // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示时的数据没有更新的问题
-                if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
-                    this.set("viewValue", "无");
-                }
-            }
-
-            _deepClone(obj) {
-                return obj == null || typeof(obj) !== "object" ? obj : JSON.parse(JSON.stringify(obj));
-            }
+      /**
+       * valueObj数据变化监视器
+       */
+      _valueObjChange(value, selectedList) {
+        if (!value) {
+          this.set("viewValue", "无");
+          return;
         }
-        window.customElements.define(H2Mask.is, H2Mask);
-    </script>
+        this.set("viewValue", selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNode.attrForLabel]).join() : value);
+      }
+
+      /**
+       * 显示编辑按钮
+       */
+      _showEditBtn() {
+        this.root.querySelector("span.mask__viewer__editor").style.display = "inline-block";
+      }
+
+
+      /**
+       * 隐藏编辑按钮
+       */
+      _hideEditBtn() {
+        this.root.querySelector("span.mask__viewer__editor").style.display = "none";
+      }
+
+      /**
+       * 显示只读区域
+       * @private
+       */
+      _showViewField() {
+        this.removeAttribute('data-edit-mode');
+      }
+
+      /**
+       * 显示编辑区域
+       * @private
+       */
+      _showEditField() {
+        this.setAttribute('data-edit-mode', '');
+      }
+
+      /**
+       * 保存但是不提交
+       */
+      _save(e) {
+        e.stopPropagation();
+        this._showViewField();
+        this.set("lastValueObj", this._deepClone(this.valueObj));
+        this.value = this.valueObj.time || this.valueObj.value;
+
+        // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示数据有误的问题
+        if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
+          this.set("viewValue", "无");
+        }
+      }
+
+      /**
+       * 提交操作
+       * @private
+       */
+      _submit(e) {
+        this._save(e);
+        this.dispatchEvent(new CustomEvent('value-changed', {
+          composed: true,
+          bubbles: true,
+          detail: {value: this.value}
+        }));
+      }
+
+      /**
+       * 取消操作
+       * @private
+       */
+      _cancel(e) {
+        e.stopPropagation();
+        this._showViewField();
+        this.set("valueObj", this._deepClone(this.lastValueObj));
+        this.slotNode.value = this.lastValueObj.value;
+
+        // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示时的数据没有更新的问题
+        if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
+          this.set("viewValue", "无");
+        }
+      }
+
+      _deepClone(obj) {
+        return obj == null || typeof(obj) !== "object" ? obj : JSON.parse(JSON.stringify(obj));
+      }
+    }
+
+    window.customElements.define(H2Mask.is, H2Mask);
+  </script>
 </dom-module>
