@@ -46,7 +46,8 @@
         </style>
       </custom-style>
       <h2-input class="typed-input" label="文本框"></h2-input>
-      <h2-input class="typed-input" label="数字框" type="number"></h2-input>
+      <h2-input class="typed-input" label="数字框" type="number" required min="10" max="20"
+                prompt="请输入10到20之间的数字"></h2-input>
       <h2-input class="typed-input" label="电话" type="tel" maxlength="11"></h2-input>
       <h2-input class="typed-input" label="密码框" type="password"></h2-input>
       <h2-input class="typed-input" label="颜色框" type="color"></h2-input>
@@ -60,8 +61,13 @@
     <template>
       <custom-style>
         <style is="custom-style">
+          .container {
+            display: grid;
+            grid-template-columns: 45% 45%;
+          }
+
           .unit-input {
-            width: 250px;
+            width: 300px;
             height: 40px;
             line-height: 40px;
 
@@ -76,9 +82,12 @@
           }
         </style>
       </custom-style>
-      <h2-input class="unit-input" label="存款" prefix-unit="$"></h2-input>
-      <h2-input class="unit-input" label="单价" prefix-unit="元/吨"></h2-input>
-      <h2-input class="unit-input" label="数量" prefix-unit="吨"></h2-input>
+      <div class="container">
+        <h2-input class="unit-input" label="存款" prefix-unit="$"></h2-input>
+        <h2-input class="unit-input" label="单价" prefix-unit="元/吨"></h2-input>
+        <h2-input class="unit-input" label="数量" prefix-unit="吨"></h2-input>
+      </div>
+
     </template>
   </demo-snippet>
 
@@ -103,7 +112,7 @@
         </style>
       </custom-style>
       <h2-input label="有值必填框" value="梅西" required></h2-input>
-      <h2-input id="required-input" label="无值必填框" required></h2-input>
+      <h2-input id="required-input" label="无值必填框" required prompt="必填项"></h2-input>
       <h2-input label="只读输入框" value="梅西" readonly></h2-input>
     </template>
   </demo-snippet>
@@ -126,29 +135,15 @@
     </template>
   </demo-snippet>
 
-  <h3>支持控制宽度</h3>
+  <h3>格式校验</h3>
   <demo-snippet>
     <template>
       <custom-style>
         <style is="custom-style">
         </style>
       </custom-style>
-      <h2-input label="原始宽度"></h2-input>
-      <h2-input label="输入框宽度" id="input"></h2-input>
-      <h2-input label="组件宽度200px" style="width:200px;"></h2-input>
-    </template>
-  </demo-snippet>
-
-  <h3>支持</h3>
-  <demo-snippet>
-    <template>
-      <custom-style>
-        <style is="custom-style">
-        </style>
-      </custom-style>
-      <h2-input label="原始宽度" allowed-pattern="[A-Za-z]\d{3}"></h2-input>
-      <h2-input label="输入框宽度" class="h2-input--invalid"></h2-input>
-      <h2-input label="组件宽度200px"></h2-input>
+      <h2-input label="标签" allowed-pattern="[A-Za-z]\d{3}"></h2-input>
+      <h2-input label="标签" class="h2-input--invalid"></h2-input>
     </template>
   </demo-snippet>
 </div>
