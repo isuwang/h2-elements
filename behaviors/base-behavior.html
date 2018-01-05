@@ -119,20 +119,19 @@
      * 添加loading
      */
     showLoading() {
-
-      if (!document.body.querySelector("#h2-loading")) {
+      const loadingDiv = document.body.querySelector("#h2-loading");
+      if (!loadingDiv) {
         this.async(function () {
-          const loadingDiv = document.body.querySelector("h2-loading") || document.createElement("h2-loading");
-          loadingDiv.setAttribute("id", "h2-loading");
-          loadingDiv.noCancelOnOutsideClick = true;
-          loadingDiv.noCancelOnEscKey = true;
-          loadingDiv.withBackdrop = true;
-          document.body.appendChild(loadingDiv);
-          loadingDiv.open();
+          const _loadingDiv = document.createElement("h2-loading");
+          _loadingDiv.setAttribute("id", "h2-loading");
+          _loadingDiv.noCancelOnOutsideClick = true;
+          _loadingDiv.noCancelOnEscKey = true;
+          _loadingDiv.withBackdrop = true;
+          document.body.appendChild(_loadingDiv);
+          _loadingDiv.open();
         }, 100);
       } else {
         this.async(function () {
-          const loadingDiv = document.body.querySelector("#h2-loading");
           loadingDiv.open();
         }, 100);
       }
@@ -143,13 +142,34 @@
      */
     hideLoading() {
       this.async(function () {
-        var loadingDiv = document.body.querySelector("#h2-loading");
-        loadingDiv.close();
+        const loadingDiv = document.body.querySelector("#h2-loading");
+        loadingDiv && loadingDiv.close();
       }, 100);
     },
 
     throwNotFoundError(string) {
       throw new TypeError(string + " should not be undefined.")
+    },
+
+    /**
+     * 防抖，wait时间后执行fn
+     * @param jobName
+     * @param fn
+     * @param wait
+     */
+    debounce(jobName, fn, wait) {
+
+    },
+
+    /**
+     * 每隔wait时间执行fn
+      */
+    throttle(fn, wait, options) {
+
+    },
+
+    deepClone(obj) {
+      return obj == null || typeof(obj) !== "object" ? obj : JSON.parse(JSON.stringify(obj));
     }
   }
 </script>

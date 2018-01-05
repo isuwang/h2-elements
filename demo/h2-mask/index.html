@@ -37,13 +37,9 @@
         }
       }
 
-      div.container {
-        display: flex;
-        flex-flow: row wrap;
-      }
-
-      div.container > h2-mask {
-        width: 50%;
+      h2-mask {
+        width: 300px;
+        margin: 10px;
       }
     </style>
   </custom-style>
@@ -74,14 +70,12 @@
   <h3>支持h2-input-date日期框</h3>
   <demo-snippet>
     <template>
-      <div class="container">
-        <h2-mask label="日期框">
-          <h2-input-date placeholder="日期" value="2017-12-05"></h2-input-date>
-        </h2-mask>
-        <h2-mask label="时间框">
-          <h2-input-datetime placeholder="时间"></h2-input-datetime>
-        </h2-mask>
-      </div>
+      <h2-mask label="日期框">
+        <h2-input-date placeholder="日期" value="2017-12-05"></h2-input-date>
+      </h2-mask>
+      <h2-mask label="时间框">
+        <h2-input-datetime placeholder="时间"></h2-input-datetime>
+      </h2-mask>
     </template>
   </demo-snippet>
 
@@ -116,6 +110,18 @@
   <h3>支持h2-picker框</h3>
   <demo-snippet>
     <template>
+      <custom-style>
+        <style>
+          .container {
+            display: grid;
+            grid-template-columns: 45% 45%;
+          }
+
+          .container h2-mask {
+            width: 320px;
+          }
+        </style>
+      </custom-style>
       <div class="container">
         <h2-mask label="本地模式单选框">
           <h2-picker id="picker"></h2-picker>
