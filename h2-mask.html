@@ -2,10 +2,14 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-icons/editor-icons.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="./behaviors/base-behavior.html">
 <link rel="import" href="h2-input.html">
 <!--
-```javascript
-<h2-mask></h2-mask>
+```html
+
+<h2-mask label="输入框" class="mask">
+  <h2-input placeholder="测试输入" value="Test"></h2-input>
+</h2-mask>
 ```
 -->
 
@@ -19,12 +23,13 @@
         line-height: 34px;
       }
 
-      .mask__container {
+      :host .mask__container {
         position: relative;
         flex: 1;
         line-height: inherit;
         height: inherit;
       }
+
       :host #mask__viewer:hover {
         border-color: #cccccc;
       }
@@ -149,12 +154,14 @@
 
     <div class="mask__container">
       <div id="mask__editor">
-        <slot></slot>
+        <slot>
+          <div id="defaultSlot"></div>
+        </slot>
         <div class="button-container">
-          <button title="提交" on-tap="_submit">
+          <button title="提交" on-click="_submit">
             <iron-icon icon="icons:check"></iron-icon>
           </button>
-          <button title="取消" class="btn--cancel" on-tap="_cancel">
+          <button title="取消" class="btn--cancel" on-click="_cancel">
             <iron-icon icon="icons:clear"></iron-icon>
           </button>
         </div>
@@ -177,28 +184,18 @@
      * @polymer
      * @demo demo/h2-mask/index.html
      */
-    class H2Mask extends Polymer.Element {
+    class H2Mask extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
       static get properties() {
         return {
-          /**
-           * mataui统一用来保存组件当前数据的字段，时间组件存储的是time时间戳，其他组件保存的都是其value值
-           * 提示：此处不加notify:true是为了避免在初始化组件数据的时候就对外抛一次value-changed事件，导致多余的保存操作。
-           * 此组件只有在用户做保存操作的时候才会手动触发一次value-changed事件，将数据传递到外部
-           */
           value: {
-            type: String
+            type: String,
+            notify: true
           },
           /**
            * 当前的数据
-           * {value: 组件的value值,
-                     *  selectedList: 多选类组件的已选数据集,
-                     *  time: 时间组件的时间戳}
            */
           valueObj: {
-            type: Object,
-            value: function () {
-              return {}
-            }
+            type: Object
           },
           /**
            * 最近一次保存的数据
@@ -206,6 +203,7 @@
           lastValueObj: {
             type: Object
           },
+
           viewValue: {
             type: String
           },
@@ -231,67 +229,52 @@
           /**
            * slot插槽中的组件
            */
-          slotNode: {
+          _slotNode: {
             type: Object
           }
         };
       }
 
+      static get is() {
+        return "h2-mask";
+      }
+
+      static get observers() {
+        return [];
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+
+      }
+
       ready() {
         super.ready();
 
-        /**
-         * 只读区域事件
-         */
         const viewField = this.$["mask__viewer"];
-        const slotNodes = this.root.querySelector("slot").assignedNodes()
+
+        const slotNodes = this.root.querySelector("slot")
+          .assignedNodes()
           .filter(n => n.nodeType === Node.ELEMENT_NODE);
+
+        this._slotNode = slotNodes[0];
+
+        // a hack to get the init value
+        const valueChangedHandler = (e) => {
+          this.__initValueOfSlottedElement();
+          this.__updateViewer();
+          this._slotNode.removeEventListener('value-changed', valueChangedHandler);
+        };
+        this._slotNode.addEventListener('value-changed', valueChangedHandler);
 
         viewField.addEventListener("click", e => {
           e.stopPropagation();
-          this._showEditField();
-          // slot中插入的组件应该增加各自的doFocus逻辑，用来初始化对组件的第一次调用操作
-          setTimeout(
-            () => slotNodes.length && typeof(slotNodes[0].doFocus) === "function" && slotNodes[0].doFocus(),
-            50
-          );
+
+          this.__initValueOfSlottedElement();
+          this._displayEditField(true);
+
+          this.isFunction(this._slotNode.doFocus) && this._slotNode.doFocus();
         });
-
-        /**
-         * 监听slot里面的组件的数据变化
-         */
-        setTimeout(e => slotNodes.forEach(element => {
-          /**
-           * 1.给slot里面的组件新增事件监听器之前，组件就已经notify了数据changed事件。
-           *   所以此时手动从组件里取值，初始化一次valueObj,lastValueObj数据
-           * 2.其他时候根据事件变化取值
-           */
-          this.set("valueObj", {
-            value: element.value,
-            selectedList: this._deepClone(element.selectedList),
-            time: element.time
-          });
-
-          this.set("lastValueObj", {
-            value: element.value,
-            selectedList: this._deepClone(element.selectedList),
-            time: element.time
-          });
-
-          element.addEventListener("value-changed", e => {
-            e.stopPropagation();
-            this.set("valueObj.value", e.detail.value);
-          });
-          element.addEventListener("h2-selected-list-changed", e => {
-            e.stopPropagation();
-            this.set("valueObj.selectedList", e.detail.value);
-          });
-          element.addEventListener("time-changed", e => {
-            e.stopPropagation();
-            this.set("valueObj.time", e.detail.value);
-          });
-        }), 200);
-
 
         /**
          * 组件失去焦点的时候关闭组件
@@ -303,78 +286,51 @@
             return;
           }
           setTimeout(() => {
-            this._save(e);
-          }, 200);
+            this.__getValueOfSlottedElement();
+            this.__updateViewer();
+            this._displayEditField(false);
+          }, 50);
         });
 
-        this.set("slotNode", slotNodes[0]);
-      }
-
-      static get is() {
-        return "h2-mask";
-      }
-
-      static get observers() {
-        return [
-          "_valueObjChange(valueObj.value,valueObj.selectedList)"
-        ];
-      }
-
-      /**
-       * valueObj数据变化监视器
-       */
-      _valueObjChange(value, selectedList) {
-        if (!value) {
-          this.set("viewValue", "无");
-          return;
-        }
-        this.set("viewValue", selectedList && selectedList.length > 0 ? selectedList.map(e => e[this.slotNode.attrForLabel]).join() : value);
-      }
-
-      /**
-       * 显示编辑按钮
-       */
-      _showEditBtn() {
-        this.root.querySelector("span.mask__viewer__editor").style.display = "inline-block";
-      }
-
-
-      /**
-       * 隐藏编辑按钮
-       */
-      _hideEditBtn() {
-        this.root.querySelector("span.mask__viewer__editor").style.display = "none";
-      }
-
-      /**
-       * 显示只读区域
-       * @private
-       */
-      _showViewField() {
-        this.removeAttribute('data-edit-mode');
+        this.__initValueOfSlottedElement();
+        this.__updateViewer();
       }
 
       /**
        * 显示编辑区域
        * @private
        */
-      _showEditField() {
-        this.setAttribute('data-edit-mode', '');
+      _displayEditField(display) {
+        if (display) {
+          this.setAttribute('data-edit-mode', '');
+        } else {
+          this.removeAttribute('data-edit-mode');
+        }
       }
 
-      /**
-       * 保存但是不提交
-       */
-      _save(e) {
-        e.stopPropagation();
-        this._showViewField();
-        this.set("lastValueObj", this._deepClone(this.valueObj));
-        this.value = this.valueObj.time || this.valueObj.value;
+      __initValueOfSlottedElement() {
+        // TODO
+        this.set("valueObj", {value: this._slotNode.value});
+        this.set("lastValueObj", {value: this._slotNode.value});
+        this.value = this._slotNode.value;
+      }
 
-        // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示数据有误的问题
-        if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
-          this.set("viewValue", "无");
-        }
+      __getValueOfSlottedElement() {
+
+        //TODO check if value changed
+        this.set("lastValueObj", this.deepClone(this.valueObj));
+        this.set("valueObj", {value: this._slotNode.value});
+
+        this.value = this._slotNode.value;
+      }
+
+      __resetValueOfSlottedElement() {
+        this.set("valueObj", this.lastValueObj);
+        this._slotNode.set('value', this.valueObj.value);
+      }
+
+      __updateViewer() {
+        this.set("viewValue", this.valueObj.value || '无');
       }
 
       /**
@@ -382,12 +338,11 @@
        * @private
        */
       _submit(e) {
-        this._save(e);
-        this.dispatchEvent(new CustomEvent('value-changed', {
-          composed: true,
-          bubbles: true,
-          detail: {value: this.value}
-        }));
+        e.stopPropagation();
+
+        this.__getValueOfSlottedElement();
+        this.__updateViewer();
+        this._displayEditField(false);
       }
 
       /**
@@ -396,18 +351,10 @@
        */
       _cancel(e) {
         e.stopPropagation();
-        this._showViewField();
-        this.set("valueObj", this._deepClone(this.lastValueObj));
-        this.slotNode.value = this.lastValueObj.value;
 
-        // 处理valueObj三个字段全部为undefined的时候，不会触发_valueObjChange方法，导致显示时的数据没有更新的问题
-        if (this.valueObj.value == undefined && this.valueObj.selectedList == undefined && this.valueObj.time == undefined) {
-          this.set("viewValue", "无");
-        }
-      }
-
-      _deepClone(obj) {
-        return obj == null || typeof(obj) !== "object" ? obj : JSON.parse(JSON.stringify(obj));
+        this.__resetValueOfSlottedElement();
+        this.__updateViewer();
+        this._displayEditField(false);
       }
     }
 
