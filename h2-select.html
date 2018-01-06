@@ -2,9 +2,8 @@
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
-<link rel="import" href="h2-label.html">
+<link rel="import" href="./h2-label.html">
 <!--
 
 ```javascript
@@ -112,11 +111,18 @@
         background-color: #ffffff;
       }
 
-      :host .dropdown-menu-container {
+      #select-collapse {
+        -webkit-transition: max-height 100ms ease-in;
+        -moz-transition: max-height 100ms ease-in;
+        -ms-transition: max-height 100ms ease-in;
+        -o-transition: max-height 100ms ease-in;
+        transition: max-height 100ms ease-in;
+
+        max-height: 0;
         position: absolute;
         top: 100%;
         width: 100%;
-
+        overflow-y: auto;
         z-index: 999;
         margin-top: 1px;
 
@@ -133,6 +139,10 @@
         @apply --h2-select-dropdown;
       }
 
+      #select-collapse[data-collapse-open] {
+        max-height: 300px;
+      }
+
       :host([readonly]) .mask,
       :host([disabled]) .mask {
         position: absolute;
@@ -145,8 +155,8 @@
       }
 
       .selector-panel {
-        max-height: 300px;
-        overflow: auto;
+        /*max-height: 300px;*/
+        /*overflow: auto;*/
         display: block;
         padding: 5px;
       }
@@ -185,10 +195,8 @@
 
         opacity: 0.5;
         padding: 0 6px;
-
         overflow: hidden;
         white-space: nowrap;
-
       }
     </style>
     <h2-label value="[[label]]" required="[[required]]"></h2-label>
@@ -215,14 +223,14 @@
         <iron-icon id="caret" icon="icons:arrow-drop-down"></iron-icon>
       </div>
 
-      <iron-collapse class="dropdown-menu-container" id="input-collapse">
+      <div id="select-collapse">
         <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
-                       selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
+                       selected="{{selected}}" attr-for-selected="radio-item">
           <template is="dom-repeat" items="[[items]]">
             <div class="candidate-item" radio-item="[[item]]" title="[[_getLabel(item)]]">[[_getLabel(item)]]</div>
           </template>
         </iron-selector>
-      </iron-collapse>
+      </div>
 
       <div class="mask"></div>
     </div>
@@ -353,7 +361,9 @@
         super.connectedCallback();
         this.addEventListener('blur', e => {
           // make sure other event can happen on slotted element before the iron-collapse closed.
-          setTimeout(this._closeCollapse.bind(this, e), 100);
+          console.log(e);
+          // setTimeout(this.closeCollapse.bind(this), 100);
+          console.log(document.activeElement);
         });
       }
 
@@ -365,28 +375,9 @@
         if (e.target.tagName === "A") {
           return;
         }
-        this.$['placeholder'].style.display = 'none';
+
         this.$['tags-input'].focus();
-        this._collapseToggle();
-      }
-
-      _closeCollapse(e) {
-        e.stopPropagation();
-        this._collapseToggle('close');
-      }
-
-      /**
-       * 获取展示字段名
-       */
-      _getLabel(item) {
-        return item[this.attrForLabel];
-      }
-
-      /**
-       * 获取展示字段值
-       */
-      _getValue(item) {
-        return item[this.attrForValue];
+        this.toggleCollapse();
       }
 
       /**
@@ -421,6 +412,7 @@
         if (splices == undefined || splices.length === 0) {
           return;
         }
+        this.closeCollapse();
         this.set("value", splices.indexSplices[0].object.map(e => this._getValue(e)).join(","));
       }
 
@@ -430,6 +422,7 @@
         }
         this.set("value", this._getValue(selected));
 
+        this.closeCollapse();
         const selectedList = [];
         selectedList.push(this.selected);
         this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
@@ -444,7 +437,8 @@
        */
       _deleteTag(e) {
         let self = this;
-        this._collapseToggle("close");
+        // this._collapseToggle("close");
+        this.closeCollapse();
         let value = e.target.dataArgs;
         this.selectedList.forEach((item, i) => {
           if (item == null) {
@@ -466,33 +460,36 @@
         }
       }
 
-      /**
-       * 面板开关
-       * @private
-       */
-      _collapseToggle(toggle) {
-        if (this.selectedList == undefined || this.selectedList.length === 0) {
-          this.$["placeholder"].style.display = "";
-        }
-        var collapse = this.$['input-collapse'];
-        var buttonGroup = this.$["select__container"];
-        var caret = this.$['caret'];
-        if (toggle == "close") {
-          if (buttonGroup.classList.contains('open')) {
-            buttonGroup.classList.remove('open');
-            caret.icon = 'icons:arrow-drop-down';
-            collapse.toggle();
-          }
+
+      openCollapse() {
+        this.$["select-collapse"].setAttribute('data-collapse-open', '');
+        this.$['caret'].icon = 'icons:arrow-drop-up';
+      }
+
+      closeCollapse() {
+        this.$["select-collapse"].removeAttribute('data-collapse-open');
+        this.$['caret'].icon = 'icons:arrow-drop-down';
+      }
+
+      toggleCollapse() {
+        if(this.$["select-collapse"].hasAttribute('data-collapse-open')) {
+          this.$["select-collapse"].removeAttribute('data-collapse-open');
         } else {
-          collapse.toggle();
-          if (buttonGroup.classList.contains('open')) {
-            buttonGroup.classList.remove('open');
-            caret.icon = 'icons:arrow-drop-down';
-          } else {
-            buttonGroup.classList.add('open');
-            caret.icon = 'icons:arrow-drop-up';
-          }
+          this.$["select-collapse"].setAttribute('data-collapse-open', '');
         }
+      }
+      /**
+       * 获取展示字段名
+       */
+      _getLabel(item) {
+        return item[this.attrForLabel];
+      }
+
+      /**
+       * 获取展示字段值
+       */
+      _getValue(item) {
+        return item[this.attrForValue];
       }
 
       /**
