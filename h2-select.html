@@ -14,515 +14,503 @@
 -->
 
 <dom-module id="h2-select">
-    <template>
-        <style>
-            :host {
-                display: flex;
-                align-items: center;
-                text-align: left;
-                position: relative;
-                font-size: 0;
-            }
+  <template>
+    <style>
+      :host {
+        display: flex;
+        width: 300px;
+        height: 34px;
+        line-height: 34px;
+        position: relative;
+      }
 
-            :host * {
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-            }
+      h2-label {
+        font-size: inherit;
+        height: inherit;
+        line-height: inherit;
 
-            :host .select-warp {
-                display: inline-block;
-                vertical-align: inherit;
-                width: 100%;
-            }
+        @apply --h2-select-label;
+      }
 
-            :host input {
-                border: none;
-                outline: medium;
-                font-size: 13px;
-                height: 24px;
-                line-height: 24px;
-                width: 1px;
-                background-color: #ffffff;
-            }
+      #select__container {
+        flex: 1;
+        display: flex;
+        height: inherit;
+        border: 1px solid #CCC;
+        border-radius: 4px;
+        position: relative;
+      }
 
-            :host div.tags-input {
-                overflow: hidden;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border: 1px solid #CCC;
-                background: #FFF;
-                padding: 4px;
-                height: 34px;
-            }
+      .tags__container {
+        flex: 1;
+        position: relative;
+        display: flex;
+      }
 
-            /*标签容器*/
-            :host div.tags-input.tags-box {
-                height: auto;
-                width: var(--select-tags-box-width, 100%);
-            }
+      .select__container__viewer {
+        flex: 1;
+        display: flex;
+        flex-wrap: nowrap;
+      }
 
-            /*标签*/
-            :host div.tags-input span.tag {
-                -moz-border-radius: 2px;
-                -webkit-border-radius: 2px;
-                display: inline-block;
-                padding: 0px 5px;
-                text-decoration: none;
-                margin-right: 5px;
-                margin-bottom: 2px;
-                margin-top: 0px;
-                font-family: helvetica;
-                font-size: 13px;
-                line-height: 20px;
-                background-color: #f0f0f0;
-                border: 1px solid #ccc;
-                color: #666;
-                white-space: normal;
-                max-width: calc(var(--h2-select-tags-box-width, 100%) - 40px);
-            }
+      #caret {
+        height: inherit;
+      }
 
-            :host div.tags-input span.tag span.tag-name {
-                font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
-            }
+      #tag-content {
+        flex: 1;
 
-            /*标签关闭按钮*/
-            :host div.tags-input span.tag a {
-                margin-left: 5px;
-                font-weight: bold;
-                color: #0273D4;
-                text-decoration: none;
-                font-size: 12px;
-            }
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        overflow-y: auto;
+        padding: 4px;
+      }
 
-            :host div.tags-input span.tag a:hover {
-                color: #f60;
-                font-size: 12px;
-            }
+      .tag {
+        color: #666;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
 
-            :host .shade {
-                display: none;
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                height: 100%;
-                background-color: black;
-                z-index: 99;
-                opacity: .00;
-                border-radius: 4px;
-            }
+        margin: 2px 2px 3px 2px;
+        padding: 0 4px;
+        height: 22px;
+        line-height: 22px;
 
-            :host iron-selector > * {
-                margin: 0px;
-                padding: 0px;
-                font-size: 12px;
-                cursor: pointer;
-            }
+        display: flex;
+        max-width: 200px;
 
-            :host iron-selector .item {
-                display: block;
-                line-height: 20px;
-                height: 20px;
-            }
+        font-size: 14px;
+        white-space: nowrap;
+        @apply --h2-select-tag;
+      }
 
-            :host iron-selector span.item {
-                height: auto;
-            }
+      .tag-name {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-            /*hover*/
-            :host iron-selector .item:hover {
-                color: #0099FF;
-            }
+      .tag a {
+        margin-left: 6px;
+        font-weight: bold;
+        text-decoration: inherit;
+      }
 
-            /*下拉选项选中*/
-            :host .iron-selected {
-                background-color: #0099FF;
-                color: #fff;
-            }
+      .tag a:hover {
+        color: #f60;
+      }
 
-            :host .selector-panel {
-                max-height: 300px;
-                overflow: auto;
-                display: block;
-                padding: 5px;
-                border: 1px solid #dedede;
-                border-top: none;
-                border-bottom-left-radius: 5px;
-                border-bottom-right-radius: 5px;
-                @apply(--shadow-elevation-2dp);
-            }
+      :host input {
+        border: none;
+        outline: medium;
+        font-size: 13px;
+        height: 24px;
+        line-height: 24px;
+        width: 1px;
+        background-color: #ffffff;
+      }
 
-            :host iron-collapse iron-selector {
-                vertical-align: middle;
-            }
+      :host .dropdown-menu-container {
+        position: absolute;
+        top: 100%;
+        width: 100%;
 
-            :host iron-collapse iron-selector .item {
-                text-align: left;
-                padding-left: 15px;
-                white-space: nowrap;
-            }
+        z-index: 999;
+        margin-top: 1px;
 
-            :host .float-r {
-                float: right;
-            }
+        font-size: 14px;
+        text-align: left;
+        background-color: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        background-clip: padding-box;
+        @apply --h2-select-dropdown;
+      }
 
-            :host .dropdown-menu-container {
-                position: relative;
-            }
+      :host([readonly]) .mask,
+      :host([disabled]) .mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 102;
+      }
 
-            /*下拉列表*/
-            :host .dropdown-menu {
-                position: absolute;
-                z-index: 999;
-                margin: 2px 0 0;
-                list-style: none;
-                font-size: 14px;
-                text-align: left;
-                background-color: #fff;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border-radius: 4px;
-                -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                background-clip: padding-box;
-                border-top: 1px solid #dfdfdf;
-                width: var(--h2-select-dropdown-menu-width, 100%);
-            }
+      .selector-panel {
+        max-height: 300px;
+        overflow: auto;
+        display: block;
+        padding: 5px;
+      }
 
-            /* 占位符样式 */
-            :host .placeholder {
-                opacity: 0.5;
-                font-size: 14px;
-            }
-        </style>
-        <h2-label value="[[label]]" required="[[required]]"></h2-label>
-        <div class="btn-group select-warp">
-            <div class="tags-input tags-box" on-click="_onInputClick">
-                <span id="placeholder" class="placeholder">[[placeholder]]</span>
-                <span id="tag-content">
-                    <template is="dom-repeat" items="{{selectedList}}">
-						<span class="tag">
-                            <span class="tag-name" title="[[_getLabel(item)]]">[[_getLabel(item)]]</span>
-						    <a class="float-r" data-args="[[_getValue(item)]]" href="javascript:void(0);"
-                               title="删除该选项" on-click="_deleteTag">x</a>
-						</span>
-                    </template>
-                </span>
-                <iron-input id="input" slot="input" maxlength$="[[maxlength]]">
-                    <input id="tags-input"
-                           on-keydown="_updatePressed"
-                           readonly$="true"
-                           autocomplete$="off">
-                </iron-input>
-                <iron-icon id="caret" class="float-r" icon="icons:arrow-drop-down"></iron-icon>
-            </div>
-            <div class="shade"></div>
-            <div class="dropdown-menu-container">
-                <iron-collapse class="dropdown-menu" id="input-collapse">
-                    <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
-                                   selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
-                        <template is="dom-repeat" items="[[items]]">
-                            <span class="btn-row item" radio-item="[[item]]">[[_getLabel(item)]]</span>
-                        </template>
-                    </iron-selector>
-                </iron-collapse>
-            </div>
+      .candidate-item {
+        text-align: left;
+        padding: 0 8px;
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 22px;
+        line-height: 22px;
+        cursor: pointer;
+      }
+
+      .candidate-item:not([class*='iron-selected']):hover {
+        color: #0099FF;
+      }
+
+      .iron-selected {
+        background-color: #0099FF;
+        color: #fff;
+      }
+
+      .iron-selected:hover {
+        opacity: 0.8;
+      }
+
+      :host #placeholder {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        opacity: 0.5;
+        padding: 0 6px;
+
+        overflow: hidden;
+        white-space: nowrap;
+
+      }
+    </style>
+    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+    <div id="select__container">
+      <div class="select__container__viewer" on-click="_onInputClick">
+        <div class="tags__container">
+          <div id="placeholder">[[placeholder]]</div>
+          <div id="tag-content">
+            <template is="dom-repeat" items="{{selectedList}}">
+              <div class="tag">
+                <span class="tag-name" title="[[_getLabel(item)]]">[[_getLabel(item)]]</span>
+                <a data-args="[[_getValue(item)]]" href="javascript:void(0);"
+                   title="删除该选项" on-click="_deleteTag">x</a>
+              </div>
+            </template>
+          </div>
+          <iron-input id="input" slot="input" maxlength$="[[maxlength]]">
+            <input id="tags-input"
+                   on-keydown="_updatePressed"
+                   readonly
+                   autocomplete$="off">
+          </iron-input>
         </div>
-    </template>
-    <script>
-        /**
-         * `h2-select`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-select/index.html
-         */
-        class H2Select extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     *
-                     * 标签名字
-                     *
-                     * @attribute label
-                     * @type {String}
-                     */
-                    label: {
-                        type: String
-                    },
-                    /**
-                     * 占位符
-                     * @type {String}
-                     */
-                    placeholder: {
-                        type: String
-                    },
-                    /**
-                     * 是否支持多选
-                     */
-                    multi: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     *
-                     * 初始选择项和items的value值相对应
-                     * eg：1
-                     *
-                     * @attribute selected
-                     * @type {String}
-                     */
-                    value: {
-                        type: String,
-                        reflectToAttribute: true,
-                        notify: true
-                    },
-                    /**
-                     *
-                     * 需要展示的数据项
-                     * eg：[{value:1,label:"全部",isShow:true/false}]
-                     *
-                     * @attribute items
-                     * @type {Array}
-                     */
-                    items: {
-                        type: Array,
-                        notify: true,
-                        value: []
-                    },
-                    /**
-                     * 被选中的数据项（单选时生效）
-                     */
-                    selected: {
-                        type: Object,
-                        notify: true
-                    },
-                    /**
-                     * 被选中的数据项集合（多选时生效）
-                     */
-                    selectedList: {
-                        type: Array,
-                        notify: true
-                    },
-                    /**
-                     * 是否必填
-                     */
-                    required: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 是否只读
-                     */
-                    readonly: {
-                        type: Boolean,
-                        value: false
-                    },
-                    maxlength: {
-                        type: Number
-                    },
-                    /**
-                     * 用来取值的字段，默认为value
-                     */
-                    attrForValue: {
-                        type: String,
-                        value: "value"
-                    },
-                    /**
-                     * 用来展示的字段，默认为label
-                     */
-                    attrForLabel: {
-                        type: String,
-                        value: "label"
-                    }
-                };
-            }
+        <iron-icon id="caret" icon="icons:arrow-drop-down"></iron-icon>
+      </div>
 
-            static get is() {
-                return "h2-select";
-            }
+      <iron-collapse class="dropdown-menu-container" id="input-collapse">
+        <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
+                       selected="{{selected}}" on-click="_closeCollapse" attr-for-selected="radio-item">
+          <template is="dom-repeat" items="[[items]]">
+            <div class="candidate-item" radio-item="[[item]]" title="[[_getLabel(item)]]">[[_getLabel(item)]]</div>
+          </template>
+        </iron-selector>
+      </iron-collapse>
 
-            static get observers() {
-                return [
-                    '_selectedChange(selected)',
-                    '_selectedListChange(selectedList.splices)',
-                    '_readonlyChange(readonly)',
-                    '_valueChange(value,items)'
-                ];
-            }
+      <div class="mask"></div>
+    </div>
 
-            connectedCallback() {
-                super.connectedCallback();
-                this.addEventListener('blur', e => {
-                    // make sure other event can happen on slotted element before the iron-collapse closed.
-                    setTimeout(this._closeCollapse.bind(this, e), 100);
-                });
-            }
+  </template>
+  <script>
+    /**
+     * `h2-select`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-select/index.html
+     */
+    class H2Select extends Polymer.Element {
+      static get properties() {
+        return {
+          /**
+           *
+           * 标签名字
+           *
+           * @attribute label
+           * @type {String}
+           */
+          label: {
+            type: String
+          },
+          /**
+           * 占位符
+           * @type {String}
+           */
+          placeholder: {
+            type: String
+          },
+          /**
+           * 是否支持多选
+           */
+          multi: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           *
+           * 初始选择项和items的value值相对应
+           * eg：1
+           *
+           * @attribute selected
+           * @type {String}
+           */
+          value: {
+            type: String,
+            reflectToAttribute: true,
+            notify: true
+          },
+          /**
+           *
+           * 需要展示的数据项
+           * eg：[{value:1,label:"全部",isShow:true/false}]
+           *
+           * @attribute items
+           * @type {Array}
+           */
+          items: {
+            type: Array,
+            notify: true,
+            value: []
+          },
+          /**
+           * 被选中的数据项（单选时生效）
+           */
+          selected: {
+            type: Object,
+            notify: true
+          },
+          /**
+           * 被选中的数据项集合（多选时生效）
+           */
+          selectedList: {
+            type: Array,
+            notify: true
+          },
+          /**
+           * 是否必填
+           */
+          required: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 是否只读
+           */
+          readonly: {
+            type: Boolean,
+            value: false
+          },
+          maxlength: {
+            type: Number
+          },
+          /**
+           * 用来取值的字段，默认为value
+           */
+          attrForValue: {
+            type: String,
+            value: "value"
+          },
+          /**
+           * 用来展示的字段，默认为label
+           */
+          attrForLabel: {
+            type: String,
+            value: "label"
+          }
+        };
+      }
 
-            /**
-             * 是否只读，是则显示遮罩层，否则不显示
-             */
-            _readonlyChange(readonly) {
-                let shade = this.root.querySelector('.shade');
-                !!readonly ? shade.style.display = 'block' : shade.style.display = 'none';
-            }
+      static get is() {
+        return "h2-select";
+      }
 
-            /**
-             * 点击事件
-             */
-            _onInputClick(e) {
-                e.stopPropagation();
-                if (e.target.tagName === "A") {
-                    return;
-                }
-                this.$['placeholder'].style.display = 'none';
-                this.$['tags-input'].focus();
-                this._collapseToggle();
-            }
+      static get observers() {
+        return [
+          '_selectedChange(selected)',
+          '_selectedListChange(selectedList.splices)',
+          '_valueChange(value,items)'
+        ];
+      }
 
-            _closeCollapse(e) {
-                e.stopPropagation();
-                this._collapseToggle('close');
-            }
+      connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('blur', e => {
+          // make sure other event can happen on slotted element before the iron-collapse closed.
+          setTimeout(this._closeCollapse.bind(this, e), 100);
+        });
+      }
 
-            /**
-             * 获取展示字段名
-             */
-            _getLabel(item) {
-                return item[this.attrForLabel];
-            }
+      /**
+       * 点击事件
+       */
+      _onInputClick(e) {
+        e.stopPropagation();
+        if (e.target.tagName === "A") {
+          return;
+        }
+        this.$['placeholder'].style.display = 'none';
+        this.$['tags-input'].focus();
+        this._collapseToggle();
+      }
 
-            /**
-             * 获取展示字段值
-             */
-            _getValue(item) {
-                return item[this.attrForValue];
-            }
+      _closeCollapse(e) {
+        e.stopPropagation();
+        this._collapseToggle('close');
+      }
 
-            /**
-             * value,items属性变化监听函数
-             */
-            _valueChange(value, items) {
-                //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
-                if (value == null || value === "") {
-                    this.set("selectedList", []);
-                    this.multi ? "" : this.set("selected", undefined);
-                    return;
-                }
+      /**
+       * 获取展示字段名
+       */
+      _getLabel(item) {
+        return item[this.attrForLabel];
+      }
 
-                if (items && items.length > 0) {
-                    this.$['placeholder'].style.display = 'none';
-                    let values = (value + "").split(",");
-                    let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
-                    this.set("selectedList", selectedList);
+      /**
+       * 获取展示字段值
+       */
+      _getValue(item) {
+        return item[this.attrForValue];
+      }
 
-                    //对外抛一个选定数据变化事件，提供给h2-mask组件取值
-                    this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-                        composed: true,
-                        bubbles: true,
-                        detail: {value: selectedList}
-                    }));
-
-                    this.multi ? "" : this.set("selected", selectedList[0]);
-                }
-            }
-
-            _selectedListChange(splices) {
-                if (splices == undefined || splices.length === 0) {
-                    return;
-                }
-                this.set("value", splices.indexSplices[0].object.map(e => this._getValue(e)).join(","));
-            }
-
-            _selectedChange(selected) {
-                if (selected == undefined) {
-                    return;
-                }
-                this.set("value", this._getValue(selected));
-
-                const selectedList = [];
-                selectedList.push(this.selected);
-                this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-                    composed: true,
-                    bubbles: true,
-                    detail: {value: selectedList}
-                }));
-            }
-
-            /**
-             * 删除Tag项，事件处理函数
-             */
-            _deleteTag(e) {
-                let self = this;
-                this._collapseToggle("close");
-                let value = e.target.dataArgs;
-                this.selectedList.forEach((item, i) => {
-                    if (item == null) {
-                        self.splice("selectedList", i, 1);
-                    } else if (this._getValue(item) == value) {
-                        self.splice("selectedList", i, 1);
-                    }
-                });
-            }
-
-            /**
-             * 快捷方式
-             * @param event
-             * @private
-             */
-            _updatePressed(event) {
-                if (event.keyCode == 8 && this.selectedList) { //退格符8,不用手动控制退一个字符//存在数据才抛出,解决新增时候数据为空时退格Array.length出错问题
-                    this.pop("selectedList");
-                }
-            }
-
-            /**
-             * 面板开关
-             * @private
-             */
-            _collapseToggle(toggle) {
-                if (this.selectedList == undefined || this.selectedList.length === 0) {
-                    this.$["placeholder"].style.display = "";
-                }
-                var collapse = this.$['input-collapse'];
-                var buttonGroup = this.root.querySelector('.btn-group');
-                var caret = this.$['caret'];
-                if (toggle == "close") {
-                    if (buttonGroup.classList.contains('open')) {
-                        buttonGroup.classList.remove('open');
-                        caret.icon = 'icons:arrow-drop-down';
-                        collapse.toggle();
-                    }
-                } else {
-                    collapse.toggle();
-                    if (buttonGroup.classList.contains('open')) {
-                        buttonGroup.classList.remove('open');
-                        caret.icon = 'icons:arrow-drop-down';
-                    } else {
-                        buttonGroup.classList.add('open');
-                        caret.icon = 'icons:arrow-drop-up';
-                    }
-                }
-            }
-
-            /**
-             * 模拟点击一次输入框，触发展示下拉面板行为
-             */
-            doFocus() {
-                this.root.querySelector("div.tags-box").click();
-            }
-
-            /**
-             * 校验
-             * @returns {boolean}
-             */
-            validate() {
-                return this.required ? this.value != undefined : true;
-            }
+      /**
+       * value,items属性变化监听函数
+       */
+      _valueChange(value, items) {
+        //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
+        if (value == null || value === "") {
+          this.set("selectedList", []);
+          this.multi ? "" : this.set("selected", undefined);
+          return;
         }
 
-        window.customElements.define(H2Select.is, H2Select);
-    </script>
+        if (items && items.length > 0) {
+          this.$['placeholder'].style.display = 'none';
+          let values = (value + "").split(",");
+          let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
+          this.set("selectedList", selectedList);
+
+          //对外抛一个选定数据变化事件，提供给h2-mask组件取值
+          this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+            composed: true,
+            bubbles: true,
+            detail: {value: selectedList}
+          }));
+
+          this.multi ? "" : this.set("selected", selectedList[0]);
+        }
+      }
+
+      _selectedListChange(splices) {
+        if (splices == undefined || splices.length === 0) {
+          return;
+        }
+        this.set("value", splices.indexSplices[0].object.map(e => this._getValue(e)).join(","));
+      }
+
+      _selectedChange(selected) {
+        if (selected == undefined) {
+          return;
+        }
+        this.set("value", this._getValue(selected));
+
+        const selectedList = [];
+        selectedList.push(this.selected);
+        this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
+          composed: true,
+          bubbles: true,
+          detail: {value: selectedList}
+        }));
+      }
+
+      /**
+       * 删除Tag项，事件处理函数
+       */
+      _deleteTag(e) {
+        let self = this;
+        this._collapseToggle("close");
+        let value = e.target.dataArgs;
+        this.selectedList.forEach((item, i) => {
+          if (item == null) {
+            self.splice("selectedList", i, 1);
+          } else if (this._getValue(item) == value) {
+            self.splice("selectedList", i, 1);
+          }
+        });
+      }
+
+      /**
+       * 快捷方式
+       * @param event
+       * @private
+       */
+      _updatePressed(event) {
+        if (event.keyCode == 8 && this.selectedList) { //退格符8,不用手动控制退一个字符//存在数据才抛出,解决新增时候数据为空时退格Array.length出错问题
+          this.pop("selectedList");
+        }
+      }
+
+      /**
+       * 面板开关
+       * @private
+       */
+      _collapseToggle(toggle) {
+        if (this.selectedList == undefined || this.selectedList.length === 0) {
+          this.$["placeholder"].style.display = "";
+        }
+        var collapse = this.$['input-collapse'];
+        var buttonGroup = this.$["select__container"];
+        var caret = this.$['caret'];
+        if (toggle == "close") {
+          if (buttonGroup.classList.contains('open')) {
+            buttonGroup.classList.remove('open');
+            caret.icon = 'icons:arrow-drop-down';
+            collapse.toggle();
+          }
+        } else {
+          collapse.toggle();
+          if (buttonGroup.classList.contains('open')) {
+            buttonGroup.classList.remove('open');
+            caret.icon = 'icons:arrow-drop-down';
+          } else {
+            buttonGroup.classList.add('open');
+            caret.icon = 'icons:arrow-drop-up';
+          }
+        }
+      }
+
+      /**
+       * 模拟点击一次输入框，触发展示下拉面板行为
+       */
+      doFocus() {
+        this.root.querySelector("div.select__container__viewer").click();
+      }
+
+      /**
+       * 校验
+       * @returns {boolean}
+       */
+      validate() {
+        return this.required ? this.value != undefined : true;
+      }
+    }
+
+    window.customElements.define(H2Select.is, H2Select);
+  </script>
 </dom-module>
