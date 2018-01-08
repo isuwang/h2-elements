@@ -365,10 +365,7 @@
       connectedCallback() {
         super.connectedCallback();
         this.addEventListener('blur', e => {
-          // make sure other event can happen on slotted element before the iron-collapse closed.
-          console.log(e);
-          // setTimeout(this.closeCollapse.bind(this), 100);
-          console.log(document.activeElement);
+          this.closeCollapse();
         });
       }
 
@@ -473,6 +470,7 @@
         } else {
           this.$["select-collapse"].setAttribute('data-collapse-open', '');
         }
+        this.__focusOnLast();
       }
 
       /**
