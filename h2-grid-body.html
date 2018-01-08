@@ -11,26 +11,12 @@
 <dom-module id="h2-grid-body">
   <template>
     <style>
-      :host ::slotted  .row:hover{
-        background-color: #CAF1FF;
-      }
-      /*定义奇数行背景*/
-      :host ::slotted(:nth-child(odd)){
-        background: #ffffff;
-      }
-      /*定义偶数行背景*/
-      :host ::slotted(:nth-child(even)){
-        background: #efefef;
-      }
-      :host .body {
-        border-top: 1px solid #dddddd;
-        border-left:1px solid #dddddd;
-        border-right:1px solid #dddddd;
+      :host {
+        display: table-row-group;
       }
     </style>
-    <div class="body" style="overflow: visible;">
-      <slot></slot>
-    </div>
+
+    <slot></slot>
   </template>
   <script>
     /**
@@ -42,15 +28,14 @@
      */
     class H2GridBody extends Polymer.Element {
       static get properties() {
-        return {
-
-        };
+        return {};
       }
 
       static get is() {
         return "h2-grid-body";
       }
     }
+
     window.customElements.define(H2GridBody.is, H2GridBody);
   </script>
 </dom-module>

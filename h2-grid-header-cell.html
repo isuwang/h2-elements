@@ -9,59 +9,39 @@
 -->
 
 <dom-module id="h2-grid-header-cell">
-    <template>
-        <style>
-            .header-cell {
-                float: left;
-                height: 32px;
-                line-height: 32px;
-                color: #f7f7f7;
-                font-weight: bold;
-                background-color: inherit;
-                box-sizing: border-box;
-                -moz-box-sizing: border-box; /* Firefox */
-                -webkit-box-sizing: border-box; /* Safari */
-                padding: 0 10px;
-            }
-
-            .inline-block {
-                display: inline-block;
-            }
-
-            .ellipsis-box {
-                display: table;
-                table-layout: fixed;
-                width: 100%;
-            }
-
-            .display-table-cell {
-                display: table-cell;
-            }
-        </style>
-        <div class="header-cell inline-block ellipsis-box">
-            <div class="display-table-cell">
-                <slot></slot>
-            </div>
-
-        </div>
-    </template>
-    <script>
-      /**
-       * `h2-grid-header-cell`
-       *
-       * @customElement
-       * @polymer
-       * @demo demo/h2-grid-header-cell/index.html
-       */
-      class H2GridHeaderCell extends Polymer.Element {
-        static get properties() {
-          return {};
-        }
-
-        static get is() {
-          return "h2-grid-header-cell";
-        }
+  <template>
+    <style>
+      :host {
+        display: table-cell;
+        vertical-align: inherit;
+        padding: 2px 8px;
+        height: 32px;
+        line-height: 32px;
+        color: #f7f7f7;
+        font-weight: bold;
       }
-      window.customElements.define(H2GridHeaderCell.is, H2GridHeaderCell);
-    </script>
+    </style>
+
+    <slot></slot>
+  </template>
+  <script>
+    /**
+     * `h2-grid-header-cell`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-grid-header-cell/index.html
+     */
+    class H2GridHeaderCell extends Polymer.Element {
+      static get properties() {
+        return {};
+      }
+
+      static get is() {
+        return "h2-grid-header-cell";
+      }
+    }
+
+    window.customElements.define(H2GridHeaderCell.is, H2GridHeaderCell);
+  </script>
 </dom-module>

@@ -10,111 +10,95 @@
 -->
 
 <dom-module id="h2-grid-cell">
-    <template>
-        <style>
-            .row-cell {
-                float: left;
-                height: 40px;
-                line-height: 40px;
-                /*width: 150px;*/
-                min-height: 10px;
-                padding: 0 10px;
-            }
+  <template>
+    <style>
+      :host {
+        display: table-cell;
+        padding: 2px 8px;
+        height: 30px;
+        line-height: 30px;
+      }
 
-            .ellipsis-box {
-                display: table;
-                table-layout: fixed;
-                width: 100%;
-            }
+      .content {
 
-            .ellipsis {
-                white-space: normal;
-            }
+      }
 
-            .content {
-                margin: 0 3px;
-            }
-
-            .display-table-cell {
-                display: table-cell;
-            }
-        </style>
-        <div id="row-cell-div-1" class="row-cell inline-block ellipsis-box ellipsis">
-            <div id="row-cell-div-2" class="content ellipsis display-table-cell">
-                <template is="dom-if" if="[[showSubItemIcon]]">
-                    <iron-icon icon="[[getIcon(isOpen)]]"></iron-icon>
-                </template>
-                <slot></slot>
-            </div>
-        </div>
-    </template>
-    <script>
-      /**
-       * `h2-grid-cell`
-       *
-       * @customElement
-       * @polymer
-       * @demo demo/h2-grid-cell/index.html
-       */
-      class H2GridCell extends Polymer.Element {
-        static get properties() {
-          return {
-            /**
-             * The icon when expanded.
-             */
-            expandIcon: {
-              type: String,
-              value: 'add-circle-outline'
-            },
-            /**
-             * The icon when collapsed.
-             */
-            collapseIcon: {
-              type: String,
-              value: 'remove-circle-outline'
-            },
-            isOpen: {
-              type: Boolean,
-              value: false,
-            },
-            /**
-             * show SubItem Iron
-             */
-            showSubItemIcon: {
-              type: Boolean,
-              value: false
-            }
-          };
-        }
-
-        static get is() {
-          return "h2-grid-cell";
-        }
-
-        _optionChange(newValue) {
-          if (newValue) {
-            this.$['row-cell-div-1'].classList.remove('ellipsis');
-            this.$['row-cell-div-2'].classList.remove('ellipsis');
+    </style>
+    <div id="row-cell-div-2" class="content">
+      <template is="dom-if" if="[[showSubItemIcon]]">
+        <iron-icon icon="[[getIcon(isOpen)]]"></iron-icon>
+      </template>
+      <slot></slot>
+    </div>
+  </template>
+  <script>
+    /**
+     * `h2-grid-cell`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-grid-cell/index.html
+     */
+    class H2GridCell extends Polymer.Element {
+      static get properties() {
+        return {
+          /**
+           * The icon when expanded.
+           */
+          expandIcon: {
+            type: String,
+            value: 'add-circle-outline'
+          },
+          /**
+           * The icon when collapsed.
+           */
+          collapseIcon: {
+            type: String,
+            value: 'remove-circle-outline'
+          },
+          isOpen: {
+            type: Boolean,
+            value: false,
+          },
+          /**
+           * show SubItem Iron
+           */
+          showSubItemIcon: {
+            type: Boolean,
+            value: false
           }
-        }
+        };
+      }
 
-        getIcon(isOpen) {
-          return isOpen ? this.collapseIcon : this.expandIcon;
-        }
+      static get is() {
+        return "h2-grid-cell";
+      }
 
-        openSubItem() {
-          this.set("isOpen", !this.isOpen);
-          this.dispatchEvent(new CustomEvent('open-sub-item', {
-            composed: true,
-            bubbles: true
-          }))
-
-        }
-
-        ready() {
-          super.ready();
+      _optionChange(newValue) {
+        if (newValue) {
+          this.$['row-cell-div-1'].classList.remove('ellipsis');
+          this.$['row-cell-div-2'].classList.remove('ellipsis');
         }
       }
-      window.customElements.define(H2GridCell.is, H2GridCell);
-    </script>
+
+      getIcon(isOpen) {
+        return isOpen ? this.collapseIcon : this.expandIcon;
+      }
+
+      openSubItem() {
+        this.set("isOpen", !this.isOpen);
+        this.dispatchEvent(new CustomEvent('open-sub-item', {
+          composed: true,
+          bubbles: true
+        }))
+
+      }
+
+      ready() {
+        super.ready();
+      }
+    }
+
+    window.customElements.define(H2GridCell.is, H2GridCell);
+  </script>
 </dom-module>

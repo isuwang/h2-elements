@@ -10,64 +10,37 @@
 -->
 
 <dom-module id="h2-grid">
-    <template>
-        <style>
-            .simple-grid {
-                position: relative;
-                font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
-                font-size: 12px;
-            }
+  <template>
+    <style>
+      :host {
+        display: table;
+        font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
+        font-size: 14px;
+        background: #fdfdfd;
+        border: 1px solid #f0f0f0;
+        box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+    <slot></slot>
+  </template>
+  <script>
+    /**
+     * `h2-grid`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-grid/index.html
+     */
+    class H2Grid extends Polymer.Element {
+      static get properties() {
+        return {};
+      }
 
-            .simple-grid .simple-grid-footer {
-                background: #fdfdfd;
-                border: 1px solid #f0f0f0;
-                box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.3);
-            }
-        </style>
-        <div class="simple-grid">
-            <slot></slot>
-            <template is="dom-if" if="{{!noPaging}}">
-                <div class="simple-grid-footer">
-                    <h2-pagination paging="{{paging}}"></h2-pagination>
-                </div>
-            </template>
+      static get is() {
+        return "h2-grid";
+      }
+    }
 
-        </div>
-    </template>
-    <script>
-        /**
-         * `h2-grid`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-grid/index.html
-         */
-        class H2Grid extends Polymer.Element {
-            static get properties() {
-                return {
-                    paging: {
-                        type: Object,
-                        value: function () {
-                            return {
-                                limit: 15,
-                                start: 0,
-                                pageIndex: 1,
-                                results: 0
-                            }
-                        },
-                        notify: true
-                    },
-                    noPaging: {
-                        type: Boolean,
-                        value: false
-                    }
-                };
-            }
-
-            static get is() {
-                return "h2-grid";
-            }
-        }
-        window.customElements.define(H2Grid.is, H2Grid);
-    </script>
+    window.customElements.define(H2Grid.is, H2Grid);
+  </script>
 </dom-module>

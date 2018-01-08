@@ -11,30 +11,23 @@
 <dom-module id="h2-grid-header">
   <template>
     <style>
-      .flex-box {
-        display: -webkit-flex; /* Safari */
-        display: flex;
+      :host {
+        display: table-header-group;
+        vertical-align: middle;
+        border-color: inherit;
       }
+
       .header {
-        height: 37px;
-        line-height: 34px;
         background-color: #595959;
-        box-sizing:border-box;
-        font-weight : bold;
-        border-bottom:3px solid #dddddd;
+        display: table-row;
       }
 
-      :host ::slotted(h2-grid-header-cell:not(:last-of-type)) {
-        flex: 1;
-      }
-
-      :host ::slotted(h2-grid-header-cell:last-of-type) {
-        width: var(--operation-column-width, 120px);
-      }
     </style>
-    <div class="header flex-box">
+
+    <div class="header">
       <slot></slot>
     </div>
+
   </template>
   <script>
     /**
@@ -46,15 +39,14 @@
      */
     class H2GridHeader extends Polymer.Element {
       static get properties() {
-        return {
-
-        };
+        return {};
       }
 
       static get is() {
         return "h2-grid-header";
       }
     }
+
     window.customElements.define(H2GridHeader.is, H2GridHeader);
   </script>
 </dom-module>
