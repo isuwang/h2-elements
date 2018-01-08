@@ -1,8 +1,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
+<link rel="import" href="./behaviors/base-behavior.html">
 <link rel="import" href="./h2-label.html">
 <!--
 
@@ -101,22 +101,23 @@
         color: #f60;
       }
 
-      :host input {
+      .tag-cursor {
         border: none;
-        outline: medium;
-        font-size: 13px;
-        height: 24px;
-        line-height: 24px;
+        outline: none;
+        font-size: 18px;
+        line-height: 30px;
+        padding: 0;
+        margin: 0;
         width: 1px;
-        background-color: #ffffff;
+        background-color: #FFFFFF;
       }
 
       #select-collapse {
-        -webkit-transition: max-height 100ms ease-in;
-        -moz-transition: max-height 100ms ease-in;
-        -ms-transition: max-height 100ms ease-in;
-        -o-transition: max-height 100ms ease-in;
-        transition: max-height 100ms ease-in;
+        -webkit-transition: max-height 200ms ease-in;
+        -moz-transition: max-height 200ms ease-in;
+        -ms-transition: max-height 200ms ease-in;
+        -o-transition: max-height 200ms ease-in;
+        transition: max-height 200ms ease-in;
 
         max-height: 0;
         position: absolute;
@@ -146,17 +147,15 @@
       :host([readonly]) .mask,
       :host([disabled]) .mask {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: -1px;
+        bottom: -1px;
+        right: -1px;
+        left: -1px;
         background-color: rgba(255, 255, 255, 0.5);
         z-index: 102;
       }
 
       .selector-panel {
-        /*max-height: 300px;*/
-        /*overflow: auto;*/
         display: block;
         padding: 5px;
       }
@@ -164,6 +163,7 @@
       .candidate-item {
         text-align: left;
         padding: 0 8px;
+        margin-bottom: 1px;
         font-size: 12px;
         white-space: nowrap;
         overflow: hidden;
@@ -186,6 +186,10 @@
         opacity: 0.8;
       }
 
+      :host #placeholder[hidden] {
+        display: none;
+      }
+
       :host #placeholder {
         position: absolute;
         top: 0;
@@ -205,29 +209,37 @@
         <div class="tags__container">
           <div id="placeholder">[[placeholder]]</div>
           <div id="tag-content">
-            <template is="dom-repeat" items="{{selectedList}}">
+            <input class="tag-cursor"
+                   id="tag-cursor__-1"
+                   data-cursor-index="-1"
+                   on-keydown="_updatePressed"
+                   autocomplete="off">
+            <template is="dom-repeat" items="[[ selectedValues ]]">
               <div class="tag">
-                <span class="tag-name" title="[[_getLabel(item)]]">[[_getLabel(item)]]</span>
-                <a data-args="[[_getValue(item)]]" href="javascript:void(0);"
+                <span class="tag-name" title="[[getValueByKey(item,  attrForLabel)]]">[[getValueByKey(item,  attrForLabel)]]</span>
+                <a data-args="[[getValueByKey(item,  attrForValue)]]" href="javascript:void(0);"
                    title="删除该选项" on-click="_deleteTag">x</a>
               </div>
+              <input class="tag-cursor"
+                     id="tag-cursor__[[index]]"
+                     data-cursor-index$="[[index]]"
+                     on-keydown="_updatePressed"
+                     autocomplete="off">
             </template>
           </div>
-          <iron-input id="input" slot="input" maxlength$="[[maxlength]]">
-            <input id="tags-input"
-                   on-keydown="_updatePressed"
-                   readonly
-                   autocomplete$="off">
-          </iron-input>
         </div>
         <iron-icon id="caret" icon="icons:arrow-drop-down"></iron-icon>
       </div>
 
-      <div id="select-collapse">
-        <iron-selector class="selector-panel" multi="[[multi]]" selected-values="{{selectedList}}"
-                       selected="{{selected}}" attr-for-selected="radio-item">
+      <div id="select-collapse" on-click="__focusOnLast">
+        <iron-selector class="selector-panel"
+                       multi="[[ multi ]]"
+                       selected-values="{{ selectedValues }}"
+                       attr-for-selected="candidate-item">
           <template is="dom-repeat" items="[[items]]">
-            <div class="candidate-item" radio-item="[[item]]" title="[[_getLabel(item)]]">[[_getLabel(item)]]</div>
+            <div class="candidate-item" candidate-item="[[item]]" title="[[getValueByKey(item,  attrForLabel)]]">
+              [[getValueByKey(item, attrForLabel)]]
+            </div>
           </template>
         </iron-selector>
       </div>
@@ -244,12 +256,10 @@
      * @polymer
      * @demo demo/h2-select/index.html
      */
-    class H2Select extends Polymer.Element {
+    class H2Select extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
       static get properties() {
         return {
           /**
-           *
-           * 标签名字
            *
            * @attribute label
            * @type {String}
@@ -265,7 +275,7 @@
             type: String
           },
           /**
-           * 是否支持多选
+           * 是否多选
            */
           multi: {
             type: Boolean,
@@ -273,15 +283,10 @@
           },
           /**
            *
-           * 初始选择项和items的value值相对应
-           * eg：1
-           *
-           * @attribute selected
            * @type {String}
            */
           value: {
             type: String,
-            reflectToAttribute: true,
             notify: true
           },
           /**
@@ -293,23 +298,11 @@
            * @type {Array}
            */
           items: {
-            type: Array,
-            notify: true,
-            value: []
+            type: Array
           },
-          /**
-           * 被选中的数据项（单选时生效）
-           */
-          selected: {
-            type: Object,
-            notify: true
-          },
-          /**
-           * 被选中的数据项集合（多选时生效）
-           */
-          selectedList: {
+
+          selectedValues: {
             type: Array,
-            notify: true
           },
           /**
            * 是否必填
@@ -325,9 +318,7 @@
             type: Boolean,
             value: false
           },
-          maxlength: {
-            type: Number
-          },
+
           /**
            * 用来取值的字段，默认为value
            */
@@ -351,9 +342,8 @@
 
       static get observers() {
         return [
-          '_selectedChange(selected)',
-          '_selectedListChange(selectedList.splices)',
-          '_valueChange(value,items)'
+          '_valueChange(value, items)',
+          '_selectedValuesChanged(selectedValues.splices)'
         ];
       }
 
@@ -371,12 +361,10 @@
        * 点击事件
        */
       _onInputClick(e) {
-        e.stopPropagation();
-        if (e.target.tagName === "A") {
+        if (e.target.tagName === "A" || e.target.classList.contains('tag-cursor')) {
           return;
         }
 
-        this.$['tags-input'].focus();
         this.toggleCollapse();
       }
 
@@ -384,82 +372,73 @@
        * value,items属性变化监听函数
        */
       _valueChange(value, items) {
-        //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
-        if (value == null || value === "") {
-          this.set("selectedList", []);
-          this.multi ? "" : this.set("selected", undefined);
-          return;
-        }
-
         if (items && items.length > 0) {
-          this.$['placeholder'].style.display = 'none';
-          let values = (value + "").split(",");
-          let selectedList = items.filter(e => values.some(s => e[this.attrForValue] == s));
-          this.set("selectedList", selectedList);
+          const flatValues = [...(new Set(String(value).split(",")))];
 
-          //对外抛一个选定数据变化事件，提供给h2-mask组件取值
-          this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-            composed: true,
-            bubbles: true,
-            detail: {value: selectedList}
-          }));
+          const dirty = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+          if (dirty !== value) {
+            this.selectedValues =
+              flatValues.map(val => items.find(item => item[this.attrForValue] == val))
+                .filter(selected => !!selected);
+          }
 
-          this.multi ? "" : this.set("selected", selectedList[0]);
+          this._displayPlaceholder(this.selectedValues.length === 0)
         }
       }
 
-      _selectedListChange(splices) {
-        if (splices == undefined || splices.length === 0) {
-          return;
-        }
+      _selectedValuesChanged() {
+        this.value = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
         this.closeCollapse();
-        this.set("value", splices.indexSplices[0].object.map(e => this._getValue(e)).join(","));
-      }
-
-      _selectedChange(selected) {
-        if (selected == undefined) {
-          return;
-        }
-        this.set("value", this._getValue(selected));
-
-        this.closeCollapse();
-        const selectedList = [];
-        selectedList.push(this.selected);
-        this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-          composed: true,
-          bubbles: true,
-          detail: {value: selectedList}
-        }));
       }
 
       /**
        * 删除Tag项，事件处理函数
        */
       _deleteTag(e) {
-        let self = this;
-        // this._collapseToggle("close");
-        this.closeCollapse();
         let value = e.target.dataArgs;
-        this.selectedList.forEach((item, i) => {
-          if (item == null) {
-            self.splice("selectedList", i, 1);
-          } else if (this._getValue(item) == value) {
-            self.splice("selectedList", i, 1);
-          }
-        });
+        const ind = this.selectedValues.findIndex(selected => selected[this.attrForValue] == value);
+        this.splice("selectedValues", ind, 1);
       }
 
       /**
-       * 快捷方式
        * @param event
        * @private
        */
       _updatePressed(event) {
-        if (event.keyCode == 8 && this.selectedList) { //退格符8,不用手动控制退一个字符//存在数据才抛出,解决新增时候数据为空时退格Array.length出错问题
-          this.pop("selectedList");
+        const cursor = event.target;
+        let cursorIndex = cursor.dataset.cursorIndex;
+        switch (event.key) {
+          case "ArrowLeft":
+            cursorIndex = cursorIndex > 0 ? --cursorIndex : -1;
+            break;
+          case "ArrowRight":
+            const max = this.selectedValues.length - 1;
+            cursorIndex = cursorIndex < max ? ++cursorIndex : max;
+            break;
+          case "Backspace":
+            if (cursorIndex >= 0) {
+              this.splice('selectedValues', cursorIndex, 1);
+            }
+            cursorIndex = cursorIndex > 0 ? --cursorIndex : -1;
+            break;
         }
+
+        const currCursor = this.shadowRoot.querySelector(`#tag-cursor__${cursorIndex}`);
+        currCursor && currCursor.focus();
       }
 
+      __focusOnLast() {
+        const lastCursor = this.shadowRoot.querySelector(`#tag-cursor__${this.selectedValues.length - 1}`);
+        lastCursor && lastCursor.focus();
+      }
+
+      _displayPlaceholder(display) {
+        if (display) {
+          this.$.placeholder.removeAttribute('hidden');
+        } else {
+          this.$.placeholder.setAttribute('hidden', '');
+        }
+      }
 
       openCollapse() {
         this.$["select-collapse"].setAttribute('data-collapse-open', '');
@@ -472,31 +451,18 @@
       }
 
       toggleCollapse() {
-        if(this.$["select-collapse"].hasAttribute('data-collapse-open')) {
+        if (this.$["select-collapse"].hasAttribute('data-collapse-open')) {
           this.$["select-collapse"].removeAttribute('data-collapse-open');
         } else {
           this.$["select-collapse"].setAttribute('data-collapse-open', '');
         }
-      }
-      /**
-       * 获取展示字段名
-       */
-      _getLabel(item) {
-        return item[this.attrForLabel];
-      }
-
-      /**
-       * 获取展示字段值
-       */
-      _getValue(item) {
-        return item[this.attrForValue];
       }
 
       /**
        * 模拟点击一次输入框，触发展示下拉面板行为
        */
       doFocus() {
-        this.root.querySelector("div.select__container__viewer").click();
+        this.__focusOnLast();
       }
 
       /**
