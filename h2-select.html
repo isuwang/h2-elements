@@ -76,12 +76,12 @@
         padding: 0 4px;
         height: 22px;
         line-height: 22px;
-
-        display: flex;
         max-width: 200px;
 
+        display: flex;
         font-size: 14px;
         white-space: nowrap;
+        cursor: default;
         @apply --h2-select-tag;
       }
 
@@ -91,21 +91,21 @@
         text-overflow: ellipsis;
       }
 
-      .tag a {
+      .tag-deleter {
         margin-left: 6px;
         font-weight: bold;
         text-decoration: inherit;
       }
 
-      .tag a:hover {
+      .tag-deleter:hover {
         color: #f60;
       }
 
       .tag-cursor {
         border: none;
         outline: none;
-        font-size: 18px;
-        line-height: 30px;
+        font-size: 1.2em;
+        line-height: 1.4em;
         padding: 0;
         margin: 0;
         width: 1px;
@@ -124,7 +124,7 @@
         top: 100%;
         width: 100%;
         overflow-y: auto;
-        z-index: 999;
+        z-index: 99;
         margin-top: 1px;
 
         font-size: 14px;
@@ -152,7 +152,7 @@
         right: -1px;
         left: -1px;
         background-color: rgba(255, 255, 255, 0.5);
-        z-index: 102;
+        z-index: 10;
       }
 
       .selector-panel {
@@ -216,8 +216,10 @@
                    autocomplete="off">
             <template is="dom-repeat" items="[[ selectedValues ]]">
               <div class="tag">
-                <span class="tag-name" title="[[getValueByKey(item,  attrForLabel)]]">[[getValueByKey(item,  attrForLabel)]]</span>
-                <a data-args="[[getValueByKey(item,  attrForValue)]]" href="javascript:void(0);"
+                <div class="tag-name" title="[[getValueByKey(item,  attrForLabel)]]">
+                  [[getValueByKey(item, attrForLabel)]]
+                </div>
+                <a class="tag-deleter" data-args="[[getValueByKey(item,  attrForValue)]]" href="javascript:void(0);"
                    title="删除该选项" on-click="_deleteTag">x</a>
               </div>
               <input class="tag-cursor"
@@ -234,6 +236,7 @@
       <div id="select-collapse" on-click="__focusOnLast">
         <iron-selector class="selector-panel"
                        multi="[[ multi ]]"
+                       selected="{{ __selected }}"
                        selected-values="{{ selectedValues }}"
                        attr-for-selected="candidate-item">
           <template is="dom-repeat" items="[[items]]">
@@ -261,6 +264,36 @@
         return {
           /**
            *
+           * @type {String}
+           */
+          value: {
+            type: String,
+            notify: true
+          },
+
+          selectedValues: {
+            type: Array,
+            notify: true
+          },
+
+          /**
+           *
+           * 下拉数据项
+           * eg：[{value:1, label:"全部"}]
+           *
+           * @attribute items
+           * @type {Array}
+           */
+          items: {
+            type: Array
+          },
+
+          __selected: {
+            type: Object
+          },
+
+          /**
+           *
            * @attribute label
            * @type {String}
            */
@@ -281,29 +314,7 @@
             type: Boolean,
             value: false
           },
-          /**
-           *
-           * @type {String}
-           */
-          value: {
-            type: String,
-            notify: true
-          },
-          /**
-           *
-           * 需要展示的数据项
-           * eg：[{value:1,label:"全部",isShow:true/false}]
-           *
-           * @attribute items
-           * @type {Array}
-           */
-          items: {
-            type: Array
-          },
 
-          selectedValues: {
-            type: Array,
-          },
           /**
            * 是否必填
            */
@@ -342,8 +353,9 @@
 
       static get observers() {
         return [
-          '_valueChange(value, items)',
-          '_selectedValuesChanged(selectedValues.splices)'
+          '_valueChanged(value, items)',
+          '_selectedValuesChanged(selectedValues.splices)',
+          '__selectedChanged(__selected)'
         ];
       }
 
@@ -360,35 +372,38 @@
       /**
        * 点击事件
        */
-      _onInputClick(e) {
-        if (e.target.tagName === "A" || e.target.classList.contains('tag-cursor')) {
+      _onInputClick({target: {classList}}) {
+        if (classList.contains('tag-deleter') || classList.contains('tag-cursor')) {
           return;
         }
 
         this.toggleCollapse();
       }
 
-      /**
-       * value,items属性变化监听函数
-       */
-      _valueChange(value, items) {
-        if (items && items.length > 0) {
-          const flatValues = [...(new Set(String(value).split(",")))];
+      _valueChanged(value, items = []) {
+        const flatValues = [...(new Set(String(value).split(",")))];
 
-          const dirty = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
-          if (dirty !== value) {
-            this.selectedValues =
-              flatValues.map(val => items.find(item => item[this.attrForValue] == val))
-                .filter(selected => !!selected);
+        const dirty = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+        if (dirty !== value) {
+          this.selectedValues =
+            flatValues.map(val => items.find(item => item[this.attrForValue] == val))
+              .filter(selected => !!selected);
+
+          if (!this.multi) {
+            this.__selected = items.find(item => item[this.attrForValue] == value);
           }
-
-          this._displayPlaceholder(this.selectedValues.length === 0)
         }
+
+        this._displayPlaceholder(this.selectedValues.length === 0)
       }
 
       _selectedValuesChanged() {
         this.value = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
         this.closeCollapse();
+      }
+
+      __selectedChanged() {
+        this.selectedValues = [this.__selected];
       }
 
       /**
@@ -405,8 +420,7 @@
        * @private
        */
       _updatePressed(event) {
-        const cursor = event.target;
-        let cursorIndex = cursor.dataset.cursorIndex;
+        let cursorIndex = event.target.dataset.cursorIndex;
         switch (event.key) {
           case "ArrowLeft":
             cursorIndex = cursorIndex > 0 ? --cursorIndex : -1;
