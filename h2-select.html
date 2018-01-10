@@ -223,10 +223,10 @@
                    autocomplete="off">
             <template is="dom-repeat" items="[[ selectedValues ]]">
               <div class="tag">
-                <div class="tag-name" title="[[getValueByKey(item,  attrForLabel)]]">
+                <div class="tag-name" title="[[getValueByKey(item, attrForLabel)]]">
                   [[getValueByKey(item, attrForLabel)]]
                 </div>
-                <a class="tag-deleter" data-args="[[getValueByKey(item,  attrForValue)]]" href="javascript:void(0);"
+                <a class="tag-deleter" data-args="[[getValueByKey(item, attrForValue)]]" href="javascript:void(0);"
                    title="删除该选项" on-click="_deleteTag">x</a>
               </div>
               <input class="tag-cursor"
@@ -247,7 +247,7 @@
                        selected-values="{{ selectedValues }}"
                        attr-for-selected="candidate-item">
           <template is="dom-repeat" items="[[items]]">
-            <div class="candidate-item" candidate-item="[[item]]" title="[[getValueByKey(item,  attrForLabel)]]">
+            <div class="candidate-item" candidate-item="[[item]]" title="[[getValueByKey(item, attrForLabel)]]">
               [[getValueByKey(item, attrForLabel)]]
             </div>
           </template>

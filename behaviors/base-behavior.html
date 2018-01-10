@@ -94,7 +94,7 @@
      * @param {String} defVal  支持任何符合json格式的字符串
      * @returns {*}
      */
-    getValueByPath(model, path, defVal) {
+    getValueByPath(model, path = '', defVal) {
       // TODO if user wants a defVal equal to '', this won't work.
       if (!model) return !!defVal ? JSON.parse(defVal) : undefined;
 

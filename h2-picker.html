@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="./behaviors/base-behavior.html">
 <link rel="import" href="./h2-label.html">
 <link rel="import" href="./h2-fetch.html">
 <script type="text/javascript" src="./resource/plugin/dictionary/firstLetterDictionary.js"></script>
@@ -119,11 +120,11 @@
         visibility: visible;
         opacity: 1;
 
-        -webkit-transition: all 200ms ease-in;
-        -moz-transition: all 200ms ease-in;
-        -ms-transition: all 200ms ease-in;
-        -o-transition: all 200ms ease-in;
-        transition: all 200ms ease-in;
+        -webkit-transition: all 150ms ease-in;
+        -moz-transition: all 150ms ease-in;
+        -ms-transition: all 150ms ease-in;
+        -o-transition: all 150ms ease-in;
+        transition: all 150ms ease-in;
 
         @apply --h2-picker-collapse;
       }
@@ -210,8 +211,10 @@
         <div class="tags-input" on-click="__openCollapse">
           <template is="dom-repeat" items="[[ selectedValues ]]">
             <span class="tag">
-                <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
-                <a class="tag-deleter" data-args="[[_getItemValue(item)]]"
+                <span class="tag-name" title="[[ getValueByKey(item, attrForLabel) ]]">
+                  [[ getValueByKey(item, attrForLabel) ]]
+                </span>
+                <a class="tag-deleter" data-args="[[ getValueByKey(item, attrForValue) ]]"
                    href="javascript:void(0);"
                    title="删除选项" on-click="_deleteTag">x</a>
             </span>
@@ -238,7 +241,7 @@
           <template is="dom-repeat" items="[[displayItems]]" as="row">
             <tr id="candidate-item__[[index]]" on-click="_selectCollapseItem">
               <template is="dom-repeat" items="[[displayFields]]" as="col">
-                <td class="collapse-table__cell">[[_getCellValue(row,col)]]</td>
+                <td class="collapse-table__cell">[[ getValueByPath(row, col.field) ]]</td>
               </template>
               <td class="collapse-table__cell table-hotkey">[[_getHotKey(index)]]</td>
             </tr>
@@ -256,7 +259,7 @@
      * @polymer
      * @demo demo/h2-picker/index.html
      */
-    class H2Picker extends Polymer.Element {
+    class H2Picker extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
       static get properties() {
         return {
           /**
@@ -440,6 +443,7 @@
         this.$.keywordInput.addEventListener("keydown", this._keyDownHandler.bind(this));
 
         this.addEventListener("blur", e => {
+          e.stopPropagation();
           this.displayCollapse(false);
         });
       }
@@ -473,31 +477,6 @@
         items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
       }
 
-      /**
-       * 给对象根据searchFields给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
-       */
-      _loadPinyinKeys(item, searchFields = []) {
-        let keys = [], values = searchFields.map(sf => item[sf]);
-
-        values = values.length === 0 ? Object.values(item) : values;
-
-        if (this.usePinyinSearch) {
-          values.forEach(
-            value => {
-              keys = keys.concat(
-                String(value),
-                this.pinyinUtil.convert2CompletePinyin(value),
-                this.pinyinUtil.convert2PinyinAbbreviation(value)
-              );
-            }
-          );
-        } else {
-          keys = values.map(value => String(value));
-        }
-
-        return keys;
-      }
-
       _userInputKeywordChange(userInputKeyword) {
 
         const matched = this.cacheSearchUtil.search(userInputKeyword);
@@ -521,9 +500,9 @@
         }
       }
 
-
       _selectedValuesChanged() {
         this.value = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+        this.displayCollapse(false);
       }
 
       /**
@@ -567,21 +546,24 @@
        * @private
        */
       _keyDownHandler(event) {
+        const key = document.all ? event.keyCode : event.which;
         /**
-         * 面板关闭的时候不允许选择数据
+         * 面板关闭的候, 按 DOWN 键显示下拉框
          */
         if (this._isPickerCollapseHidden()) {
+          if (key == 40) {// 按键DOWN
+            this._switchFocusItemAt(0);
+            this.displayCollapse(true);
+          }
+          return;
+        }
+
+        if (event.ctrlKey == 1 && key == 86) {// 复制操作，不处理
           return;
         }
 
         if (event.altKey) {
           event.preventDefault();
-        }
-
-        const key = document.all ? event.keyCode : event.which;
-
-        if (event.ctrlKey == 1 && key == 86) {// 复制操作，不处理
-          return;
         }
 
         if (key == 38 || key == 40 || key == 32 || event.altKey) {
@@ -595,28 +577,53 @@
         } else if (key == 32 || key == 13) {// 空格、回车
           event.preventDefault();
           if (this.displayItems.length > 0 && this.__focusIndex < this.displayItems.length) {
-            this.selectItemAt();
+            this._selectItemAt();
           }
         } else if (event.altKey) {
           let ind = String.fromCharCode(key) - 1;
           if (ind >= 0 && ind < this.displayItems.length) {
-            this.selectItemAt(ind);
+            this._selectItemAt(ind);
           }
         }
       }
 
-      selectItemAt(index) {
+      /**
+       * 给对象根据searchFields给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
+       */
+      _loadPinyinKeys(item, searchFields = []) {
+        let keys = [], values = searchFields.map(sf => item[sf]);
+
+        values = values.length === 0 ? Object.values(item) : values;
+
+        if (this.usePinyinSearch) {
+          values.forEach(
+            value => {
+              keys = keys.concat(
+                String(value),
+                this.pinyinUtil.convert2CompletePinyin(value),
+                this.pinyinUtil.convert2PinyinAbbreviation(value)
+              );
+            }
+          );
+        } else {
+          keys = values.map(value => String(value));
+        }
+
+        return keys;
+      }
+
+      _selectItemAt(index) {
         if (index >= 0) {
           this._switchFocusItemAt(index);
         }
-        this.selectItem(this.displayItems[this.__focusIndex]);
+        this._selectItem(this.displayItems[this.__focusIndex]);
       }
 
       /**
        * 选择选项
        * @param item
        */
-      selectItem(item) {
+      _selectItem(item) {
         // not yet selected
         if (!~this.selectedValues.findIndex(selected => selected[this.attrForValue] == item[this.attrForValue])) {
           if (this.multi) {
@@ -668,19 +675,10 @@
         this.$.keywordInput.focus();
       }
 
-      displayCollapse(display) {
-        this.$["picker-collapse"].hidden = !display;
-      }
-
-      toggleCollapse() {
-        const hidden = this.$["picker-collapse"].hidden;
-        this.$["picker-collapse"].hidden = !hidden;
-        this.__focusOnKeywordInput();
-      }
 
       _selectCollapseItem(event) {
         event.stopPropagation();
-        this.selectItem(event.model.row);
+        this._selectItem(event.model.row);
         this.__focusOnKeywordInput();
       }
 
@@ -697,22 +695,14 @@
         return 'Alt+' + (index + 1);
       }
 
-      _getTag(item) {
-        return item[this.attrForLabel];
+      displayCollapse(display) {
+        this.$["picker-collapse"].hidden = !display;
       }
 
-      _getItemValue(item) {
-        return item[this.attrForValue];
-      }
-
-      /**
-       * 获取列值
-       * @param row 数据行
-       * @param col 数据列属性
-       * @private
-       */
-      _getCellValue(row, col) {
-        return row[col.field];
+      toggleCollapse() {
+        const hidden = this.$["picker-collapse"].hidden;
+        this.$["picker-collapse"].hidden = !hidden;
+        this.__focusOnKeywordInput();
       }
 
       /**
