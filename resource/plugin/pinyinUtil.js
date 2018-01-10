@@ -21,7 +21,7 @@ class PinyinUtil {
      * @param userInput 用户输入关键字(允许输入英文字母和中文)
      * @returns {*}
      */
-    converToCompletePinyin(userInput) {
+    convert2CompletePinyin(userInput) {
         /**
          * 过滤words中的所有非中文非字母的字符
          */
@@ -43,7 +43,7 @@ class PinyinUtil {
      * @param userInput 用户输入关键字(允许输入英文字母和中文)
      * @returns {*}
      */
-    converToFirstLetterPinyin(userInput) {
+    convert2PinyinAbbreviation(userInput) {
         /**
          * 过滤words中的所有非中文非字母的字符
          */
@@ -84,8 +84,7 @@ class PinyinUtil {
      * @returns {[string]}
      * @private
      */
-    _handlePolyphone(arr, splitter) {
-        splitter = splitter || "";
+    _handlePolyphone(arr, splitter = "") {
         // 对数组的字符串元素去重,封装成字符串二维数组
         let array = arr.map(e => Array.from(new Set(e.split(splitter))));
 

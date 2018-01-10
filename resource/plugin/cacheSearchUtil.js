@@ -16,7 +16,7 @@ class CacheSearchUtil {
      * @param keyword 关键字
      * @returns {Array.<*>}
      */
-    search(keyword) {
+    search(keyword = "") {
         let parts = keyword.toUpperCase().trim().split(",");
         /**
          * 匹配的结果集

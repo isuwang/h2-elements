@@ -379,7 +379,7 @@
       _valueChanged(value, items = []) {
         const flatValues = [...(new Set(String(value).split(",")))];
 
-        const dirty = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+        const dirty = (this.selectedValues || []).map(selected => selected[this.attrForValue]).join(',');
         if (dirty !== value) {
           this.selectedValues =
             flatValues.map(val => items.find(item => item[this.attrForValue] == val))

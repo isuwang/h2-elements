@@ -16,886 +16,727 @@
 -->
 
 <dom-module id="h2-picker">
-    <template>
-        <style>
-            :host {
-                text-align: center;
-                display: flex;
-            }
+  <template>
+    <style>
+      :host {
+        display: flex;
+        height: 36px;
+        width: 300px;
+      }
 
-            :host * {
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-            }
+      h2-label {
+        @apply --h2-picker-label;
+      }
 
-            :host input {
-                height: 24px;
-                line-height: 24px;
-                padding: 6px;
-                background-color: #fff;
-                border: none;
-                outline: medium;
-                width: var(--h2-picker-input-width, 100%);
-            }
+      .input-wrap {
+        flex: 1;
+        position: relative;
+        display: flex;
+      }
 
-            :host input::-moz-placeholder {
-                color: #999;
-                opacity: 1;
-            }
+      .input-container {
+        flex: 1;
+        display: flex;
+      }
 
-            :host input:-ms-input-placeholder {
-                color: #999;
-            }
+      #keywordInput {
+        flex: 1;
+        min-width: 40px;
+        font-size: 14px;
+        height: 22px;
+        line-height: 22px;
+        padding: 0;
+        margin: 2px 2px 3px 2px;
 
-            :host input::-webkit-input-placeholder {
-                color: #999;
-            }
+        border: none;
+        outline: none;
+      }
 
-            :host div.input-wrap {
-                display: inline-block;
-                width: 100%;
-            }
+      /*标签容器*/
+      .tags-input {
+        flex: 1;
 
-            :host div.input-container {
-                position: relative;
-            }
+        display: flex;
+        flex-wrap: wrap;
 
-            :host iron-input {
-                margin-left: 0;
-                float: left;
-                width: var(--h2-picker-input-width, 100%);
-            }
+        background: #FFF;
+        padding: 4px;
+        overflow-y: auto;
 
-            :host .module-box {
-                position: absolute;
-                border-radius: 4px;
-                font-size: 12px;
-                border-left: 1px solid #ddd;
-                border-top: 1px solid #ddd;
-                z-index: 99;
-                padding: 5px 0 0 0;
-                background: white;
-                color: black;
-                /*下拉面板动画特效*/
-                height: 0px;
-                opacity: 0;
-                visibility: hidden;
-                -webkit-transition: all 100ms linear;
-                -moz-transition: all 100ms linear;
-                -ms-transition: all 100ms linear;
-                -o-transition: all 100ms linear;
-                transition: all 100ms linear;
-                @apply(--shadow-elevation-2dp);
-            }
+        border: 1px solid #CCC;
+        border-radius: 4px;
+      }
 
-            /*显示下拉面板*/
-            :host .show {
-                opacity: 1;
-                visibility: visible;
-            }
+      .tag {
+        color: #666;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
 
-            :host .module-list-wrap {
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
+        margin: 2px 2px 3px 2px;
+        padding: 0 4px;
+        height: 22px;
+        line-height: 22px;
+        max-width: 200px;
 
-            :host .module-list {
-                font-size: 12px;
-                background-color: #ffffff;
-            }
+        display: flex;
+        font-size: 14px;
+        white-space: nowrap;
+        cursor: default;
+        @apply --h2-picker-tag;
+      }
 
-            :host .module-list .complete {
-                white-space: nowrap;
-            }
+      .tag-name {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-            :host .module-list th.complete {
-                padding: 8px 12px;
-                line-height: 1.42857143;
-                color: #000;
-                border-bottom: 2px solid #ddd;
-            }
+      .tag-deleter {
+        margin-left: 6px;
+        font-weight: bold;
+        text-decoration: inherit;
+      }
 
-            :host .module-list tr.complete:nth-child(even) {
-                background-color: #efefef;
-            }
+      .tag-deleter:hover {
+        color: #f60;
+      }
 
-            :host .module-list td.complete {
-                padding: 8px 12px;
-                line-height: 1.42857143;
-                border-bottom: 1px solid #ddd;
-            }
+      #picker-collapse {
+        -webkit-transition: all 100ms linear;
+        -moz-transition: all 100ms linear;
+        -ms-transition: all 100ms linear;
+        -o-transition: all 100ms linear;
+        transition: all 100ms linear;
 
-            :host .module-list tr.complete:hover td {
-                background-color: #CAF1FF;
-                cursor: pointer;
-            }
+        opacity: 1;
+        visibility: visible;
 
-            :host .module-list th.complete:first-child,
-            :host .module-list td.complete:first-child {
-                padding-left: 20px;
-            }
+        display: flex;
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        margin-top: 1px;
+        border-radius: 4px;
+        font-size: 12px;
+        z-index: 99;
+        padding: 0;
+        background: white;
+        color: black;
 
-            :host .module-list th.complete:last-child,
-            :host .module-list td.complete:last-child {
-                padding-right: 20px;
-            }
+        @apply --h2-picker-collapse;
+      }
 
-            /*标签容器*/
-            :host div.tags-input {
-                overflow: hidden;
-                -moz-border-radius: 4px;
-                -webkit-border-radius: 4px;
-                border: 1px solid #CCC;
-                background: #FFF;
-                padding: 4px;
-                height: auto;
-                min-height: 34px;
-                width: var(--h2-picker-tags-box-width, 100%);
-            }
+      #picker-collapse[hidden] {
+        opacity: 0;
+        visibility: hidden;
+      }
 
-            :host .tags-input:focus {
-                border-color: #66afe9;
-                outline: 0;
-                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-            }
+      /*显示下拉面板*/
+      :host .show {
+        opacity: 1;
+        visibility: visible;
+      }
 
-            /*标签*/
-            :host div.tags-input span.tag {
-                -moz-border-radius: 2px;
-                -webkit-border-radius: 2px;
-                display: inline-block;
-                float: left;
-                padding: 0px 5px;
-                text-decoration: none;
-                margin-right: 5px;
-                margin-bottom: 2px;
-                margin-top: 0px;
-                font-family: helvetica;
-                font-size: 13px;
-                line-height: 20px;
-                background-color: #f0f0f0;
-                border: 1px solid #ccc;
-                color: #666;
-                white-space: normal;
-                max-width: calc(var(--h2-picker-tags-box-width, 100%) - 15px);
-            }
+      .collapse-content__table {
+        width: 100%;
+        font-size: 12px;
+        background-color: #ffffff;
+        border-collapse: separate;
+        border-spacing: 0;
+        text-align: left;
+        border-radius: 4px;
 
-            :host div.tags-input span.tag span.tag-name {
-                font-family: "Helvetica Neue", Helvetica, Microsoft Yahei, Hiragino Sans GB, WenQuanYi Micro Hei, sans-serif;
-            }
+        -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      }
 
-            /*标签关闭按钮*/
-            :host div.tags-input span.tag a {
-                margin-left: 5px;
-                font-weight: bold;
-                color: #0273D4;
-                text-decoration: none;
-                font-size: 12px;
-            }
+      .collapse-table__cell {
+        white-space: nowrap;
+        padding: 6px 10px;
+        line-height: 1.42857143;
+        border-bottom: 1px solid #ddd;
+      }
 
-            :host div.tags-input span.tag a:hover {
-                color: #f60;
-                font-size: 12px;
-            }
+      th.collapse-table__cell {
+        padding-top: 12px;
+        font-size: 1.1em;
+      }
 
-            :host .shade {
-                display: none;
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                width: 100%;
-                height: 100%;
-                background-color: black;
-                z-index: 99;
-                opacity: .00;
-                border-radius: 4px;
-            }
+      tbody > tr:nth-last-of-type(even) {
+        background-color: #efefef;
+      }
 
-            :host .float-r {
-                float: right;
+      tbody > tr:hover {
+        background-color: #CAF1FF;
+        cursor: pointer;
+      }
+
+      tr.candidate-item--focus {
+        background: #CAF1FF !important;
+      }
+
+      .table-hotkey {
+        width: 40px;
+      }
+
+      :host([readonly]) .mask,
+      :host([disabled]) .mask {
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        right: -1px;
+        left: -1px;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 10;
+      }
+    </style>
+
+    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+    <div class="input-wrap">
+      <div class="input-container">
+
+        <div class="tags-input" on-click="__openCollapse">
+          <template is="dom-repeat" items="[[ selectedValues ]]">
+            <span class="tag">
+                <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
+                <a class="tag-deleter" data-args="[[_getItemValue(item)]]"
+                   href="javascript:void(0);"
+                   title="删除选项" on-click="_deleteTag">x</a>
+            </span>
+          </template>
+          <input id="keywordInput"
+                 value="{{ userInputKeyword::input }}"
+                 autocomplete="off">
+        </div> <!-- class=tags-input -->
+
+        <div class="mask"></div>
+      </div>
+
+      <div id="picker-collapse" hidden>
+        <table class="collapse-content__table">
+          <thead>
+          <tr>
+            <template is="dom-repeat" items="[[displayFields]]">
+              <th class="collapse-table__cell">[[item.label]]</th>
+            </template>
+            <th class="collapse-table__cell table-hotkey">快捷键</th>
+          </tr>
+          </thead>
+          <tbody>
+          <template is="dom-repeat" items="[[displayItems]]" as="row">
+            <tr id="candidate-item__[[index]]" on-click="_selectCollapseItem">
+              <template is="dom-repeat" items="[[displayFields]]" as="col">
+                <td class="collapse-table__cell">[[_getCellValue(row,col)]]</td>
+              </template>
+              <td class="collapse-table__cell table-hotkey">[[_getHotKey(index)]]</td>
+            </tr>
+          </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </template>
+  <script>
+    /**
+     * `h2-picker`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-picker/index.html
+     */
+    class H2Picker extends Polymer.Element {
+      static get properties() {
+        return {
+          /**
+           * 中文转拼音插件
+           */
+          pinyinUtil: {
+            type: Object,
+            readOnly: true,
+            value: function () {
+              return new PinyinUtil();
             }
-        </style>
-        <h2-label value="[[label]]" required="[[required]]"></h2-label>
-        <div class="input-wrap">
-            <div class="input-container">
-                <div class="tags-input">
-                    <span id="tag-content">
-                    <template is="dom-repeat" items="[[selectedList]]">
-                        <span class="tag">
-                            <span class="tag-name" title="[[_getTag(item)]]">[[_getTag(item)]]</span>
-                            <a class="tag-delete" style="float: right" data-args="[[_getItemValue(item)]]"
-                               href="javascript:void(0);"
-                               title="删除选项" on-click="_deleteTag">x</a>
-                        </span>
-                    </template>
-                    </span>
-                    <iron-input slot="input" bind-value="{{userInputKeyword}}" maxlength$="20">
-                        <input id="keywordInput"
-                               autocomplete="off">
-                    </iron-input>
-                </div>
-                <div class="shade"></div>
-            </div>
-            <div class="module-box" id="dropdown">
-                <div class="module-list-wrap">
-                    <table class="module-list" cellspacing="0" cellpadding="0" border="0" width="100%">
-                        <thead>
-                        <template is="dom-repeat" items="[[displayFields]]">
-                            <th class="complete">[[item.label]]</th>
-                        </template>
-                        <!--此处用一个dom-if是为了和其他th一起初始化，避免提前加载换行显示的问题-->
-                        <template is="dom-if" if="true">
-                            <th class="complete">快捷键</th>
-                        </template>
-                        </thead>
-                        <tbody>
-                        <template is="dom-repeat" items="[[displayItems]]" as="row">
-                            <tr class="complete" id="[[index]]" on-click="_onDropdownClick">
-                                <template is="dom-repeat" items="[[displayFields]]" as="col">
-                                    <td class="complete">[[_getCellValue(row,col)]]</td>
-                                </template>
-                                <td class="complete">[[_getHotKey(index)]]</td>
-                            </tr>
-                        </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </template>
-    <script>
+          },
+          /**
+           * 缓存搜索插件
+           */
+          cacheSearchUtil: {
+            type: Object,
+            readOnly: true,
+            value: function () {
+              return new CacheSearchUtil();
+            }
+          },
+          /**
+           * 发送请求和模拟数据的组件
+           */
+          fetchUtil: {
+            type: Object,
+            readOnly: true,
+            value: new H2Fetch()
+          },
+          /**
+           * 标签
+           */
+          label: {
+            type: String
+          },
+          /**
+           * （接口查询模式）组件默认value值时，初始数据集的查询url
+           * 注意：当此字段有值的时候，将启用接口查询模式，通过接口查询组件的数据集。items，searchFields，usePinyinSearch(本地查询模式)配置字段的将失效，无需配置
+           */
+          itemsInitQueryUrl: {
+            type: String
+          },
+          /**
+           * （接口查询模式）组件初始数据集查询参数,跟组件初始数据集查询url搭配使用
+           */
+          itemsQueryParams: {
+            type: Object
+          },
+          /**
+           * A url to fetch local data
+           * @type {string}
+           */
+          src: {
+            type: String
+          },
+          /**
+           * A url to search data with user input keywords.
+           * @type {string}
+           */
+          keywordSearchSrc: {
+            type: String
+          },
+          /**
+           * （本地查询模式）组件初始数据集
+           * 如：[{"id": 1, "label": "快塑网", "business": "塑料"},{"id": 2, "label": "阿里巴巴", "business": "电商"}]
+           */
+          items: {
+            type: Array
+          },
+          /**
+           * 下拉面板当前展示的数据集（默认显示items的前10条）
+           */
+          displayItems: {
+            type: Array
+          },
+          /**
+           * 用户输入的模糊搜索关键字
+           */
+          userInputKeyword: {
+            type: String
+          },
+          /**
+           * （本地查询模式）模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
+           */
+          searchFields: {
+            type: Array
+          },
+          /**
+           * 下拉面板中展示的字段，默认为[{"field": "label", "label": "选项"}]
+           */
+          displayFields: {
+            type: Array,
+            value: [{"field": "label", "label": "选项"}]
+          },
+          /**
+           * 已选数据项标签展示字段,默认为"label"
+           */
+          attrForLabel: {
+            type: String,
+            value: "label"
+          },
+          /**
+           * 取值字段,默认为"value"
+           */
+          attrForValue: {
+            type: String,
+            value: "value"
+          },
+          /**
+           * （本地查询模式）是否启用拼音搜索（根据模糊搜索的字段字符串数组对数据集的对应字段做中文转拼音处理），默认启用
+           */
+          usePinyinSearch: {
+            type: Boolean,
+            value: true
+          },
+          /**
+           * 被选中的数据项集合
+           */
+          selectedList: {
+            type: Array,
+            notify: true,
+            value: function () {
+              return [];
+            }
+          },
+
+          selectedValues: {
+            type: Array,
+            notify: true
+          },
+          /**
+           *
+           * 初始选择项和items的value值相对应
+           *
+           * @attribute value
+           * @type {String}
+           */
+          value: {
+            type: String,
+            notify: true
+          },
+          /**
+           * 是否只读
+           */
+          readonly: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 是否必填
+           */
+          required: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 是否支持多选
+           */
+          multi: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 下拉面板当前选项焦点
+           */
+          focusIndex: {
+            type: Number,
+            value: 0
+          },
+          /**
+           * 下拉面板是否打开状态
+           */
+          opened: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      static get is() {
+        return "h2-picker";
+      }
+
+      static get observers() {
+        return [
+          '_srcChanged(src)',
+          '_keywordSearchSrcChanged(keywordSearchSrc)',
+          '_itemsChange(items)',
+          '_userInputKeywordChange(userInputKeyword)',
+          '_selectedValuesChanged(selectedValues.splices)',
+          '_valueChange(value)'
+        ]
+      }
+
+
+      connectedCallback() {
+        super.connectedCallback();
         /**
-         * `h2-picker`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-picker/index.html
+         * 事件说明：
+         * 1.keydown事件用来控制快捷键选中；
+         * 2.click事件用来控制下拉面板打开；
+         * 3.blur事件用来控制下拉面板关闭
          */
-        class H2Picker extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     * 中文转拼音插件
-                     */
-                    pinyinUtil: {
-                        type: Object,
-                        readOnly: true,
-                        value: function () {
-                            return new PinyinUtil();
-                        }
-                    },
-                    /**
-                     * 缓存搜索插件
-                     */
-                    cacheSearchUtil: {
-                        type: Object,
-                        readOnly: true,
-                        value: function () {
-                            return new CacheSearchUtil();
-                        }
-                    },
-                    /**
-                     * 发送请求和模拟数据的组件
-                     */
-                    fetchUtil: {
-                        type: Object,
-                        readOnly: true,
-                        value: function () {
-                            return new H2Fetch();
-                        }
-                    },
-                    /**
-                     * 标签
-                     */
-                    label: {
-                        type: String
-                    },
-                    /**
-                     * （接口查询模式）组件默认value值时，初始数据集的查询url
-                     * 注意：当此字段有值的时候，将启用接口查询模式，通过接口查询组件的数据集。items，searchFields，usePinyinSearch(本地查询模式)配置字段的将失效，无需配置
-                     */
-                    itemsInitQueryUrl: {
-                        type: String
-                    },
-                    /**
-                     * （接口查询模式）组件关键字数据集查询url
-                     */
-                    itemsQueryUrl: {
-                        type: String
-                    },
-                    /**
-                     * （接口查询模式）组件初始数据集查询参数,跟组件初始数据集查询url搭配使用
-                     */
-                    itemsQueryParams: {
-                        type: Object
-                    },
-                    /**
-                     * （本地查询模式）组件初始数据集
-                     * 如：[{"id": 1, "label": "快塑网", "business": "塑料"},{"id": 2, "label": "阿里巴巴", "business": "电商"}]
-                     */
-                    items: {
-                        type: Array,
-                        observer: '_itemsChange'
-                    },
-                    /**
-                     * 下拉面板当前展示的数据集（默认显示items的前10条）
-                     */
-                    displayItems: {
-                        type: Array,
-                        value: function () {
-                            return [];
-                        }
-                    },
-                    /**
-                     * 用户输入的模糊搜索关键字
-                     */
-                    userInputKeyword: {
-                        type: String,
-                        observer: "_userInputKeywordChange"
-                    },
-                    /**
-                     * （本地查询模式）模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
-                     */
-                    searchFields: {
-                        type: Array
-                    },
-                    /**
-                     * 下拉面板中展示的字段，默认为[{"field": "label", "label": "选项"}]
-                     */
-                    displayFields: {
-                        type: Array,
-                        value: [{"field": "label", "label": "选项"}]
-                    },
-                    /**
-                     * 已选数据项标签展示字段,默认为"label"
-                     */
-                    attrForLabel: {
-                        type: String,
-                        value: "label"
-                    },
-                    /**
-                     * 取值字段,默认为"value"
-                     */
-                    attrForValue: {
-                        type: String,
-                        value: "value"
-                    },
-                    /**
-                     * （本地查询模式）是否启用拼音搜索（根据模糊搜索的字段字符串数组对数据集的对应字段做中文转拼音处理），默认启用
-                     */
-                    usePinyinSearch: {
-                        type: Boolean,
-                        value: true
-                    },
-                    /**
-                     * 被选中的数据项集合
-                     */
-                    selectedList: {
-                        type: Array,
-                        notify: true,
-                        value: function () {
-                            return [];
-                        }
-                    },
-                    /**
-                     *
-                     * 初始选择项和items的value值相对应
-                     *
-                     * @attribute value
-                     * @type {String}
-                     */
-                    value: {
-                        type: String,
-                        reflectToAttribute: true,
-                        notify: true,
-                        observer: "_valueChange"
-                    },
-                    /**
-                     * 是否只读
-                     */
-                    readonly: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 是否必填
-                     */
-                    required: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 是否支持多选
-                     */
-                    multi: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 下拉面板当前选项焦点
-                     */
-                    focusIndex: {
-                        type: Number,
-                        value: 0
-                    },
-                    /**
-                     * 下拉面板是否打开状态
-                     */
-                    opened: {
-                        type: Boolean,
-                        value: false
-                    }
-                };
+        this.$.keywordInput.addEventListener("keydown", e => {
+          this._keyDownHandler(e);
+        });
+
+        this.addEventListener("blur", e => {
+          // this.displayCollapse(false);
+        });
+      }
+
+      _srcChanged(src) {
+        if (!src) return;
+
+        const request = new Request(src, {
+          method: "GET",
+          credentials: "include"
+        });
+
+        this.fetchUtil.fetchIt(request)
+          .then(res => res.json())
+          .then(data => {
+            this.items = data || [];
+          })
+          .catch(err => console.error(err));
+      }
+
+      _itemsChange(items = []) {
+
+        this.set('displayItems', items.slice(0, 9));
+
+        // 初始化一次选中项
+        this._valueChange(this.value);
+
+        // 清空缓存插件的缓存
+        this.cacheSearchUtil.resetCache();
+
+        items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
+      }
+
+      /**
+       * 给对象根据searchFields给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
+       */
+      _loadPinyinKeys(item, searchFields = []) {
+        let keys = [], values = searchFields.map(sf => item[sf]);
+
+        values = values.length === 0 ? Object.values(item) : values;
+
+        if (this.usePinyinSearch) {
+          values.forEach(
+            value => {
+              keys = keys.concat(
+                String(value),
+                this.pinyinUtil.convert2CompletePinyin(value),
+                this.pinyinUtil.convert2PinyinAbbreviation(value)
+              );
             }
-
-            static get is() {
-                return "h2-picker";
-            }
-
-            static get observers() {
-                return [
-                    '_readonlyChange(readonly)',
-                    '_itemsInitQueryUrlChange(itemsInitQueryUrl)'
-                ]
-            }
-
-
-            connectedCallback() {
-                super.connectedCallback();
-                /**
-                 * 事件说明：
-                 * 1.keydown事件用来控制快捷键选中；
-                 * 2.click事件用来控制下拉面板打开；
-                 * 3.blur事件用来控制下拉面板关闭
-                 */
-                let input = this.root.querySelector('#keywordInput');
-                input.addEventListener("keydown", e => {
-                    this._keyDownHandler(e);
-                });
-                this.root.querySelector('div.tags-input').addEventListener("click", e => {
-                    this._showDropdown(e);
-                });
-                this.addEventListener("blur", e => {
-                    e.stopPropagation();
-                    this._hideDropdown(e);
-                });
-            }
-
-            /**
-             * 是否只读，是则显示遮罩层，否则不显示
-             */
-            _readonlyChange(readonly) {
-                let shade = this.root.querySelector('.shade');
-                !!readonly ? shade.style.display = 'block' : shade.style.display = 'none';
-            }
-
-            _itemsInitQueryUrlChange(itemsInitQueryUrl) {
-                if (itemsInitQueryUrl) {
-                    this.userInputKeyword = "";
-                }
-            }
-
-            _itemsChange(items) {
-                // 如果组件设置通过接口搜索查询数据集，本地数据集字段items将不需要使用
-                if (this.itemsQueryUrl) {
-                    return;
-                }
-
-                if (!items) return;
-                this.set('displayItems', items.slice(0, 9));
-
-                // 初始化一次选中项
-                this._valueChange(this.value);
-
-                // 清空缓存插件的缓存
-                this.cacheSearchUtil.resetCache();
-
-                /**
-                 * 当searchFields无值的时候，默认对所有字段做缓存
-                 */
-                if (this.searchFields == null || this.searchFields.length === 0) {
-                    items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item)));
-                    return;
-                }
-
-                /**
-                 * 当searchFields有值的时候，只对searchFields中的字段做缓存
-                 */
-                items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
-            }
-
-            /**
-             * 给对象根据searchFields给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
-             */
-            _loadPinyinKeys(item, searchFields) {
-                let keys = [];
-
-                /**
-                 * 当模糊匹配字段数组：
-                 * 1.不存在的时候，默认为对item的所有字段做缓存
-                 */
-                if (!searchFields) {
-                    let values = Object.values(item);
-                    if (this.usePinyinSearch) {
-                        values.forEach(
-                            value => {
-                                keys = keys.concat(value + "", this.pinyinUtil.converToCompletePinyin(value), this.pinyinUtil.converToFirstLetterPinyin(value));
-                            }
-                        );
-                    } else {
-                        keys = values.map(value => (value + ""));
-                    }
-                    return keys;
-                }
-
-                /**
-                 * 2.存在的时候，对searchFields里面的所有字段做缓存
-                 */
-                if (this.usePinyinSearch) {
-                    searchFields.forEach(
-                        field => {
-                            keys = keys.concat(item[field] + "", this.pinyinUtil.converToCompletePinyin(item[field]), this.pinyinUtil.converToFirstLetterPinyin(item[field]));
-                        }
-                    );
-                } else {
-                    keys = searchFields.map(field => item[field] + "");
-                }
-                return keys;
-            }
-
-            _userInputKeywordChange(userInputKeyword) {
-                /**
-                 * 通过配置的数据来源获取数据
-                 * 1.通过接口去查询数据
-                 */
-                if (this.itemsQueryUrl) {
-                    // 装载查询参数
-                    let queryParams;
-                    if (!!this.itemsQueryParams) {
-                        queryParams = Object.assign({}, this.itemsQueryParams);
-                        queryParams.keyword = userInputKeyword;
-                    } else {
-                        queryParams = {"keyword": userInputKeyword}
-                    }
-                    this._queryItems(
-                        this.itemsQueryUrl,
-                        queryParams,
-                        data => {
-                            this.set('displayItems', (data.rows || data || []).slice(0, 9));
-                        }
-                    );
-                    return;
-                }
-
-                /**
-                 * 2.查询本地数据
-                 */
-                const displayItems = userInputKeyword != undefined ? this.cacheSearchUtil.search(userInputKeyword) : this.items;
-                this.set('displayItems', displayItems.slice(0, 9));
-            }
-
-            /**
-             * value属性变化监听函数
-             */
-            _valueChange(value) {
-                //如果传过来的值为null或者为""(空串)，那么直接清除所有选项
-                if (value == null || value === "") {
-                    this.set("selectedList", []);
-                    return;
-                }
-
-                /**
-                 * 1.本地模式
-                 */
-                if (!this.itemsInitQueryUrl) {
-                    if (!this.items) return;
-                    /**
-                     * 单选，直接替换旧值
-                     */
-                    if (!this.multi) {
-                        //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
-                        this.set("selectedList", this.items.filter(e => e[this.attrForValue] == value));
-                        this._dispatchSelectedList();
-                        return;
-                    }
-
-                    /**
-                     * 多选，直接从items里面取值
-                     */
-                    let values = (value + "").split(",");
-                    //此处用2个等号，因为values是字符串，e[this.attrForValue]可能是字符串或数字
-                    let selectedList = this.items.filter(e => values.some(s => e[this.attrForValue] == s));
-                    this.set("selectedList", selectedList);
-                    this._dispatchSelectedList();
-                    return;
-                }
-
-                /**
-                 * 2.接口查询模式
-                 * 将当前的展示数据集合和已选数据集拼接成当前的可选数据集（先去重）
-                 */
-                const items = this.selectedList.concat(this.displayItems.filter(item => !this.selectedList.some(s => s[this.attrForValue] === item[this.attrForValue])));
-                /**
-                 * 单选：
-                 * 1.在当前的可选数据集中能找到对应项就直接取
-                 * 2.找不到就通过接口去查询
-                 */
-                if (!this.multi) {
-                    const newSelectedList = items.filter(e => e[this.attrForValue] == value);
-                    if (newSelectedList.length > 0) {
-                        this.set("selectedList", newSelectedList);
-                        this._dispatchSelectedList();
-                    } else {
-                        this._queryItems(
-                            this.itemsInitQueryUrl,
-                            {
-                                ids: value,
-                                businessCode: this.itemsQueryParams && this.itemsQueryParams.businessCode
-                            },
-                            data => {
-                                //TODO 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
-                                const rows = (data.rows || data || [])/*.filter(e => value == e[this.attrForValue])*/;
-                                this.set("selectedList", rows);
-                                this._dispatchSelectedList();
-                            }
-                        );
-                    }
-                    return;
-                }
-
-                /**
-                 * 多选
-                 * 1.这里先得到value数组与可选数据集的并集，value数组与可选数据集数组的差集
-                 * 2.并集对应的数据可以从可选数据集中直接取
-                 * 3.差集数据需要通过接口查询获得
-                 * 4.最后将并集数据集和差集数据集concat到一起，得到最后的已选数据集selectedList
-                 */
-                const values = (value + "").split(",");
-                const itemValues = items.map(e => e[this.attrForValue]);
-                const unionValues = values.filter(val => itemValues.some(itemVal => itemVal == val));
-                const diffValues = values.filter(val => itemValues.every(oldVal => oldVal != val));
-                const unionSelectedList = items.filter(item => unionValues.some(val => val == item[this.attrForValue]));
-                if (diffValues.length === 0) {
-                    this.set("selectedList", unionSelectedList);
-                    this._dispatchSelectedList();
-                    return;
-                }
-
-                this._queryItems(
-                    this.itemsInitQueryUrl,
-                    {
-                        ids: diffValues.join(),
-                        businessCode: this.itemsQueryParams && this.itemsQueryParams.businessCode
-                    },
-                    data => {
-                        //TODO 数据模拟会返回全部数据，临时过滤，正式代码不需要filter
-                        const rows = (data.rows || data || [])/*.filter(e => diffValues.some(s => s == e[this.attrForValue]))*/;
-                        this.set("selectedList", unionSelectedList.concat(rows));
-                        this._dispatchSelectedList();
-                    }
-                );
-            }
-
-            /**
-             * 对外抛一个选定数据变化事件，提供给h2-mask组件取值
-             */
-            _dispatchSelectedList() {
-                this.dispatchEvent(new CustomEvent('h2-selected-list-changed', {
-                    composed: true,
-                    bubbles: true,
-                    detail: {value: this.selectedList}
-                }));
-            }
-
-            _queryItems(url, queryParams, successCallback) {
-                const reqUrl = new URL(window.location.origin + url);
-                Object.keys(queryParams).filter(key => queryParams[key] != undefined).forEach((key) => reqUrl.searchParams.append(key, queryParams[key]));
-                const request = new Request(reqUrl, {
-                    method: "GET",
-                    credentials: "include"
-                });
-                this.fetchUtil.fetchIt(request)
-                    .then(res => res.json())
-                    .then(successCallback)
-                    .catch(err => console.error(err));
-            }
-
-            /**
-             * 输入框键盘按键事件
-             * @param event
-             * @private
-             */
-            _keyDownHandler(event) {
-                /**
-                 * 面板关闭的时候不允许选择数据
-                 */
-                if (!this.opened) {
-                    return;
-                }
-
-                if (event.altKey) {
-                    event.preventDefault();
-                }
-
-                let key;
-                if (document.all) {
-                    key = event.keyCode;
-                } else {
-                    key = event.which;
-                }
-                if (event.ctrlKey == 1 && key == 86) {// 复制操作，不处理
-                    return;
-                }
-
-                if (key == 38 || key == 40 || key == 32 || event.altKey) {
-                    event.stopPropagation();
-                }
-
-                if (key == 38) {// 按键UP
-                    this._switchFocusItemAt(this.focusIndex - 1);
-                } else if (key == 40) {// 按键DOWN
-                    this._switchFocusItemAt(this.focusIndex + 1);
-                } else if (key == 32 || key == 13) {// 空格、回车
-                    event.preventDefault();
-                    if (this.displayItems.length > 0 && this.focusIndex < this.displayItems.length) {
-                        this.selectItemAt();
-                    }
-                } else if (event.altKey) {
-                    let ind = String.fromCharCode(key) - 1;
-                    if (ind >= 0 && ind < this.displayItems.length) {
-                        this.selectItemAt(ind);
-                    }
-                }
-            }
-
-            selectItemAt(index) {
-                if (index >= 0) {
-                    this._switchFocusItemAt(index);
-                }
-                this.selectItem(this.displayItems[this.focusIndex]);
-            }
-
-            /**
-             * 选择选项
-             * @param item
-             */
-            selectItem(item) {
-                /**
-                 * 1.当value没值时，直接赋值
-                 * 2.当multi=false（单选）时，直接赋值
-                 * 3.当该选项没被选中时,直接赋值
-                 */
-                let value = this.value;
-                if (value == undefined || value === "" || !this.multi) {
-                    this.set('value', item[this.attrForValue] + "");
-                } else if (value.toString().split(',').every(value => value != item[this.attrForValue])) {
-                    this.set('value', this.value + "," + item[this.attrForValue]);
-                }
-                this.userInputKeyword = "";
-                this._hideDropdown();
-            }
-
-            /**
-             * 切换焦点到第n个元素，从0开始
-             * @param index
-             * @private
-             */
-            _switchFocusItemAt(index) {
-                let maxIndex = this.displayItems.length;
-                let newIndex = (maxIndex + index) % maxIndex;
-                this.root.querySelectorAll("tr.complete").forEach(e => e.style.backgroundColor = "");
-                let newFocusItem = this.root.querySelector("tr[id='" + newIndex + "']");
-                if (newFocusItem != null) {
-                    newFocusItem.style.backgroundColor = "#CAF1FF";
-                    this.focusIndex = newIndex;
-                }
-            }
-
-            /**
-             * 隐藏下拉面板
-             */
-            _hideDropdown() {
-                // 延迟100ms，为了让点击事件先触发
-                setTimeout(
-                    () => {
-                        let dropdown = this.$['dropdown'];
-                        dropdown.className = dropdown.className.replace(/ show/g, "");
-                        this.opened = false;
-                    }, 100
-                );
-            }
-
-            /**
-             * 显示下拉面板
-             */
-            _showDropdown(e) {
-                e.stopPropagation();
-                // 显示下拉面板
-                let dropdown = this.$['dropdown'];
-                dropdown.className += " show";
-                this.opened = true;
-                // 每次打开默认选中第一条选项
-                this._switchFocusItemAt(0);
-            }
-
-            /**
-             * 下拉面板点击事件
-             * @param event
-             * @private
-             */
-            _onDropdownClick(event) {
-                event.stopPropagation();
-                this.selectItem(event.model.row);
-            }
-
-            /**
-             * 删除Tag项，事件处理函数
-             */
-            _deleteTag(e) {
-                let tagValue = e.target.dataArgs;
-                let regExp = new RegExp(tagValue + ",", "g");
-                let valueStr = this.value + ",";
-                let newValue = valueStr.replace(regExp, "");
-                // 如果newValue无值，就直接赋值undefined，有值，就去掉最后的逗号
-                this.value = newValue.length === 0 ? undefined : newValue.substr(0, newValue.length - 1);
-            }
-
-            _getHotKey(index) {
-                return 'Alt+' + (index + 1);
-            }
-
-            _getTag(item) {
-                return item[this.attrForLabel];
-            }
-
-            _getItemValue(item) {
-                return item[this.attrForValue];
-            }
-
-            /**
-             * 获取列值
-             * @param row 数据行
-             * @param col 数据列属性
-             * @private
-             */
-            _getCellValue(row, col) {
-                return row[col.field];
-            }
-
-            /**
-             * 输入框获取焦点
-             */
-            doFocus() {
-                this.root.querySelector("div.tags-input").click();
-            }
-
-            validate() {
-                return this.required ? this.value != undefined : true;
-            }
+          );
+        } else {
+          keys = values.map(value => String(value));
         }
 
-        window.customElements.define(H2Picker.is, H2Picker);
-    </script>
+        return keys;
+      }
+
+      _userInputKeywordChange(userInputKeyword) {
+
+        const matched = this.cacheSearchUtil.search(userInputKeyword);
+
+        if (matched.length === 0 && this.keywordSearchSrc) {
+          // 装载查询参数
+          const queryParams = Object.assign({}, this.itemsQueryParams, {keyword: userInputKeyword});
+
+          this._queryItems(
+            this.keywordSearchSrc,
+            queryParams,
+            data => {
+              // TODO data.rows ？？？
+              this.set('displayItems', (data.rows || data || []).slice(0, 9));
+              this._switchFocusItemAt(0);
+            }
+          );
+        } else {
+          this.set('displayItems', matched.slice(0, 9));
+          this._switchFocusItemAt(0);
+        }
+      }
+
+
+      _selectedValuesChanged() {
+        this.value = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+      }
+
+      /**
+       * value属性变化监听函数
+       */
+      _valueChange(value) {
+        // 本地模式，或远程数据已经就位
+        if (this.displayItems) {
+          const flatValues = [...(new Set(String(value).split(",")))];
+          const selectedValues = this.selectedValues || [];
+          const dirty = selectedValues.map(selected => selected[this.attrForValue]).join(',');
+          if (dirty !== value) {
+            const tmp = [...selectedValues, ...this.displayItems];
+            this.selectedValues =
+              flatValues.map(val => tmp.find(item => item[this.attrForValue] == val))
+                .filter(selected => !!selected);
+          }
+        }
+      }
+
+      _queryItems(url, queryParams, successCallback) {
+        const reqUrl = new URL(url, window.location.href);
+
+        Object.keys(queryParams).filter(key => queryParams[key] != undefined)
+          .forEach((key) => reqUrl.searchParams.append(key, queryParams[key]));
+
+        const request = new Request(reqUrl, {
+          method: "GET",
+          credentials: "include"
+        });
+
+        this.fetchUtil.fetchIt(request)
+          .then(res => res.json())
+          .then(successCallback)
+          .catch(err => console.error(err));
+      }
+
+      /**
+       * 输入框键盘按键事件
+       * @param event
+       * @private
+       */
+      _keyDownHandler(event) {
+        /**
+         * 面板关闭的时候不允许选择数据
+         */
+        if (this._isPickerCollapseHidden()) {
+          return;
+        }
+
+        if (event.altKey) {
+          event.preventDefault();
+        }
+
+        const key = document.all ? event.keyCode : event.which;
+
+        if (event.ctrlKey == 1 && key == 86) {// 复制操作，不处理
+          return;
+        }
+
+        if (key == 38 || key == 40 || key == 32 || event.altKey) {
+          event.stopPropagation();
+        }
+
+        if (key == 38) {// 按键UP
+          this._switchFocusItemAt(this.focusIndex - 1);
+        } else if (key == 40) {// 按键DOWN
+          this._switchFocusItemAt(this.focusIndex + 1);
+        } else if (key == 32 || key == 13) {// 空格、回车
+          event.preventDefault();
+          if (this.displayItems.length > 0 && this.focusIndex < this.displayItems.length) {
+            this.selectItemAt();
+          }
+        } else if (event.altKey) {
+          let ind = String.fromCharCode(key) - 1;
+          if (ind >= 0 && ind < this.displayItems.length) {
+            this.selectItemAt(ind);
+          }
+        }
+      }
+
+      selectItemAt(index) {
+        if (index >= 0) {
+          this._switchFocusItemAt(index);
+        }
+        this.selectItem(this.displayItems[this.focusIndex]);
+      }
+
+      /**
+       * 选择选项
+       * @param item
+       */
+      selectItem(item) {
+        // not yet selected
+        if (!~this.selectedValues.findIndex(selected => selected[this.attrForValue] == item[this.attrForValue])) {
+          if (this.multi) {
+            this.push('selectedValues', item);
+          } else {
+            this.selectedValues = [item];
+          }
+        }
+
+        this.userInputKeyword = "";
+      }
+
+      /**
+       * 切换焦点到第n个元素，从0开始
+       * @param index
+       * @private
+       */
+      _switchFocusItemAt(index) {
+        setTimeout(() => {
+          const maxIndex = (this.displayItems || []).length;
+          const newIndex = (maxIndex + index) % maxIndex;
+          this.root.querySelectorAll("tr.candidate-item--focus")
+            .forEach(e => e.classList.remove('candidate-item--focus'));
+
+          const newFocusItem = this.root.querySelector(`#candidate-item__${newIndex}`);
+          if (newFocusItem != null) {
+            newFocusItem.classList.add('candidate-item--focus');
+            this.focusIndex = newIndex;
+          }
+        }, 0);
+      }
+
+      _isPickerCollapseHidden() {
+        return this.$["picker-collapse"].hidden;
+      }
+
+      __openCollapse(e) {
+        this.displayCollapse(true);
+        this._switchFocusItemAt(0);
+      }
+
+      __focusOnKeywordInput() {
+        this.$.keywordInput.focus();
+      }
+
+      displayCollapse(display) {
+        this.$["picker-collapse"].hidden = !display;
+      }
+
+      toggleCollapse() {
+        const hidden = this.$["picker-collapse"].hidden;
+        this.$["picker-collapse"].hidden = !hidden;
+        this.__focusOnKeywordInput();
+      }
+
+      _selectCollapseItem(event) {
+        event.stopPropagation();
+        this.selectItem(event.model.row);
+        this.__focusOnKeywordInput();
+      }
+
+      /**
+       * 删除Tag项，事件处理函数
+       */
+      _deleteTag(e) {
+        let value = e.target.dataArgs;
+        const ind = this.selectedValues.findIndex(selected => selected[this.attrForValue] == value);
+        this.splice("selectedValues", ind, 1);
+      }
+
+      _getHotKey(index) {
+        return 'Alt+' + (index + 1);
+      }
+
+      _getTag(item) {
+        return item[this.attrForLabel];
+      }
+
+      _getItemValue(item) {
+        return item[this.attrForValue];
+      }
+
+      /**
+       * 获取列值
+       * @param row 数据行
+       * @param col 数据列属性
+       * @private
+       */
+      _getCellValue(row, col) {
+        return row[col.field];
+      }
+
+      /**
+       * 输入框获取焦点
+       */
+      doFocus() {
+        this.__focusOnKeywordInput();
+      }
+
+      validate() {
+        return this.required ? this.value != undefined : true;
+      }
+    }
+
+    window.customElements.define(H2Picker.is, H2Picker);
+  </script>
 </dom-module>
