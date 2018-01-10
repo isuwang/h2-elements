@@ -1,7 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="h2-label.html">
-<link rel="import" href="h2-fetch.html">
+<link rel="import" href="./h2-label.html">
+<link rel="import" href="./h2-fetch.html">
 <script type="text/javascript" src="./resource/plugin/dictionary/firstLetterDictionary.js"></script>
 <script type="text/javascript" src="./resource/plugin/dictionary/commonDictionary.js"></script>
 <script type="text/javascript" src="./resource/plugin/pinyinUtil.js"></script>
@@ -21,7 +20,9 @@
       :host {
         display: flex;
         height: 36px;
+        line-height: 36px;
         width: 300px;
+        position: relative;
       }
 
       h2-label {
@@ -191,9 +192,17 @@
         background-color: rgba(255, 255, 255, 0.5);
         z-index: 10;
       }
+
+      :host([required])::after {
+        content: "*";
+        color: red;
+        position: absolute;
+        right: -15px;
+        line-height: inherit;
+      }
     </style>
 
-    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+    <h2-label value="[[label]]"></h2-label>
     <div class="input-wrap">
       <div class="input-container">
 
@@ -363,17 +372,7 @@
             type: Boolean,
             value: true
           },
-          /**
-           * 被选中的数据项集合
-           */
-          selectedList: {
-            type: Array,
-            notify: true,
-            value: function () {
-              return [];
-            }
-          },
-
+          
           selectedValues: {
             type: Array,
             notify: true
@@ -413,16 +412,9 @@
           /**
            * 下拉面板当前选项焦点
            */
-          focusIndex: {
+          __focusIndex: {
             type: Number,
             value: 0
-          },
-          /**
-           * 下拉面板是否打开状态
-           */
-          opened: {
-            type: Boolean,
-            value: false
           }
         };
       }
@@ -434,7 +426,6 @@
       static get observers() {
         return [
           '_srcChanged(src)',
-          '_keywordSearchSrcChanged(keywordSearchSrc)',
           '_itemsChange(items)',
           '_userInputKeywordChange(userInputKeyword)',
           '_selectedValuesChanged(selectedValues.splices)',
@@ -442,21 +433,13 @@
         ]
       }
 
-
       connectedCallback() {
         super.connectedCallback();
-        /**
-         * 事件说明：
-         * 1.keydown事件用来控制快捷键选中；
-         * 2.click事件用来控制下拉面板打开；
-         * 3.blur事件用来控制下拉面板关闭
-         */
-        this.$.keywordInput.addEventListener("keydown", e => {
-          this._keyDownHandler(e);
-        });
+
+        this.$.keywordInput.addEventListener("keydown", this._keyDownHandler.bind(this));
 
         this.addEventListener("blur", e => {
-          // this.displayCollapse(false);
+          this.displayCollapse(false);
         });
       }
 
@@ -605,12 +588,12 @@
         }
 
         if (key == 38) {// 按键UP
-          this._switchFocusItemAt(this.focusIndex - 1);
+          this._switchFocusItemAt(this.__focusIndex - 1);
         } else if (key == 40) {// 按键DOWN
-          this._switchFocusItemAt(this.focusIndex + 1);
+          this._switchFocusItemAt(this.__focusIndex + 1);
         } else if (key == 32 || key == 13) {// 空格、回车
           event.preventDefault();
-          if (this.displayItems.length > 0 && this.focusIndex < this.displayItems.length) {
+          if (this.displayItems.length > 0 && this.__focusIndex < this.displayItems.length) {
             this.selectItemAt();
           }
         } else if (event.altKey) {
@@ -625,7 +608,7 @@
         if (index >= 0) {
           this._switchFocusItemAt(index);
         }
-        this.selectItem(this.displayItems[this.focusIndex]);
+        this.selectItem(this.displayItems[this.__focusIndex]);
       }
 
       /**
@@ -660,7 +643,7 @@
           const newFocusItem = this.root.querySelector(`#candidate-item__${newIndex}`);
           if (newFocusItem != null) {
             newFocusItem.classList.add('candidate-item--focus');
-            this.focusIndex = newIndex;
+            this.__focusIndex = newIndex;
           }
         }, 0);
       }
@@ -669,8 +652,14 @@
         return this.$["picker-collapse"].hidden;
       }
 
-      __openCollapse(e) {
+      __openCollapse({target: {classList}}) {
+
+        if (classList.contains('tag-deleter')) {
+          return;
+        }
+
         this.displayCollapse(true);
+        this.__focusOnKeywordInput();
         this._switchFocusItemAt(0);
       }
 

@@ -201,8 +201,16 @@
         overflow: hidden;
         white-space: nowrap;
       }
+
+      :host([required])::after {
+        content: "*";
+        color: red;
+        position: absolute;
+        right: -15px;
+        line-height: inherit;
+      }
     </style>
-    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+    <h2-label value="[[label]]"></h2-label>
     <div id="select__container">
       <div class="select__container__viewer" on-click="_onInputClick">
         <div class="tags__container">
