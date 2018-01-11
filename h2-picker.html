@@ -231,7 +231,7 @@
         <table class="collapse-content__table">
           <thead>
           <tr>
-            <template is="dom-repeat" items="[[displayFields]]">
+            <template is="dom-repeat" items="[[collapseTableHead]]">
               <th class="collapse-table__cell">[[item.label]]</th>
             </template>
             <th class="collapse-table__cell table-hotkey">快捷键</th>
@@ -240,7 +240,7 @@
           <tbody>
           <template is="dom-repeat" items="[[displayItems]]" as="row">
             <tr id="candidate-item__[[index]]" on-click="_selectCollapseItem">
-              <template is="dom-repeat" items="[[displayFields]]" as="col">
+              <template is="dom-repeat" items="[[collapseTableHead]]" as="col">
                 <td class="collapse-table__cell">[[ getValueByPath(row, col.field) ]]</td>
               </template>
               <td class="collapse-table__cell table-hotkey">[[_getHotKey(index)]]</td>
@@ -297,12 +297,6 @@
             type: String
           },
           /**
-           * （接口查询模式）组件初始数据集查询参数,跟组件初始数据集查询url搭配使用
-           */
-          itemsQueryParams: {
-            type: Object
-          },
-          /**
            * A url to fetch local data
            * @type {string}
            */
@@ -344,7 +338,7 @@
           /**
            * 下拉面板中展示的字段，默认为[{"field": "label", "label": "选项"}]
            */
-          displayFields: {
+          collapseTableHead: {
             type: Array,
             value: [{"field": "label", "label": "选项"}]
           },
@@ -423,10 +417,10 @@
       static get observers() {
         return [
           '_srcChanged(src)',
-          '_itemsChange(items)',
-          '_userInputKeywordChange(userInputKeyword)',
+          '_itemsChanged(items)',
+          '_userInputKeywordChanged(userInputKeyword)',
           '_selectedValuesChanged(selectedValues.splices)',
-          '_valueChange(value)'
+          '_valueChanged(value)'
         ]
       }
 
@@ -457,12 +451,12 @@
           .catch(err => console.error(err));
       }
 
-      _itemsChange(items = []) {
+      _itemsChanged(items = []) {
 
-        this.set('displayItems', items.slice(0, 9));
+        this.displayItems = items.slice(0, 9);
 
         // 初始化一次选中项
-        this._valueChange(this.value);
+        this._valueChanged(this.value);
 
         // 清空缓存插件的缓存
         this.cacheSearchUtil.resetCache();
@@ -470,8 +464,7 @@
         items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
       }
 
-      _userInputKeywordChange(userInputKeyword) {
-
+      _userInputKeywordChanged(userInputKeyword) {
         if (this.userInputKeyword.length > 0) {
           this.displayCollapse(true);
         }
@@ -479,20 +472,22 @@
         const matched = this.cacheSearchUtil.search(userInputKeyword);
 
         if (matched.length === 0 && this.keywordSearchSrc) {
-          // 装载查询参数
-          const queryParams = Object.assign({}, this.itemsQueryParams, {keyword: userInputKeyword});
+          const url = this.keywordSearchSrc + userInputKeyword;
+          const request = new Request(url , {
+            method: "GET",
+            credentials: "include"
+          });
 
-          this._queryItems(
-            this.keywordSearchSrc,
-            queryParams,
-            data => {
-              // TODO data.rows ？？？
-              this.set('displayItems', (data.rows || data || []).slice(0, 9));
+          this.fetchUtil.fetchIt(request)
+            .then(res => res.json())
+            .then(data => {
+              this.displayItems = (data || []).slice(0, 9);
               this._switchFocusItemAt(0);
-            }
-          );
+            })
+            .catch(err => console.error(err));
+
         } else {
-          this.set('displayItems', matched.slice(0, 9));
+          this.displayItems = matched.slice(0, 9);
           this._switchFocusItemAt(0);
         }
       }
@@ -505,7 +500,7 @@
       /**
        * value属性变化监听函数
        */
-      _valueChange(value) {
+      _valueChanged(value) {
         // 本地模式，或远程数据已经就位
         if (this.displayItems) {
           const flatValues = [...(new Set(String(value).split(",")))];
@@ -520,21 +515,71 @@
         }
       }
 
-      _queryItems(url, queryParams, successCallback) {
-        const reqUrl = new URL(url, window.location.href);
+      _selectItemAt(index) {
+        if (index >= 0 && index < this.displayItems.length) {
+          this._switchFocusItemAt(index);
+          this._selectItem(this.displayItems[index]);
+        }
+      }
 
-        Object.keys(queryParams).filter(key => queryParams[key] != undefined)
-          .forEach((key) => reqUrl.searchParams.append(key, queryParams[key]));
+      /**
+       * 选择选项
+       * @param item
+       */
+      _selectItem(item) {
+        // not yet selected
+        if (!~this.selectedValues.findIndex(selected => selected[this.attrForValue] == item[this.attrForValue])) {
+          if (this.multi) {
+            this.push('selectedValues', item);
+          } else {
+            this.selectedValues = [item];
+          }
+        }
 
-        const request = new Request(reqUrl, {
-          method: "GET",
-          credentials: "include"
-        });
+        this.displayCollapse(false);
+        this.__focusOnKeywordInput();
+        this.userInputKeyword = "";
+      }
 
-        this.fetchUtil.fetchIt(request)
-          .then(res => res.json())
-          .then(successCallback)
-          .catch(err => console.error(err));
+      /**
+       * 切换焦点到第n个元素，从0开始
+       * @param index
+       * @private
+       */
+      _switchFocusItemAt(index) {
+        setTimeout(() => {
+          const maxIndex = (this.displayItems || []).length;
+          const newIndex = (maxIndex + index) % maxIndex;
+          this.root.querySelectorAll("tr.candidate-item--focus")
+            .forEach(e => e.classList.remove('candidate-item--focus'));
+
+          const newFocusItem = this.root.querySelector(`#candidate-item__${newIndex}`);
+          if (newFocusItem != null) {
+            newFocusItem.classList.add('candidate-item--focus');
+            this.__focusIndex = newIndex;
+          }
+        }, 0);
+      }
+
+      _isPickerCollapseHidden() {
+        return this.$["picker-collapse"].hidden;
+      }
+
+      __openCollapse({target: {classList}}) {
+        if (classList.contains('tag-deleter')) return;
+
+        this.displayCollapse(true);
+        this.__focusOnKeywordInput();
+        this._switchFocusItemAt(0);
+      }
+
+      __focusOnKeywordInput() {
+        this.$.keywordInput.focus();
+      }
+
+      _selectCollapseItem(event) {
+        event.stopPropagation();
+        this._selectItem(event.model.row);
       }
 
       /**
@@ -554,15 +599,14 @@
         if (collapseOpend && event.altKey) {
           const ind = event.code.replace(/[A-Za-z]*/g, '') - 1;
           this._selectItemAt(ind);
+          
         } else {
-
           switch (key) {
             case 'ArrowUp':
               collapseOpend && this._switchFocusItemAt(this.__focusIndex - 1);
 
               break;
             case 'ArrowDown':
-
               if (collapseOpend) {
                 this._switchFocusItemAt(this.__focusIndex + 1);
               } else {
@@ -613,78 +657,7 @@
         return keys;
       }
 
-      _selectItemAt(index) {
-        if (index >= 0) {
-          this._switchFocusItemAt(index);
-        }
-        if (index >= 0 && index < this.displayItems.length) {
-          this._selectItem(this.displayItems[index]);
-        }
-      }
 
-      /**
-       * 选择选项
-       * @param item
-       */
-      _selectItem(item) {
-        // not yet selected
-        if (!~this.selectedValues.findIndex(selected => selected[this.attrForValue] == item[this.attrForValue])) {
-          if (this.multi) {
-            this.push('selectedValues', item);
-          } else {
-            this.selectedValues = [item];
-          }
-        }
-
-        this.displayCollapse(false);
-        this.userInputKeyword = "";
-        this.__focusOnKeywordInput();
-      }
-
-      /**
-       * 切换焦点到第n个元素，从0开始
-       * @param index
-       * @private
-       */
-      _switchFocusItemAt(index) {
-        setTimeout(() => {
-          const maxIndex = (this.displayItems || []).length;
-          const newIndex = (maxIndex + index) % maxIndex;
-          this.root.querySelectorAll("tr.candidate-item--focus")
-            .forEach(e => e.classList.remove('candidate-item--focus'));
-
-          const newFocusItem = this.root.querySelector(`#candidate-item__${newIndex}`);
-          if (newFocusItem != null) {
-            newFocusItem.classList.add('candidate-item--focus');
-            this.__focusIndex = newIndex;
-          }
-        }, 0);
-      }
-
-      _isPickerCollapseHidden() {
-        return this.$["picker-collapse"].hidden;
-      }
-
-      __openCollapse({target: {classList}}) {
-
-        if (classList.contains('tag-deleter')) {
-          return;
-        }
-
-        this.displayCollapse(true);
-        this.__focusOnKeywordInput();
-        this._switchFocusItemAt(0);
-      }
-
-      __focusOnKeywordInput() {
-        this.$.keywordInput.focus();
-      }
-
-
-      _selectCollapseItem(event) {
-        event.stopPropagation();
-        this._selectItem(event.model.row);
-      }
 
       deleteLastTag() {
         this.pop("selectedValues");
