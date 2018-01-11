@@ -552,7 +552,7 @@
 
         const collapseOpend = !this._isPickerCollapseHidden();
         if (collapseOpend && event.altKey) {
-          const ind = event.code.replace(/[A-Za-z]+/g, '') - 1;
+          const ind = event.code.replace(/[A-Za-z]*/g, '') - 1;
           this._selectItemAt(ind);
         } else {
 
@@ -638,6 +638,7 @@
 
         this.displayCollapse(false);
         this.userInputKeyword = "";
+        this.__focusOnKeywordInput();
       }
 
       /**
@@ -683,7 +684,6 @@
       _selectCollapseItem(event) {
         event.stopPropagation();
         this._selectItem(event.model.row);
-        this.__focusOnKeywordInput();
       }
 
       deleteLastTag() {
