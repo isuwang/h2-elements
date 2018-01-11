@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
-<link rel="import" href="h2-label.html">
+<link rel="import" href="./behaviors/base-behavior.html">
+<link rel="import" href="./h2-label.html">
 <!--
 
 ```javascript
@@ -15,260 +16,206 @@
 -->
 
 <dom-module id="h2-radio">
-    <template>
-        <style>
-            :host {
-                display: inline-block;
-                white-space: nowrap;
-                text-align: left;
-            }
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        height: 34px;
+        line-height: 34px;
+      }
 
-            :host .item-wrap {
-                display: flex;
-            }
+      :host([hidden]) {
+        display: none;
+      }
 
-            :host .status-wrap {
-                display: inline-block;
-                position: relative;
-                float: left;
-            }
+      h2-label {
+        @apply --h2-radio-label;
+      }
 
-            :host label {
-                display: inline-block;
-                line-height: 34px;
-                float: left;
-            }
+      .radio-wrapper {
+        display: flex;
+      }
 
-            :host .radio-label {
-                vertical-align: middle;
-            }
+      .candidate-wrapper {
+        display: inline-block;
+        position: relative;
+      }
 
-            :host iron-selector > * {
-                padding: 6px 10px;
-                font-size: 14px;
-                cursor: pointer;
-            }
+      .candidate-items {
+        display: inline-block;
+        vertical-align: middle;
+      }
 
-            :host .status-items {
-                display: inline-block;
-                vertical-align: middle;
-            }
+      .candidate__item:first-child {
+        border-left: 1px solid #ccc;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
 
-            :host iron-selector .status {
-                border-right: 1px solid #ccc;
-                border-bottom: 1px solid #ccc;
-                border-top: 1px solid #ccc;
-                float: left;
-                background-color: #ffffff;
-            }
+      .candidate__item {
+        height: inherit;
+        line-height: inherit;
+        padding: 0 8px;
+        font-size: inherit;
+        cursor: pointer;
 
-            /*第一项*/
-            :host iron-selector span.status:first-child {
-                border-left: 1px solid #ccc;
-                border-top-left-radius: 4px;
-                border-bottom-left-radius: 4px;
-            }
+        border: 1px solid #ccc;
+        border-left: none;
 
-            /*最后一项*/
-            :host iron-selector span.status:last-of-type {
-                border-top-right-radius: 4px;
-                border-bottom-right-radius: 4px;
-            }
+        float: left;
+        background-color: #ffffff;
+      }
 
-            /*奇数项hover*/
-            :host iron-selector span.status:nth-child(odd):hover {
-                background-color: #0099FF;
-                color: #fff;
-                border-right: 1px solid #0099FF;
-                border-bottom: 1px solid #0099FF;
-                border-top: 1px solid #0099FF;
-            }
+      .candidate__item:last-of-type {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
 
-            /*偶数项hover*/
-            :host iron-selector span.status:nth-child(even):hover {
-                background-color: var(--iron-selector-color-even, #0099FF);
-                color: #fff;
-                border-right: 1px solid var(--iron-selector-color-even, #0099FF);
-                border-bottom: 1px solid var(--iron-selector-color-even, #0099FF);
-                border-top: 1px solid var(--iron-selector-color-even, #0099FF);
-            }
+      .candidate__item:hover {
+        background-color: #0099FF;
+        color: #fff;
+        border-color: #0099FF;
+      }
 
-            /*奇数项选中*/
-            :host iron-selector span.status:nth-child(odd).iron-selected {
-                border-right: 1px solid #0099FF;
-                border-bottom: 1px solid #0099FF;
-                border-top: 1px solid #0099FF;
-                background-color: #0099FF;
-                color: #fff;
-            }
+      .candidate__item.iron-selected {
+        border-color: #0099FF;
+        background-color: #0099FF;
+        color: #fff;
+      }
 
-            /*偶数项选中*/
-            :host iron-selector span.status:nth-child(even).iron-selected {
-                border-right: 1px solid var(--iron-selector-color-even, #0099FF);
-                border-bottom: 1px solid var(--iron-selector-color-even, #0099FF);
-                border-top: 1px solid var(--iron-selector-color-even, #0099FF);
-                background-color: var(--iron-selector-color-even, #0099FF);
-                color: #fff;
-            }
+      :host([readonly]) .mask,
+      :host([disabled]) .mask {
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        right: -1px;
+        left: -1px;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 10;
+      }
 
-            :host iron-selector .status:first-child.iron-selected {
-                border-left: 1px solid #0099FF;
-            }
+    </style>
+    <div class="radio-wrapper">
+      <h2-label value="[[label]]"></h2-label>
+      <div class="candidate-wrapper">
+        <iron-selector class="candidate-items" selected="{{value}}" attr-for-selected="radio-item">
+          <template is="dom-repeat" items="[[items]]">
+            <span class="candidate__item" radio-item="[[ getValueByKey(item, attrForValue) ]]">
+              [[ getValueByKey(item, attrForLabel) ]]
+            </span>
+          </template>
+        </iron-selector>
+        <div class="mask"></div>
+      </div>
+    </div>
 
-            :host .required-input {
-                border: 1px solid red;
-                border-radius: 4px;
-            }
+  </template>
+  <script>
+    /**
+     * `h2-radio`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-radio/index.html
+     */
+    class H2Radio extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+      static get properties() {
+        return {
+          /**
+           *
+           * 标签名字
+           * eg：1
+           *
+           * @attribute label
+           * @type {String}
+           */
+          label: {
+            type: String
+          },
+          /**
+           *
+           * 初始选择项和items的value值相对应
+           * eg：1
+           *
+           * @attribute selected
+           * @type {String}
+           */
+          value: {
+            type: String,
+            notify: true
+          },
+          /**
+           *
+           * 需要展示的数据项
+           * eg：[{value:1,label:"全部",count:"19"}]
+           *
+           * @attribute items
+           * @type {Array}
+           */
+          items: {
+            type: Array
+          },
+          /**
+           * 是否必填，默认非必填
+           * eg：true
+           */
+          required: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 是否可编辑,默认可以编辑
+           * eg：true
+           */
+          readonly: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * 用来取值的字段，默认为value
+           * 对应items：[{value:1,label:"全部",count:"19"}] value属性
+           */
+          attrForValue: {
+            type: String,
+            value: "value"
+          },
+          /**
+           * 用来展示的字段，默认为label
+           * 对应items：[{value:1,label:"全部",count:"19"}] label属性
+           */
+          attrForLabel: {
+            type: String,
+            value: "label"
+          }
+        };
+      }
 
-            :host .shade {
-                display: none;
-                position: absolute;
-                top: 0%;
-                left: 0%;
-                width: 100%;
-                height: 100%;
-                background-color: black;
-                z-index: 99;
-                opacity: .00;
-                border-radius: 4px;
-            }
-        </style>
-        <div class="item-wrap">
-            <h2-label value="[[label]]" required="[[required]]"></h2-label>
-            <div class="status-wrap">
-                <iron-selector class="status-items" selected="{{value}}" attr-for-selected="radio-item">
-                    <template is="dom-repeat" items="[[items]]">
-                        <span class="status" radio-item="{{__getItemValueByName(item,attrForValue)}}">{{__getItemValueByName(item,attrForLabel)}}</span>
-                    </template>
-                </iron-selector>
-                <div class="shade"></div>
-            </div>
-        </div>
+      static get is() {
+        return "h2-radio";
+      }
 
-    </template>
-    <script>
-        /**
-         * `h2-radio`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-radio/index.html
-         */
-        class H2Radio extends Polymer.Element {
-            static get properties() {
-                return {
-                    /**
-                     *
-                     * 标签名字
-                     * eg：1
-                     *
-                     * @attribute label
-                     * @type {String}
-                     */
-                    label: {
-                        type: String,
-                        value: ""
-                    },
-                    /**
-                     *
-                     * 初始选择项和items的value值相对应
-                     * eg：1
-                     *
-                     * @attribute selected
-                     * @type {String}
-                     */
-                    value: {
-                        type: String,
-                        reflectToAttribute: true,
-                        notify: true,
-                        observer: "__valueChanged"
-                    },
-                    /**
-                     *
-                     * 需要展示的数据项
-                     * eg：[{value:1,label:"全部",count:"19"}]
-                     *
-                     * @attribute items
-                     * @type {Array}
-                     */
-                    items: {
-                        type: Array,
-                        value: []
-                    },
-                    /**
-                     * 是否必填，默认非必填
-                     * eg：true
-                     */
-                    required: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * 是否可编辑,默认可以编辑
-                     * eg：true
-                     */
-                    readonly: {
-                        type: Boolean,
-                        value: false,
-                        observer: '_modeChange'
-                    },
-                    /**
-                     * 用来取值的字段，默认为value
-                     * 对应items：[{value:1,label:"全部",count:"19"}] value属性
-                     */
-                    attrForValue: {
-                        type: String,
-                        value: "value"
-                    },
-                    /**
-                     * 用来展示的字段，默认为label
-                     * 对应items：[{value:1,label:"全部",count:"19"}] label属性
-                     */
-                    attrForLabel: {
-                        type: String,
-                        value: "label"
-                    }
-                };
-            }
+      static get observers() {
+        return [
+          '_requiredChanged(required)',
+        ];
+      }
 
-            static get is() {
-                return "h2-radio";
-            }
-
-            _modeChange(newVal) {
-                if (newVal) {
-                    this.root.querySelector('.shade').style.display = 'block';
-                } else {
-                    this.root.querySelector('.shade').style.display = 'none';
-                }
-            }
-
-            __getItemValueByName(item, name) {
-                if (item && name) {
-                    return item[name]
-                }
-            }
-
-            __valueChanged() {
-                this.validate();
-            }
-
-            validate() {
-                const verify_pss = this.required ? this.value !=undefined : true;
-                let element = this.root.querySelector('.status-items');
-                if (!verify_pss) {
-                    element.classList.add("required-input");
-                } else {
-                    element.classList.remove("required-input");
-                }
-                return verify_pss
-            }
-
-            ready() {
-                super.ready();
-            }
+      _requiredChanged() {
+        if(this.required) { // TODO
+          // 如果必填， 默认选中第一项
+          this.value = this.items[0][this.attrForValue];
         }
+      }
 
-        window.customElements.define(H2Radio.is, H2Radio);
-    </script>
+      validate() {
+        return true;
+      }
+
+      ready() {
+        super.ready();
+      }
+    }
+
+    window.customElements.define(H2Radio.is, H2Radio);
+  </script>
 </dom-module>
