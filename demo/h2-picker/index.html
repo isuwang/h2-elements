@@ -1,202 +1,208 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-picker demo</title>
+  <title>h2-picker demo</title>
 
-    <script>
-        if (!window.location.href.endsWith("?mock=mockData.js")) {
-            window.location.href = window.location.href + "?mock=mockData.js";
+  <script>
+    if (!window.location.href.endsWith("?mock=mockData.js")) {
+      window.location.href = window.location.href + "?mock=mockData.js";
+    }
+  </script>
+
+  <script type="text/javascript" src="../../utils/mock_setup.js"></script>
+
+
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-picker.html">
+
+
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
+
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
         }
-    </script>
+      }
 
-    <script type="text/javascript" src="../../utils/mock_setup.js"></script>
+      #picker6 {
+        --h2-picker-input-width: 170px;
+        --h2-picker-tags-box-width: 180px;
+      }
 
+      h2-picker {
+        margin-bottom: 10px;
+      }
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-picker.html">
-
-
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
-
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
-
-            #picker6 {
-                --h2-picker-input-width: 170px;
-                --h2-picker-tags-box-width: 180px;
-            }
-        </style>
-    </custom-style>
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>基础demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-picker id="picker" label="公司"></h2-picker>
-            <script>
-                /**
-                 * 整个demo页面共用这份数据
-                 */
-                const attrForValue = "id";
-                const attrForLabel = "label";
-                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
-                const items = [
-                    {"id": 1, "label": "快塑网", "business": "塑料"},
-                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
-                    {"id": 3, "label": "腾讯", "business": "游戏"},
-                    {"id": 4, "label": "京东", "business": "电商"}
-                ];
-                picker.attrForValue = attrForValue;
-                picker.attrForLabel = attrForLabel;
-                picker.displayFields = displayFields;
-                picker.items = items;
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>支持单选、多选、输入关键字过滤下拉选项</h3>
+  <demo-snippet>
+    <template>
+      <h2-picker id="picker" label="单选" value="1" attr-for-value="id"></h2-picker>
+      <h2-picker id="picker1" label="多选" value="1,2,3,4" attr-for-value="id" multi></h2-picker>
+      <script>
+        const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+        const items = [
+          {"id": 1, "label": "快塑网", "business": "塑料"},
+          {"id": 2, "label": "阿里巴巴", "business": "电商"},
+          {"id": 3, "label": "腾讯", "business": "游戏"},
+          {"id": 4, "label": "京东", "business": "电商"},
+          {"id": 5, "label": "京东1", "business": "电商"},
+          {"id": 6, "label": "京东22", "business": "电商"}
+        ];
+        picker.displayFields = displayFields;
+        picker.items = items;
 
-    <h3>支持单选、多选</h3>
-    <demo-snippet>
-        <template>
-            <h2-picker id="picker1" label="单选框" style="width:250px" value="1"></h2-picker>
-            <h2-picker id="picker2" label="多选框" style="width:250px" multi value="1,2,3,4"></h2-picker>
-            <script>
-                picker1.attrForValue = attrForValue;
-                picker1.attrForLabel = attrForLabel;
-                picker1.displayFields = displayFields;
-                picker1.items = items;
+        picker1.displayFields = displayFields;
+        picker1.items = items;
+      </script>
+    </template>
+  </demo-snippet>
 
-                picker2.attrForValue = attrForValue;
-                picker2.attrForLabel = attrForLabel;
-                picker2.displayFields = displayFields;
-                picker2.items = items;
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>支持只读、必填属性</h3>
+  <demo-snippet>
+    <template>
+      <h2-picker id="picker3" label="公司" value="1,2,3" attr-for-value="id" multi readonly></h2-picker>
+      <h2-picker id="picker4" label="公司" value="1,2,3" attr-for-value="id" multi required></h2-picker>
+      <script>
 
-    <h3>支持只读、必填属性</h3>
-    <demo-snippet>
-        <template>
-            <h2-picker id="picker3" label="公司" value="1,2,3" multi readonly style="width:250px"></h2-picker>
-            <h2-picker id="picker4" label="公司" value="1,2,3" multi required style="width:250px"></h2-picker>
-            <script>
-                picker3.attrForValue = attrForValue;
-                picker3.attrForLabel = attrForLabel;
-                picker3.displayFields = displayFields;
-                picker3.items = items;
+        picker3.displayFields = displayFields;
+        picker3.items = items;
+        
+        picker4.displayFields = displayFields;
+        picker4.items = items;
+      </script>
+    </template>
+  </demo-snippet>
 
-                picker4.attrForValue = attrForValue;
-                picker4.attrForLabel = attrForLabel;
-                picker4.displayFields = displayFields;
-                picker4.items = items;
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>支持输入框宽度属性，自定义组件宽度</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #picker5 {
+            width: 250px;
+            height: 70px;
+            line-height: 70px;
+          }
+        </style>
+      </custom-style>
+      <h2-picker id="picker5" label="公司" multi attr-for-value="id" value="1,2,3,4,5"></h2-picker>
+      <script>
+        picker5.displayFields = displayFields;
+        picker5.items = items;
 
-    <h3>支持输入框宽度属性，自定义组件宽度</h3>
-    <demo-snippet>
-        <template>
-            <h2-picker id="picker5" label="原始宽度" multi></h2-picker>
-            <h2-picker id="picker6" class="picker" label="输入区宽度" multi></h2-picker>
-            <h2-picker id="picker7" label="组件宽度" multi style="width:250px"></h2-picker>
-            <script>
-                /**
-                 * 不给h2-picker写任何宽度样式的时候，组件会自动撑宽
-                 */
-                picker5.attrForValue = attrForValue;
-                picker5.attrForLabel = attrForLabel;
-                picker5.displayFields = displayFields;
-                picker5.items = items;
+      </script>
+    </template>
+  </demo-snippet>
 
-                /**
-                 * 通过样式钩子控制输入区宽度，输入框宽度要比标签盒子宽度少10px
-                 * #picker6 {
-                 *   --h2-picker-input-width: 170px;
-                 *   --h2-picker-tags-box-width: 180px;
-                 * }
-                 */
-                picker6.attrForValue = attrForValue;
-                picker6.attrForLabel = attrForLabel;
-                picker6.displayFields = displayFields;
-                picker6.items = items;
+  <h3>支持自定义模糊搜索的字段（默认为对所有字段做搜索缓存）</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #picker6,
+          #picker7 {
+            width: 350px;
+            --h2-picker-label: {
+              width: 120px;
+            }
+          }
+        </style>
+      </custom-style>
+      <h2-picker id="picker6" label="默认" attr-for-value="id"></h2-picker>
+      <h2-picker id="picker7" label="自定义搜索字段" attr-for-value="id"></h2-picker>
+      <script>
+        picker6.displayFields = displayFields;
+        picker6.items = items;
 
-                /**
-                 * 建议直接给h2-picker写宽度样式来控制组件宽度
-                 */
-                picker7.attrForValue = attrForValue;
-                picker7.attrForLabel = attrForLabel;
-                picker7.displayFields = displayFields;
-                picker7.items = items;
-            </script>
-        </template>
-    </demo-snippet>
+        picker7.displayFields = displayFields;
+        picker7.searchFields = ["business"];
+        picker7.items = items;
+      </script>
+    </template>
+  </demo-snippet>
 
-    <h3>支持自定义模糊搜索的字段（默认为对所有字段做搜索缓存）</h3>
-    <demo-snippet>
-        <template>
-            <h2-picker id="picker8" label="默认" style="width:250px"></h2-picker>
-            <h2-picker id="picker9" label="自定义只搜索label字段" style="width:400px"></h2-picker>
-            <script>
-                const attrForValue = "id";
-                const attrForLabel = "label";
-                const displayFields = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
-                const items = [
-                    {"id": 1, "label": "快塑网", "business": "塑料"},
-                    {"id": 2, "label": "阿里巴巴", "business": "电商"},
-                    {"id": 3, "label": "腾讯", "business": "游戏"},
-                    {"id": 4, "label": "京东", "business": "电商"}
-                ];
-                picker8.attrForValue = attrForValue;
-                picker8.attrForLabel = attrForLabel;
-                picker8.displayFields = displayFields;
-                picker8.value = 1;
-                picker8.items = items;
+  <h3>自定义初始数据源</h3>
+  <demo-snippet>
+    <template>
+      <h2-picker id="picker8" src="/init.do" label="公司" attr-for-value="id"></h2-picker>
+      <script>
+        picker8.displayFields = displayFields;
+      </script>
+    </template>
+  </demo-snippet>
 
-                picker9.attrForValue = attrForValue;
-                picker9.attrForLabel = attrForLabel;
-                picker9.displayFields = displayFields;
-                picker9.searchFields = ["label"];
-                picker9.items = items;
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>通过接口搜索数据</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #picker9 {
+            height: 70px;
+            line-height: 70px;
+          }
+        </style>
+      </custom-style>
+      <h2-picker id="picker9"
+                 label="公司"
+                 src="/init.do"
+                 keyword-search-src="/more_banks.do"
+                 value="1,2,3"
+                 multi
+                 attr-for-value="id"></h2-picker>
+      <script>
+        picker9.displayFields = displayFields;
+        picker9.itemsQueryParams = {limit: 10, code: "business"};
+      </script>
+    </template>
+  </demo-snippet>
 
-    <h3>支持通过接口查询数据（items，searchFields，usePinyinSearch本地搜索配置字段的将失效，无需配置）</h3>
-    <demo-snippet>
-        <template>
-            <h2-picker id="picker10" label="公司" style="width:250px"></h2-picker>
-            <h2-picker id="picker11" label="公司" multi style="width:250px"></h2-picker>
-            <script>
-                picker10.attrForValue = attrForValue;
-                picker10.attrForLabel = attrForLabel;
-                picker10.displayFields = displayFields;
-                picker10.itemsInitQueryUrl = "/init.do";
-                picker10.itemsQueryUrl = "/query.do";
-                picker10.value = "4";
-
-                picker11.attrForValue = attrForValue;
-                picker11.attrForLabel = attrForLabel;
-                picker11.displayFields = displayFields;
-                picker11.itemsQueryUrl = "/query.do";
-                picker11.itemsInitQueryUrl = "/init.do";
-                picker11.itemsQueryParams = {limit: 10, code: "business"};
-                picker11.value = "1,2,3"
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>键盘快捷键操作</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #picker10 {
+            height: 70px;
+            line-height: 70px;
+          }
+        </style>
+      </custom-style>
+      <h2-picker id="picker10"
+                 label="公司"
+                 src="/init.do"
+                 keyword-search-src="/more_banks.do"
+                 value="1,2,3"
+                 multi
+                 attr-for-value="id"></h2-picker>
+      <p>
+      <ul>
+        <li>下拉选择框打开是，键盘UP, DOWN键 切换选项</li>
+        <li>Space 或 Enter 选择选项</li>
+        <li>光标闪烁，且下拉框收起时，DOWN键 可以重新打开下拉框</li>
+        <li>没有输入内容时，Backspace 可删除选中项</li>
+      </ul>
+      </p>
+      <script>
+        picker9.displayFields = displayFields;
+        picker9.itemsQueryParams = {limit: 10, code: "business"};
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>
