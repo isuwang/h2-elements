@@ -1,82 +1,72 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-radio demo</title>
+  <title>h2-radio demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-radio.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-radio.html">
 
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
 
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
-        </style>
-    </custom-style>
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>h2-radio</h3>
-    <demo-snippet>
-        <template>
-            <h2-radio id="radio" label="性别" value=1></h2-radio>
-            <script>
-                radio.items = [{value: 1, label: "男"}, {value: 2, label: "女"}];
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>h2-radio</h3>
+  <demo-snippet>
+    <template>
+      <h2-radio id="radio" label="性别" value="1"></h2-radio>
+      <script>
+        radio.items = [{value: 1, label: "男"}, {value: 2, label: "女"}];
+      </script>
+    </template>
+  </demo-snippet>
 
-    <h3>自定义label、value字段</h3>
-    <demo-snippet>
-        <template>
-            <h2-radio id="radio2" label="姓名" attr-for-value="id" attr-for-label="name" value=3></h2-radio>
-            <script>
-                radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>自定义label、value字段</h3>
+  <demo-snippet>
+    <template>
+      <h2-radio id="radio2" label="姓名" attr-for-value="id" attr-for-label="name" value="3"></h2-radio>
+      <script>
+        radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四水电费"}, {id: 3, name: "王五"}]
+      </script>
+    </template>
+  </demo-snippet>
 
-    <h3>可以没有label</h3>
-    <demo-snippet>
-        <template>
-            <h2-radio id="radio3" label="姓名" attr-for-value="id" attr-for-label="name"></h2-radio>
-            <script>
-                radio3.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>支持只读属性</h3>
+  <demo-snippet>
+    <template>
+      <h2-radio id="radio4" label="姓名" attr-for-value="id" attr-for-label="name" value="1" readonly></h2-radio>
+      <script>
+        radio4.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
+      </script>
+    </template>
+  </demo-snippet>
 
-    <h3>支持只读属性</h3>
-    <demo-snippet>
-        <template>
-            <h2-radio id="radio4" label="姓名" attr-for-value="id" attr-for-label="name" readonly></h2-radio>
-            <script>
-                radio4.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
-            </script>
-        </template>
-    </demo-snippet>
-
-    <h3>支持必填属性</h3>
-    <demo-snippet>
-        <template>
-            <h2-radio id="radio5" label="姓名" attr-for-value="id" attr-for-label="name" required></h2-radio>
-            <script>
-                radio5.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>支持必选, 必选时默认选中第一项</h3>
+  <demo-snippet>
+    <template>
+      <h2-radio id="radio5" label="姓名" attr-for-value="id" attr-for-label="name" required></h2-radio>
+      <script>
+        radio5.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>

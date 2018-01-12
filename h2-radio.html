@@ -28,10 +28,6 @@
         display: none;
       }
 
-      h2-label {
-        @apply --h2-radio-label;
-      }
-
       .radio-wrapper {
         display: flex;
       }
@@ -46,10 +42,14 @@
         vertical-align: middle;
       }
 
-      .candidate__item:first-child {
-        border-left: 1px solid #ccc;
+      .candidate__item:first-of-type {
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;
+      }
+
+      .candidate__item:last-of-type {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
       }
 
       .candidate__item {
@@ -58,29 +58,20 @@
         padding: 0 8px;
         font-size: inherit;
         cursor: pointer;
-
         border: 1px solid #ccc;
-        border-left: none;
-
         float: left;
         background-color: #ffffff;
       }
 
-      .candidate__item:last-of-type {
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
+      .candidate__item:not(:last-of-type) {
+        border-right: none;
       }
 
-      .candidate__item:hover {
-        background-color: #0099FF;
-        color: #fff;
-        border-color: #0099FF;
-      }
-
+      .candidate__item:hover,
       .candidate__item.iron-selected {
-        border-color: #0099FF;
         background-color: #0099FF;
         color: #fff;
+        border-color: #0099FF;
       }
 
       :host([readonly]) .mask,
@@ -127,7 +118,7 @@
            * eg：1
            *
            * @attribute label
-           * @type {String}
+           * @type {string}
            */
           label: {
             type: String
@@ -138,7 +129,7 @@
            * eg：1
            *
            * @attribute selected
-           * @type {String}
+           * @type {string}
            */
           value: {
             type: String,
@@ -147,10 +138,10 @@
           /**
            *
            * 需要展示的数据项
-           * eg：[{value:1,label:"全部",count:"19"}]
+           * eg：[{value:1, label:"全部", count:"19"}]
            *
            * @attribute items
-           * @type {Array}
+           * @type {array}
            */
           items: {
             type: Array
@@ -158,6 +149,7 @@
           /**
            * 是否必填，默认非必填
            * eg：true
+           * @type {boolean}
            */
           required: {
             type: Boolean,
@@ -166,22 +158,23 @@
           /**
            * 是否可编辑,默认可以编辑
            * eg：true
+           * @type {boolean}
            */
           readonly: {
             type: Boolean,
             value: false
           },
           /**
-           * 用来取值的字段，默认为value
-           * 对应items：[{value:1,label:"全部",count:"19"}] value属性
+           * 值字段名，默认为value
+           * @type {string}
            */
           attrForValue: {
             type: String,
             value: "value"
           },
           /**
-           * 用来展示的字段，默认为label
-           * 对应items：[{value:1,label:"全部",count:"19"}] label属性
+           * 用来展示的字段名，默认为label
+           * @type {string}
            */
           attrForLabel: {
             type: String,
@@ -196,23 +189,19 @@
 
       static get observers() {
         return [
-          '_requiredChanged(required)',
+          '_requiredChanged(value, required, items)',
         ];
       }
 
-      _requiredChanged() {
-        if(this.required) { // TODO
+      _requiredChanged(value, required, items = []) {
+        if(required && items.length > 0 && value == undefined) {
           // 如果必填， 默认选中第一项
-          this.value = this.items[0][this.attrForValue];
+          this.value = items[0][this.attrForValue];
         }
       }
 
       validate() {
         return true;
-      }
-
-      ready() {
-        super.ready();
       }
     }
 
