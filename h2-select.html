@@ -451,11 +451,7 @@
       }
 
       _displayPlaceholder(display) {
-        if (display) {
-          this.$.placeholder.removeAttribute('hidden');
-        } else {
-          this.$.placeholder.setAttribute('hidden', '');
-        }
+        this.$.placeholder.hidden = !display;
       }
 
       openCollapse() {
