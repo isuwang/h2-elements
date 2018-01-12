@@ -31,7 +31,12 @@
   <h3>Basic h2-pagination demo</h3>
   <demo-snippet>
     <template>
-      <h2-pagination></h2-pagination>
+      <h2-pagination id="page" total="30" limit="5"></h2-pagination>
+      <script>
+        page.addEventListener("paging-changed", e => {
+          console.log(e.detail);
+        });
+      </script>
     </template>
   </demo-snippet>
 </div>
