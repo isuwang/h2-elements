@@ -23,6 +23,10 @@
           max-height: 500px;
         }
       }
+
+      h2-textarea {
+        margin-bottom: 10px;
+      }
     </style>
   </custom-style>
 </head>
@@ -31,8 +35,53 @@
   <h3>Basic h2-textarea demo</h3>
   <demo-snippet>
     <template>
-      <h2-textarea label="备注" rows="3" max-rows="3"></h2-textarea>
-      <h2-textarea label="备注" rows="3" max-rows="3" required></h2-textarea>
+      <h2-textarea label="备注" placeholder="请输入备注"></h2-textarea>
+    </template>
+  </demo-snippet>
+
+  <h3>Readonly/disabled h2-textarea</h3>
+  <demo-snippet>
+    <template>
+      <h2-textarea label="备注" value="readonly" readonly></h2-textarea>
+      <h2-textarea label="备注" value="disabled" disabled></h2-textarea>
+    </template>
+  </demo-snippet>
+
+  <h3>Required h2-textarea</h3>
+  <demo-snippet>
+    <template>
+      <h2-textarea label="备注" required prompt="请输入备注"></h2-textarea>
+    </template>
+  </demo-snippet>
+
+  <h3>Length control</h3>
+  <demo-snippet>
+    <template>
+      <h2-textarea label="备注" minlength="3" maxlength="10" prompt="字符长度要求：3到10"></h2-textarea>
+    </template>
+  </demo-snippet>
+
+  <h3>Custom style</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #textarea {
+            font-size: 18px;
+            width: 500px;
+            height: 80px;
+            --h2-textarea: {
+              background: grey;
+              color: white;
+              font-size: 1.2em;
+            };
+            --h2-textarea-placeholder: {
+              color: #fff9c4;
+            }
+          }
+        </style>
+      </custom-style>
+      <h2-textarea id="textarea" label="备注" placeholder="请输入备注"></h2-textarea>
     </template>
   </demo-snippet>
 </div>
