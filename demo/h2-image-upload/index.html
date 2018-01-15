@@ -20,9 +20,10 @@
 
       demo-snippet {
         --demo-snippet-code: {
-          max-height: 500px;
+          max-height: 800px;
         }
       }
+
     </style>
   </custom-style>
 </head>
@@ -31,8 +32,47 @@
   <h3>Basic h2-image-upload demo</h3>
   <demo-snippet>
     <template>
-      <h2-image-upload editable></h2-image-upload>
-      <h2-image-upload src="https://d1.awsstatic.com/product-marketing/Elastic%20Beanstalk/ElasticBeanstalk_Benefit_Productivity.5cd0e6aedfa2e3b2c05ed7f5faeb0fd215c9742b.png" ></h2-image-upload>
+      <custom-style>
+        <style>
+          #uploader {
+
+          }
+        </style>
+      </custom-style>
+      <h2-image-upload id="uploader" label="上河图"></h2-image-upload>
+    </template>
+  </demo-snippet>
+
+  <h3>Custom style</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #uploader1 {
+            --h2-image-upload-btn-bg-color: #71a7b7;
+            --h2-image-upload-width: 120px;
+            --h2-image-upload-height: 160px;
+            --h2-image-upload-label: {
+              align-self: flex-end;
+            };
+          }
+        </style>
+      </custom-style>
+      <h2-image-upload id="uploader1" label="上河图"></h2-image-upload>
+    </template>
+  </demo-snippet>
+
+  <h3>File Size limit</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #uploader2 {
+            width: 150px;
+          }
+        </style>
+      </custom-style>
+      <h2-image-upload id="uploader2" size-limit="1.4M"></h2-image-upload>
     </template>
   </demo-snippet>
 </div>
