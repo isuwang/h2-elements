@@ -1,149 +1,198 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-form demo</title>
-    <script>
-        if (!window.location.href.endsWith("?mock=formMockData.js")) {
-            window.location.href = window.location.href + "?mock=formMockData.js";
+  <title>h2-form demo</title>
+  <script>
+    if (!window.location.href.endsWith("?mock=formMockData.js")) {
+      window.location.href = window.location.href + "?mock=formMockData.js";
+    }
+  </script>
+
+  <script type="text/javascript" src="../../utils/mock_setup.js"></script>
+
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-form.html">
+  <link rel="import" href="../../h2-input.html">
+  <link rel="import" href="../../h2-button.html">
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
+
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
         }
-    </script>
+      }
 
-    <script type="text/javascript" src="../../utils/mock_setup.js"></script>
-
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-form.html">
-    <link rel="import" href="../../h2-input.html">
-
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
-
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
-
-            #form4 {
-                --form-container-style: {
-                    grid-template-columns: 33% 33% 33%;
-                }
-            }
-        </style>
-    </custom-style>
+      #form4 {
+        --form-container-style: {
+          grid-template-columns: 33% 33% 33%;
+        }
+      }
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic h2-form demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-form title="demo" id="form" url="/test.do">
-                <h2-input label="公司名称" name="company"></h2-input>
-                <h2-input label="地址" name="address"></h2-input>
-                <h2-input label="姓名" name="name"></h2-input>
-                <h2-input label="年龄" name="age"></h2-input>
-            </h2-form>
+  <h3>Basic h2-form demo</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          .form-input {
+            width: 350px;
+            --h2-input-label: {
+              width: 80px;
+            }
+          }
+        </style>
+      </custom-style>
+      <h2-form title="demo" id="form" action="/test.do">
+        <h2-input class="form-input" label="公司名称" name="company"></h2-input>
+        <h2-input class="form-input" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+        <h2-input class="form-input" label="地址" name="address"></h2-input>
+        <h2-input class="form-input" label="姓名" name="name"></h2-input>
+        <h2-input class="form-input" label="年龄" name="age" type="number" required min="10" max="20"
+                  prompt="年龄介乎10到20之间"></h2-input>
+        <h2-button slot="form-btn" form-submit>提交</h2-button>
+      </h2-form>
+      <script>
+        form.addEventListener('submitted', e => console.log('submitted', e))
+        form.addEventListener('error', e => console.log('error', e))
+      </script>
+    </template>
+    <script>
+      form.addEventListener("response-body-changed", (e) => {
+        alert(JSON.stringify(e.detail.value));
+      });
+    </script>
 
-        </template>
-        <script>
-            form.addEventListener("response-body-changed", (e) => {
-                alert(JSON.stringify(e.detail.value));
-            });
-        </script>
-
-    </demo-snippet>
+  </demo-snippet>
 </div>
 <div class="vertical-section-container centered">
-    <h3>h2-form submit as json demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-form title="demo" id="form1" url="/test1.do" submit-type="json">
-                <h2-input label="公司名称" name="company"></h2-input>
-                <h2-input label="地址" name="address"></h2-input>
-                <h2-input label="姓名" name="name"></h2-input>
-                <h2-input label="年龄" name="age"></h2-input>
-            </h2-form>
+  <h3>Setting Enctype</h3>
+  <demo-snippet>
+    <template>
+      <h2-form title="demo" id="form1" action="/test1.do" enctype="application/x-www-form-urlencoded">
+        <h2-input class="form-input" label="公司名称" name="company"></h2-input>
+        <h2-input class="form-input" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+        <h2-input class="form-input" label="地址" name="address"></h2-input>
+        <h2-input class="form-input" label="姓名" name="name"></h2-input>
+        <h2-button slot="form-btn" form-submit>提交</h2-button>
+      </h2-form>
 
-        </template>
-        <script>
-            form1.addEventListener("response-body-changed", (e) => {
-                alert(e.detail.value.message);
-            });
-        </script>
-    </demo-snippet>
+    </template>
+    <script>
+      form1.addEventListener("response-body-changed", (e) => {
+        alert(e.detail.value.message);
+      });
+    </script>
+  </demo-snippet>
 </div>
 <div class="vertical-section-container centered">
-    <h3>h2-form response as text demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-form title="demo" id="form2" url="/test2.do" method="GET">
-                <h2-input label="公司名称" name="company"></h2-input>
-                <h2-input label="地址" name="address"></h2-input>
-                <h2-input label="姓名" name="name"></h2-input>
-                <h2-input label="年龄" name="age"></h2-input>
-            </h2-form>
+  <h3>Setting Enctype</h3>
+  <demo-snippet>
+    <template>
+      <h2-form title="demo" id="form2" action="/test2.do" enctype="multipart/form-data">
+        <h2-input class="form-input" label="公司名称" name="company"></h2-input>
+        <h2-input class="form-input" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+        <h2-input class="form-input" label="地址" name="address"></h2-input>
+        <h2-input class="form-input" label="姓名" name="name"></h2-input>
+        <h2-button slot="form-btn" form-submit>提交</h2-button>
+      </h2-form>
 
-        </template>
-        <script>
-            form2.addEventListener("response-body-changed", (e) => {
-                alert(e.detail);
-            });
-        </script>
-    </demo-snippet>
+    </template>
+    <script>
+      form2.addEventListener("response-body-changed", (e) => {
+        alert(e.detail);
+      });
+    </script>
+  </demo-snippet>
 </div>
 <div class="vertical-section-container centered">
-    <h3>h2-form hide button demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-form title="demo" id="form3" url="/test3.do" hide-submit-btn hide-reset-btn>
-                <h2-input label="公司名称" name="company" value="demo company"></h2-input>
-                <h2-input label="地址" name="address" value="guangzhou"></h2-input>
-                <h2-input label="姓名" name="name" value="jack"></h2-input>
-                <h2-input label="年龄" name="age" value="22"></h2-input>
-            </h2-form>
-        </template>
-    </demo-snippet>
-</div>
-
-<div class="vertical-section-container centered">
-    <h3>h2-form define submit demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-form title="demo" id="form4" url="/test4.do" hide-reset-btn>
-                <h2-input label="公司名称" name="company" value="demo company"></h2-input>
-                <h2-input label="地址" name="address" value="guangzhou"></h2-input>
-                <h2-input label="姓名" name="name" value="jack"></h2-input>
-                <h2-input label="年龄" name="age" value="22"></h2-input>
-            </h2-form>
-            <script>
-                form3.bindSubmit = () => {
-                    alert("User-define Submit Function");
-                }
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>Setting method</h3>
+  <demo-snippet>
+    <template>
+      <h2-form title="demo" id="form3" action="/test3.do" method="GET">
+        <h2-input class="form-input" label="公司名称" name="company"></h2-input>
+        <h2-input class="form-input" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+        <h2-input class="form-input" label="地址" name="address"></h2-input>
+        <h2-input class="form-input" label="姓名" name="name"></h2-input>
+        <h2-button slot="form-btn" form-submit>提交</h2-button>
+      </h2-form>
+    </template>
+  </demo-snippet>
 </div>
 
 <div class="vertical-section-container centered">
-    <h3>Change h2-form style demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-form title="demo" id="form5" url="/test5.do">
-                <h2-input label="公司名称" name="company"></h2-input>
-                <h2-input label="地址" name="address"></h2-input>
-                <h2-input label="姓名" name="name"></h2-input>
-                <h2-input label="年龄" name="age"></h2-input>
-            </h2-form>
-        </template>
-    </demo-snippet>
+  <h3>novalidate</h3>
+  <demo-snippet>
+    <template>
+      <h2-form title="demo" id="form4" action="/test4.do" novalidate>
+        <h2-input class="form-input" label="公司名称" name="company"></h2-input>
+        <h2-input class="form-input" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+        <h2-input class="form-input" label="地址" name="address"></h2-input>
+        <h2-input class="form-input" label="姓名" name="name"></h2-input>
+        <h2-input class="form-input" label="年龄" name="age" type="number" required min="10" max="20"
+                  prompt="年龄介乎10到20之间"></h2-input>
+        <h2-button slot="form-btn" form-submit>提交</h2-button>
+      </h2-form>
+      <script>
+        form3.bindSubmit = () => {
+          alert("User-define Submit Function");
+        }
+      </script>
+    </template>
+  </demo-snippet>
+</div>
+
+<div class="vertical-section-container centered">
+  <h3>Custom style</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #form5 {
+            --h2-form: {
+              grid-template-columns: 30% 30% 30%;
+              grid-column-gap: 3%;
+              grid-row-gap: 20px;
+            };
+            --h2-form-title: {
+              text-align: center;
+            };
+            --h2-form-button: {
+              justify-content: flex-start;
+            };
+          }
+          .form-input1 {
+            width: 240px;
+
+            --h2-input-label: {
+              width: 80px;
+            };
+          }
+        </style>
+      </custom-style>
+      <h2-form title="Demo" id="form5" action="/test5.do">
+        <h2-input class="form-input1" label="公司名称" name="company"></h2-input>
+        <h2-input class="form-input1" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+        <h2-input class="form-input1" label="地址" name="address"></h2-input>
+        <h2-input class="form-input1" label="姓名" name="name"></h2-input>
+        <h2-input class="form-input1" label="年龄" name="age" type="number" required min="10" max="20"
+                  prompt="年龄介乎10到20之间"></h2-input>
+        <h2-button slot="form-btn" form-submit>提交</h2-button>
+      </h2-form>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>

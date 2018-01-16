@@ -1,207 +1,204 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="behaviors/base-behavior.html">
-<link rel="import" href="behaviors/ajax-behavior.html">
-<link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="h2-fetch.html">
+<link rel="import" href="./h2-fetch.html">
 
 <!--
 
-```javascript
-
-<h2-form></h2-form>
+```html
+<h2-form title="demo" action="/test.do">
+  <h2-input class="form-input" label="公司名称" name="company"></h2-input>
+  <h2-input class="form-input" label="电话" name="tel" type="tel" maxlength="11"></h2-input>
+  <h2-input class="form-input" label="地址" name="address"></h2-input>
+  <h2-input class="form-input" label="姓名" name="name"></h2-input>
+  <h2-input class="form-input" label="年龄" name="age" type="number"></h2-input>
+  <h2-button slot="form-btn" form-submit>提交</h2-button>
+</h2-form>
 ```
 -->
 
 <dom-module id="h2-form">
-    <template>
-        <style>
-            .container {
-                display: grid;
-                grid-column-gap: 10px;
-                grid-row-gap: 10px;
-                grid-template-columns: 45% 45%;
-                justify-items: center;
-                @apply (--form-container-style);
-            }
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
 
-            .btns {
-                position: relative;
-                padding: 8px 8px 8px 24px;
-                margin: 0;
-                display: flex;
-                justify-content: flex-end;
-            }
-        </style>
-        <h2>[[title]]</h2>
+      #title {
+        @apply --h2-form-title;
+      }
 
-        <div class="container">
-            <slot></slot>
-        </div>
-        <div class="btns">
-            <template is="dom-if" if="[[ !hideSubmitBtn ]]">
-                <paper-button raised on-click="submit">保存</paper-button>
-            </template>
-            <template is="dom-if" if="[[ !hideResetBtn ]]">
-                <paper-button raised on-click="reset">重置</paper-button>
-            </template>
-        </div>
-        <h2-fetch id="fetch" request="{{request}}" handle-response-as="{{handleResponseAs}}"
-                  response-body="{{responseBody}}"></h2-fetch>
-    </template>
+      .container {
+        display: grid;
+        grid-template-columns: 45% 45%;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+        @apply --h2-form;
+      }
+
+      .btns {
+        margin: 20px;
+        display: flex;
+        justify-content: flex-end;
+        @apply --h2-form-button;
+      }
+    </style>
+    <h2 id="title">[[title]]</h2>
+
+    <div class="container">
+      <slot id="form-fields"></slot>
     </div>
-    </template>
-    <script>
-        /**
-         * `h2-form`
-         *
-         * @customElement
-         * @polymer
-         * @demo demo/h2-form/index.html
-         */
-        class H2Form extends Polymer.mixinBehaviors([BaseBehavior, AjaxBehavior], Polymer.Element) {
-            static get properties() {
-                return {
-                    /**
-                     * this form title
-                     */
-                    title: {
-                        type: String
-                    },
-                    /**
-                     * hide submit button or not,default not
-                     */
-                    hideSubmitBtn: {
-                        type: Boolean,
-                        value: false
-                    },
-                    /**
-                     * hide reset button or not,default not
-                     */
-                    hideResetBtn: {
-                        type: Boolean,
-                        value: false
-                    },
+    <div class="btns">
+      <slot name=form-btn></slot>
+    </div>
+    <h2-fetch id="fetch" handle-response-as="{{handleResponseAs}}"></h2-fetch>
+  </template>
+  <script>
+    /**
+     * `h2-form`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-form/index.html
+     */
+    class H2Form extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+      static get properties() {
+        return {
+          /**
+           * this form title
+           */
+          title: {
+            type: String
+          },
 
-                    /**
-                     * Request method,GRT or POST,default POST
-                     */
-                    method: {
-                        type: String,
-                        value: "POST"
-                    },
+          /**
+           * Request method,GRT or POST,default POST
+           * @default 'POST'
+           */
+          method: {
+            type: String,
+            value: "POST"
+          },
 
-                    /**
-                     * User-defined submit function,instead of the default method
-                     */
-                    bindSubmit: {
-                        type: Object
-                    },
-                    /**
-                     * User-defined reset function,instead of the default method
-                     */
-                    bindReset: {
-                        type: Object
-                    },
-                    /**
-                     * This form require url
-                     */
-                    url: {
-                        type: String
-                    },
-                    /**
-                     * submit type
-                     * default,json,formData selection is optional
-                     */
-                    submitType: {
-                        type: String,
-                        value: "default"
-                    },
-                    /**
-                     * How to handle the response body, the handled result will access as the property 'responseBody'.
-                     * json/text/blob/arrayBuffer
-                     */
-                    handleResponseAs: {
-                        type: String,
-                        value: "json"
-                    },
+          /**
+           * The URI of a program that processes the form information
+           */
+          action: {
+            type: String
+          },
 
-                    /**
-                     * Handled response body.
-                     */
-                    responseBody: {
-                        type: Object,
-                        notify: true
-                    },
-                };
-            }
+          enctype: {
+            type: String,
+            value: 'application/json;charset=utf-8'
+          },
+          novalidate: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
 
-            static get is() {
-                return "h2-form";
-            }
+      static get is() {
+        return "h2-form";
+      }
 
+      connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener('tap', e => {
+          const path = Polymer.dom(e).path;
+          const submit = path.find(target => target.hasAttribute && (target.hasAttribute('form-submit')));
+          submit && this.submit();
+        });
+      }
 
-            /**
-             * default submit Function,
-             */
-            submit() {
-                if (this.isFunction(this.bindSubmit)) {
-                    setTimeout(() => this.bindSubmit(), 0);
-                } else {
-                    let params = {};
-                    let requestInit = {};
-                    for (let i = 0; i < this.childElementCount; i++) {
-                        params[this.children[i].getAttribute("name")] = this.children[i].value || ""
-                    }
-                    delete params.null;
+      submit() {
+        const namedFieldNode = this.$['form-fields'].assignedNodes()
+          .filter(node => node.hasAttribute && node.hasAttribute("name"));
 
-                    if (this.method == "GET") {
-                        const reqUrl = new URL(window.location.origin + this.url);
-                        Object.keys(params).filter(key => params[key] != undefined).forEach((key) => reqUrl.searchParams.append(key, params[key]));
-                        requestInit = {
-                            method: this.method,
-                            credentials: "include",
-                            cache: 'default'
-                        };
-                        this.set("request", new Request(reqUrl, requestInit));
-                    } else if (this.method == "POST") {
-                        let headers = {}, body = {};
-                        if (this.submitType == "json") {
-                            headers = {
-                                'content-type': 'application/json;charset=utf-8'
-                            };
-                            body = JSON.stringify(params);
-                        } else if (params instanceof FormData) {
-                            body = params;
-                        } else {
-                            const searchParams = new URLSearchParams();
-                            Object.keys(params).forEach((key) => searchParams.append(key, params[key]));
-                            body = searchParams;
-                        }
-                        this.set("request", new Request(this.url, {
-                            method: this.method,
-                            credentials: "include",
-                            headers: headers,
-                            body: body
-                        }));
-                    }
-                }
+        const allValid = this.novalidate || namedFieldNode.every(node => node.validate ? node.validate() : true);
 
-            }
-
-            /**
-             * Default reset Function,Sets all the child element value to " "
-             */
-            reset() {
-                if (this.isFunction(this.bindReset)) {
-                    setTimeout(() => this.bindReset(), 0);
-                } else {
-                    let params = {}
-                    for (let i = 0; i < this.childElementCount; i++) {
-                        this.children[i].value = ""
-                    }
-                }
-            }
+        if (allValid) {
+          const reqData = namedFieldNode.reduce((result, node) => {
+            const key = node.getAttribute('name');
+            const value = node.value;
+            result[key] = value;
+            return result;
+          }, {});
+          const method = (this.method || '').toUpperCase();
+          if(method === 'GET') {
+            this._get(reqData);
+          } else if(method === 'POST') {
+            this._post(reqData);
+          } else {
+            throw new TypeError(`Unsupported method: ${this.method}`);
+          }
         }
-        window.customElements.define(H2Form.is, H2Form);
-    </script>
+      }
+
+      _get(reqData) {
+        const reqUrl = new URL(this.action, window.location.href);
+        Object.keys(reqData)
+          .forEach((key) => reqUrl.searchParams.append(key, reqData[key] || ''));
+
+        this.$.fetch.fetchIt({
+          url: reqUrl,
+          method: this.method,
+          credentials: "include",
+        }).then(this._successHandler.bind(this))
+          .catch(this._errorHandler.bind(this))
+      }
+
+      _post(reqData) {
+        const enctype = (this.enctype || '').toLowerCase();
+        const headers = {};
+        let body;
+
+        if (~enctype.indexOf('application/json')) {
+          headers['content-type'] = this.enctype;
+          body = JSON.stringify(reqData);
+
+        } else if (~enctype.indexOf('application/x-www-form-urlencoded')) {
+          const searchParams = new URLSearchParams();
+          Object.keys(reqData).forEach((key) => searchParams.append(key, reqData[key]));
+          body = searchParams;
+
+        } else if (~enctype.indexOf('multipart/form-data')) {
+          const formData = new FormData();
+          Object.keys(reqData).forEach((key) => formData.append(key, reqData[key]));
+          body = formData;
+
+        } else {
+          throw new TypeError(`Unsupported enctype: ${this.enctype}`);
+        }
+
+        this.$.fetch.fetchIt({
+          url: this.action,
+          method: this.method,
+          credentials: "include",
+          headers,
+          body
+        }).then(this._successHandler.bind(this))
+          .catch(this._errorHandler.bind(this))
+      }
+
+      _successHandler(response) {
+        if(response.ok) {
+          this.dispatchEvent(new CustomEvent("submitted", {
+            bubbles: true,
+            composed: true
+          }));
+        } else {
+          this._errorHandler();
+        }
+      }
+
+      _errorHandler() {
+        this.dispatchEvent(new CustomEvent("error", {
+          bubbles: true,
+          composed: true,
+        }));
+      }
+    }
+
+    window.customElements.define(H2Form.is, H2Form);
+  </script>
 </dom-module>
