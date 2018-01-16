@@ -48,13 +48,19 @@
 
       .img__viewer {
         display: flex;
-        overflow: auto;
+        overflow: hidden;
+        width: 90%;
+        height: 90%;
+        background: transparent;
+        padding: 0;
       }
 
-      .img__viewer > img {
+      #viewer-img {
         cursor: zoom-out;
-        margin: 0;
         padding: 0;
+        margin: auto;
+        width: 100%;
+        height: 100%;
       }
 
     </style>
@@ -68,7 +74,7 @@
                   id="dialog"
                   on-click="closeDialog"
                   with-backdrop>
-      <img src="[[src]]"/>
+      <div id="viewer-img"></div>
     </paper-dialog>
   </template>
   <script>
@@ -97,8 +103,12 @@
       _changeSrc(newValue) {
         if (newValue) {
           const style = this.$["result-img"].style;
+          const viewerStyle = this.$['viewer-img'].style;
+
           style.background = `url(${newValue}) no-repeat center`;
           style.backgroundSize = "contain";
+          viewerStyle.background = `url(${newValue}) no-repeat center`;
+          viewerStyle.backgroundSize = "contain";
         }
       }
 
