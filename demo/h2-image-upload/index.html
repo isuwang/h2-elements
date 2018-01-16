@@ -49,7 +49,9 @@
       <custom-style>
         <style>
           #uploader1 {
-            --h2-image-upload-btn-bg-color: #71a7b7;
+            --h2-image-upload-buttons: {
+              background-color: #71a7b7;
+            };
             --h2-image-upload-width: 120px;
             --h2-image-upload-height: 160px;
             --h2-image-upload-label: {
@@ -67,12 +69,16 @@
     <template>
       <custom-style>
         <style>
-          #uploader2 {
-            width: 150px;
-          }
         </style>
       </custom-style>
       <h2-image-upload id="uploader2" size-limit="1.4M"></h2-image-upload>
+    </template>
+  </demo-snippet>
+
+  <h3>Disabled uploader</h3>
+  <demo-snippet>
+    <template>
+      <h2-image-upload size-limit="1.4M" disabled></h2-image-upload>
     </template>
   </demo-snippet>
 </div>

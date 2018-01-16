@@ -7,9 +7,12 @@
 
 <!--
 
-```javascript
+```html
 
-<h2-image-upload></h2-image-upload>
+<h2-image-upload label="上河图" value="{{file}}"></h2-image-upload>
+
+<h2-image-upload size-limit="1.4M" value="{{file}}"></h2-image-upload>
+
 ```
 -->
 
@@ -20,7 +23,6 @@
         display: inline-block;
         font-size: 12px;
       }
-
 
       h2-label {
         --h2-label: {
@@ -38,9 +40,10 @@
         flex-flow: column nowrap;
         border: 1px dashed #ccc;
         font-size: inherit;
-        width: var(--h2-image-upload-width, 150px);
-        height: var(--h2-image-upload-height, 190px);
+        width: var(--h2-image-upload-width, 140px);
+        height: var(--h2-image-upload-height, 180px);
         background: #f0f0f0;
+        position: relative;
       }
 
       #img__container {
@@ -52,8 +55,7 @@
       .toolbar {
         display: flex;
         background: rgba(79, 79, 79, 0.33);
-        border-top: 1px solid #ccc;
-        height: 40px;
+        height: 36px;
         justify-content: space-evenly;
         align-items: center;
         padding: 0 2px;
@@ -63,7 +65,8 @@
         height: 26px;
         width: 42px;
         --h2-button: {
-          background-color: var(--h2-image-upload-btn-bg-color, #5cb85c);
+          background-color: #5cb85c;
+          @apply --h2-image-upload-buttons;
         };
       }
 
@@ -73,15 +76,21 @@
         }
       }
 
-      .img__viewer {
+      #viewer-dialog {
         display: flex;
         overflow: hidden;
+        width: 90%;
+        height: 90%;
+        background: transparent;
+        padding: 0;
       }
 
-      .img__viewer > img {
+      #viewer-img {
         cursor: zoom-out;
-        margin: 0;
         padding: 0;
+        margin: auto;
+        width: 100%;
+        height: 100%;
       }
 
       #file-chooser {
@@ -105,21 +114,24 @@
         display: none;
       }
 
-      :host([required]) {
-
-      }
-
-      :host([readonly]) {
-
-      }
-
       :host([data-has-src]) #paste-panel,
-      :host(:not([data-has-src])) .btn--common {
+      :host(:not([data-has-src])) #cancel-btn {
         display: none;
       }
 
       :host(:not([data-has-src])) #img__container {
         cursor: default;
+      }
+
+      :host([readonly]) .mask,
+      :host([disabled]) .mask {
+        position: absolute;
+        top: -1px;
+        bottom: -1px;
+        right: -1px;
+        left: -1px;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 10;
       }
 
     </style>
@@ -133,18 +145,17 @@
 
         <div class="toolbar">
           <h2-button title="点击选择文件" on-click="triggleChooseFile">选择</h2-button>
-          <h2-button class="btn--common" on-click="viewZoom">查看</h2-button>
-          <h2-button class="btn--common" id="cancel-btn" on-click="cancelSelection">取消</h2-button>
+          <h2-button id="cancel-btn" on-click="cancelSelection">取消</h2-button>
           <input type="file" on-change="chooseFile" id="file-chooser"
                  accept$="[[accept]]"/>
         </div>
+        <div class="mask"></div>
       </div>
     </div>
-    <paper-dialog class="img__viewer"
-                  id="dialog"
+    <paper-dialog id="viewer-dialog"
                   on-click="closeDialog"
                   with-backdrop>
-      <img src$="[[src]]"/>
+      <div id="viewer-img"></div>
     </paper-dialog>
 
   </template>
@@ -185,11 +196,17 @@
             type: Boolean
           },
 
+          /**
+           * The max size/length of image allowed to upload.
+           * Support pattern:  /^((?:\d*\.)?\d+)([GgMmKk][Bb]?$)/
+           * i.e 1M, 1Mb, 2Kb
+           * @type string
+           */
           sizeLimit: {
             type: String
           },
 
-          __bitSize: {
+          __byteSize: {
             type: Number,
             computed: '__parseSizeLimit(sizeLimit)'
           },
@@ -237,18 +254,24 @@
         ele.addEventListener('paste', dragHandler, false);
       }
 
+
       __srcChanged(src) {
         const style = this.$["img__container"].style;
+        const viewerStyle = this.$['viewer-img'].style;
 
         if (src) {
           this.setAttribute('data-has-src', '');
 
           style.background = `url(${src}) no-repeat center`;
           style.backgroundSize = "contain";
+          viewerStyle.background = `url(${src}) no-repeat center`;
+          viewerStyle.backgroundSize = "contain";
+
         } else {
           this.removeAttribute('data-has-src');
 
           style.background = "none";
+          viewerStyle.background = "none";
         }
       }
 
@@ -275,7 +298,7 @@
       }
 
       triggleChooseFile() {
-        const fileChooser = this.shadowRoot.querySelector('#file-chooser');
+        const fileChooser = this.$['file-chooser'];
         fileChooser && fileChooser.click();
       }
 
@@ -290,7 +313,7 @@
       }
 
       __loadFileData(blob) {
-        if (this.__bitSize > 0 && blob.size > this.__bitSize) {
+        if (this.__byteSize > 0 && blob.size > this.__byteSize) {
           alert(`上传图片不能超过${this.sizeLimit}`);
           return;
         }
@@ -308,18 +331,20 @@
       cancelSelection() {
         this.src = null;
         this.value = null;
-        this.shadowRoot.querySelector('#file-chooser').value = '';
+        this.$['file-chooser'].value = '';
       }
 
       /**
        * 查看大图
        */
       viewZoom() {
-        this.src && this.$.dialog.open();
+        if (this.src) {
+          this.$['viewer-dialog'].open();
+        }
       }
 
       closeDialog() {
-        this.$.dialog.close();
+        this.$['viewer-dialog'].close();
       }
 
       validate() {
