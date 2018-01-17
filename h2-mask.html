@@ -23,6 +23,10 @@
         line-height: 34px;
       }
 
+      h2-label {
+        @apply --h2-mask-label;
+      }
+
       :host .mask__container {
         position: relative;
         flex: 1;
@@ -73,9 +77,11 @@
         text-align: left;
         font-size: inherit;
         padding: 4px 8px;
-        white-space: nowrap;
-
         line-height: inherit;
+
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
       }
 
       :host #mask__editor:focus {
@@ -103,7 +109,7 @@
         border-radius: 0 0 4px 4px;
         background-color: #f0f0f0;
         box-shadow: 0 3px 6px rgba(111, 111, 111, 0.2);
-        z-index: 102;
+        z-index: 5;
 
         display: flex;
         flex-flow: row nowrap;
@@ -150,7 +156,7 @@
 
     </style>
 
-    <h2-label value="[[label]]" required="[[required]]"></h2-label>
+    <h2-label value="[[label]]"></h2-label>
 
     <div class="mask__container">
       <div id="mask__editor">
@@ -167,7 +173,7 @@
         </div>
       </div>
       <div id="mask__viewer">
-        <div id="displayer" class="mask__viewer__container">[[viewValue]]</div>
+        <div class="mask__viewer__container">[[_viewValue]]</div>
         <div id="editBtn" class="mask__viewer__editor" title="点击开始编辑">
           <iron-icon icon="editor:mode-edit"></iron-icon>
         </div>
@@ -194,19 +200,20 @@
           /**
            * 当前的数据
            */
-          valueObj: {
+          _valueObj: {
             type: Object
           },
           /**
            * 最近一次保存的数据
            */
-          lastValueObj: {
+          _lastValueObj: {
             type: Object
           },
-
-          viewValue: {
+          
+          _viewValue: {
             type: String
           },
+          
           /**
            * 标签
            */
@@ -226,6 +233,10 @@
             type: Boolean,
             value: false
           },
+          attrForDisplay: {
+            type: String,
+            value: 'label'
+          },
           /**
            * slot插槽中的组件
            */
@@ -234,68 +245,68 @@
           }
         };
       }
-
+      
       static get is() {
         return "h2-mask";
       }
-
+      
       static get observers() {
         return [];
       }
-
-      connectedCallback() {
-        super.connectedCallback();
-
-      }
-
+      
       ready() {
         super.ready();
-
+        
         const viewField = this.$["mask__viewer"];
-
+        
         const slotNodes = this.root.querySelector("slot")
           .assignedNodes()
           .filter(n => n.nodeType === Node.ELEMENT_NODE);
-
+        
         this._slotNode = slotNodes[0];
-
+        
         // a hack to get the init value
         const valueChangedHandler = (e) => {
           this.__initValueOfSlottedElement();
           this.__updateViewer();
-          this._slotNode.removeEventListener('value-changed', valueChangedHandler);
+          if (e.type === 'value-changed') {
+            this._slotNode.removeEventListener('value-changed', valueChangedHandler);
+          } else if (e.type === 'selected-values-changed') {
+            this._slotNode.removeEventListener('selected-values-changed', valueChangedHandler);
+          }
         };
         this._slotNode.addEventListener('value-changed', valueChangedHandler);
-
+        this._slotNode.addEventListener('selected-values-changed', valueChangedHandler);
+        
         viewField.addEventListener("click", e => {
           e.stopPropagation();
-
+          
           this.__initValueOfSlottedElement();
           this._displayEditField(true);
-
+          
           this.isFunction(this._slotNode.doFocus) && this._slotNode.doFocus();
         });
-
+        
         /**
          * 组件失去焦点的时候关闭组件
          */
         this.addEventListener("focusout", e => {
           e.stopPropagation();
-          // 对H2-SELECT,H2-PICKER特殊处理，避免选取下拉面板数据项的时候切换h2-mask组件的view模式，导致无法选中数据
-          if (e.target.nodeName === "H2-SELECT" || e.target.nodeName === "H2-PICKER") {
-            return;
-          }
-          setTimeout(() => {
-            this.__getValueOfSlottedElement();
-            this.__updateViewer();
-            this._displayEditField(false);
-          }, 50);
-        });
 
+          setTimeout(() => {
+            // double check the focus is out
+            if (!this._slotNode.shadowRoot.activeElement) {
+              this.__getValueOfSlottedElement();
+              this.__updateViewer();
+              this._displayEditField(false);
+            }
+          }, 100);
+        });
+        
         this.__initValueOfSlottedElement();
         this.__updateViewer();
       }
-
+      
       /**
        * 显示编辑区域
        * @private
@@ -307,57 +318,63 @@
           this.removeAttribute('data-edit-mode');
         }
       }
-
+      
       __initValueOfSlottedElement() {
-        // TODO
-        this.set("valueObj", {value: this._slotNode.value});
-        this.set("lastValueObj", {value: this._slotNode.value});
+        const {value, selectedValues} = this._slotNode;
+        
+        this._lastValueObj = {value, selectedValues};
+        this._valueObj = {value, selectedValues};
         this.value = this._slotNode.value;
       }
-
+      
       __getValueOfSlottedElement() {
-
-        //TODO check if value changed
-        this.set("lastValueObj", this.deepClone(this.valueObj));
-        this.set("valueObj", {value: this._slotNode.value});
-
+        
+        this._lastValueObj = this.deepClone(this._valueObj);
+        
+        const {value, selectedValues} = this._slotNode;
+        this._valueObj = {value, selectedValues};
+        
         this.value = this._slotNode.value;
       }
-
+      
       __resetValueOfSlottedElement() {
-        this.set("valueObj", this.lastValueObj);
-        this._slotNode.set('value', this.valueObj.value);
+        this._valueObj = this._lastValueObj;
+        this._slotNode.set('value', this._valueObj.value);
       }
-
+      
       __updateViewer() {
-        this.set("viewValue", this.valueObj.value || '无');
+        const selectedValues = this._valueObj.selectedValues;
+        let _viewValue;
+        if (Array.isArray(selectedValues)) {
+          _viewValue = selectedValues.map(selected => selected[this.attrForDisplay]).join(', ')
+        }
+        
+        this._viewValue = _viewValue || this._valueObj.value || '无';
       }
-
+      
       /**
        * 提交操作
        * @private
        */
       _submit(e) {
         e.stopPropagation();
-
         this.__getValueOfSlottedElement();
         this.__updateViewer();
         this._displayEditField(false);
       }
-
+      
       /**
        * 取消操作
        * @private
        */
       _cancel(e) {
         e.stopPropagation();
-
         this.__resetValueOfSlottedElement();
         this.__updateViewer();
         this._displayEditField(false);
       }
     }
-
+    
     window.customElements.define(H2Mask.is, H2Mask);
   </script>
 </dom-module>
