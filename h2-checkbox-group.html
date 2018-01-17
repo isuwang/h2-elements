@@ -1,0 +1,188 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="./behaviors/base-behavior.html">
+<link rel="import" href="./behaviors/h2-elements-shared-styles.html">
+<link rel="import" href="./h2-label.html">
+<!--
+
+```html
+<h2-checkbox-group label="材料" value="0" items="{{items}}"></h2-checkbox-group>
+
+<script>
+  items = [
+    {label: '薄膜', value: 0},
+    {label: '纤维', value: 1},
+    {label: '塑料', value: 2},
+    {label: '其它', value: 3}
+  ];
+</script>
+```
+-->
+
+<dom-module id="h2-checkbox-group">
+  <template>
+    <style include="h2-elements-shared-styles">
+      :host {
+        display: flex;
+        flex-wrap: nowrap;
+        position: relative;
+        line-height: 34px;
+      }
+
+      h2-label {
+        @apply --h2-checkbox-group-label;
+      }
+
+      #checkbox-container {
+        position: relative;
+      }
+
+      .checkbox-item {
+        margin-left: 6px;
+        --paper-checkbox-checked-color: var(--h2-checkbox-group-checked-color, #0099FF);
+      }
+
+    </style>
+    <h2-label value="[[label]]"></h2-label>
+    <div id="checkbox-container">
+      <template is="dom-repeat" items="[[ _items ]]">
+        <paper-checkbox class="checkbox-item"
+                        checked="{{ item.checked }}"
+                        on-change="__checkedChangeHandler"
+                        value="[[ getValueByKey(item, attrForValue) ]]">
+          [[ getValueByKey(item, attrForLabel) ]]
+        </paper-checkbox>
+      </template>
+      <div class="mask"></div>
+    </div>
+
+  </template>
+  <script>
+    /**
+     * `h2-checkbox-group`
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/h2-checkbox-group/index.html
+     */
+    class H2CheckboxGroup extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+      static get properties() {
+        return {
+          /**
+           * Checkbox label
+           *
+           * @attribute label
+           * @type {string}
+           */
+          label: {
+            type: String
+          },
+          /**
+           * Candidates of the checkbox group.
+           * @attribute items
+           * @type {array}
+           */
+          items: {
+            type: Array
+          },
+
+          _items: {
+            type: Array,
+            computed: '__computedInnerItems(items, value)'
+          },
+          /**
+           * The selected value of checkbox group.
+           * @attribute value
+           * @type {string}
+           */
+          value: {
+            type: String,
+            notify: true
+          },
+          /**
+           * The selected value items of checkbox group.
+           * @attribute value
+           * @type {array}
+           */
+          selectedValues: {
+            type: Array,
+            notify: true
+          },
+          /**
+           * 值字段名，默认为value
+           * @type {string}
+           * @default 'value'
+           */
+          attrForValue: {
+            type: String,
+            value: "value"
+          },
+          /**
+           * 用来展示的字段名，默认为label
+           * @type {string}
+           * @default 'label'
+           */
+          attrForLabel: {
+            type: String,
+            value: "label"
+          },
+
+          /**
+           * Required
+           * @type {boolean}
+           * @default false
+           */
+          required: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      static get is() {
+        return "h2-checkbox-group";
+      }
+
+      static get observers() {
+        return [
+          '__valueChanged(value, items)'
+        ];
+      }
+
+      __computedInnerItems(items = [], value = "") {
+        const values = this.__parseValues(value);
+        return items.map(item =>
+          Object.assign({}, item, {checked: values.some(val => val === item[this.attrForValue] + '')}));
+      }
+
+      __checkedChangeHandler() {
+        this.value = this._items.filter(item => !!item.checked).map(item => item[this.attrForValue]).join(',');
+      }
+
+      /**
+       * @private
+       */
+      __valueChanged(value = "", items = []) {
+        const values = this.__parseValues(value);
+        this.selectedValues = items.filter(item => values.some(val => val === item[this.attrForValue] + ''));
+      }
+
+      /**
+       * @private
+       */
+      __parseValues(value = "") {
+        return value.split(',').map(val => val.trim());
+      }
+
+      /**
+       * @returns {boolean}
+       */
+      validate() {
+        return this.required ? !!this.value : true;
+      }
+
+    }
+
+    window.customElements.define(H2CheckboxGroup.is, H2CheckboxGroup);
+  </script>
+</dom-module>

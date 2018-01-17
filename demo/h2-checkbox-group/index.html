@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>h2-checkbox-group demo</title>
+
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-checkbox-group.html">
+
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
+
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
+    </style>
+  </custom-style>
+</head>
+<body>
+<div class="vertical-section-container centered">
+  <h3>Basic h2-checkbox-group demo</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style is="custom-style">
+        </style>
+      </custom-style>
+      <h2-checkbox-group id="checkbox" label="材料" value="0, 1, 2"></h2-checkbox-group>
+      <script>
+        checkbox.items = [
+          {label: '薄膜', value: 0},
+          {label: '纤维', value: 1},
+          {label: '塑料', value: 2},
+          {label: '其它', value: 3}
+        ];
+      </script>
+    </template>
+  </demo-snippet>
+  <h3>Readonly checkbox</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+      </custom-style>
+      <h2-checkbox-group id="checkbox1" label="材料" value="1, 3" readonly></h2-checkbox-group>
+      <script>
+        checkbox1.items = [
+          {label: '薄膜', value: 0},
+          {label: '纤维', value: 1},
+          {label: '塑料', value: 2},
+          {label: '其它', value: 3}
+        ];
+      </script>
+    </template>
+  </demo-snippet>
+
+  <h3>Required checkbox</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style is="custom-style">
+        </style>
+      </custom-style>
+      <h2-checkbox-group id="checkbox2" label="材料" required></h2-checkbox-group>
+      <script>
+        checkbox2.items = [
+          {label: '薄膜', value: 0},
+          {label: '纤维', value: 1},
+          {label: '塑料', value: 2},
+          {label: '其它', value: 3}
+        ];
+      </script>
+    </template>
+  </demo-snippet>
+
+  <h3>Custom checked color</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style is="custom-style">
+          #checkbox3 {
+            --h2-checkbox-group-checked-color: #b76d83
+          }
+
+        </style>
+      </custom-style>
+      <h2-checkbox-group id="checkbox3" label="材料" value="3"></h2-checkbox-group>
+      <script>
+        checkbox3.items = [
+          {label: '薄膜', value: 0},
+          {label: '纤维', value: 1},
+          {label: '塑料', value: 2},
+          {label: '其它', value: 3}
+        ];
+      </script>
+    </template>
+  </demo-snippet>
+</div>
+</body>
+</html>
