@@ -3,6 +3,7 @@
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="./behaviors/base-behavior.html">
+<link rel="import" href="./behaviors/h2-elements-shared-styles.html">
 <link rel="import" href="./h2-label.html">
 <!--
 
@@ -14,7 +15,7 @@
 
 <dom-module id="h2-select">
   <template>
-    <style>
+    <style include="h2-elements-shared-styles">
       :host {
         display: flex;
         width: 300px;
@@ -141,17 +142,6 @@
 
       #select-collapse[data-collapse-open] {
         max-height: 300px;
-      }
-
-      :host([readonly]) .mask,
-      :host([disabled]) .mask {
-        position: absolute;
-        top: -1px;
-        bottom: -1px;
-        right: -1px;
-        left: -1px;
-        background-color: rgba(255, 255, 255, 0.5);
-        z-index: 10;
       }
 
       .selector-panel {

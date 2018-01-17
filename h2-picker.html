@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="./behaviors/base-behavior.html">
+<link rel="import" href="./behaviors/h2-elements-shared-styles.html">
 <link rel="import" href="./h2-label.html">
 <link rel="import" href="./h2-fetch.html">
 <script type="text/javascript" src="./resource/plugin/dictionary/firstLetterDictionary.js"></script>
@@ -20,7 +21,7 @@
 
 <dom-module id="h2-picker">
   <template>
-    <style>
+    <style include="h2-elements-shared-styles">
       :host {
         display: flex;
         height: 36px;
@@ -185,17 +186,6 @@
 
       .table-hotkey {
         width: 40px;
-      }
-
-      :host([readonly]) .mask,
-      :host([disabled]) .mask {
-        position: absolute;
-        top: -1px;
-        bottom: -1px;
-        right: -1px;
-        left: -1px;
-        background-color: rgba(255, 255, 255, 0.5);
-        z-index: 10;
       }
 
       :host([required])::after {
