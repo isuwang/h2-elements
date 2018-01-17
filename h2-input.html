@@ -1,6 +1,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="h2-label.html">
+<link rel="import" href="./behaviors/base-behavior.html">
+<link rel="import" href="./behaviors/h2-elements-shared-styles.html">
+<link rel="import" href="./h2-label.html">
 
 <!--
 
@@ -20,7 +22,7 @@
 <!--输入框-->
 <dom-module id="h2-input">
   <template>
-    <style>
+    <style include="h2-elements-shared-styles">
       :host {
         display: flex;
         position: relative;
@@ -156,53 +158,6 @@
         border-radius: 4px;
       }
 
-      :host([data-invalid]) .prompt-tip__container[data-prompt]:not([data-prompt=""]) {
-        transform: translateX(5px);
-        visibility: visible;
-        opacity: 1;
-      }
-
-      .prompt-tip__container {
-        -webkit-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, -webkit-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-        -moz-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, -moz-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-        -ms-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, -ms-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-        -o-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, -o-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-
-        display: flex;
-        align-items: center;
-        visibility: hidden;
-
-        position: absolute;
-        left: 100%;
-        margin-left: 25px;
-        height: inherit;
-
-        opacity: 0;
-        z-index: 9;
-
-        pointer-events: none;
-      }
-
-      .prompt-tip {
-        flex: 1;
-        padding: 0 6px;
-        background: #aeaeae;
-        color: white;
-        border-radius: 4px;
-        font-size: 14px;
-        line-height: 22px;
-        position: relative;
-        white-space: nowrap;
-      }
-
-      .prompt-tip::before {
-        position: absolute;
-        content: '';
-        border: 11px solid transparent;
-        border-right: 11px solid #aeaeae;
-        left: -20px;
-      }
     </style>
     <h2-label class="input__label" value="[[label]]"></h2-label>
     <!--可编辑状态-->
@@ -242,7 +197,7 @@
      * @polymer
      * @demo demo/h2-input/index.html
      */
-    class H2Input extends Polymer.Element {
+    class H2Input extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
       static get properties() {
         return {
           /**
