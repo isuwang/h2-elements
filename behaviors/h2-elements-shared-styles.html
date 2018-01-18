@@ -45,8 +45,8 @@
       .prompt-tip {
         flex: 1;
         padding: 0 6px;
-        background: #aeaeae;
-        color: white;
+        background: var(--h2-prompt-tip-background-color, #aeaeae);
+        color: var(--h2-prompt-tip-color, white);
         border-radius: 4px;
         font-size: 14px;
         line-height: 22px;
@@ -58,7 +58,7 @@
         position: absolute;
         content: '';
         border: 11px solid transparent;
-        border-right: 11px solid #aeaeae;
+        border-right: 11px solid var(--h2-prompt-tip-background-color, #aeaeae);
         left: -20px;
       }
     </style>
