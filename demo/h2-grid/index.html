@@ -1,220 +1,155 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-grid demo</title>
+  <title>h2-grid demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../../paper-button/paper-button.html">
-    <link rel="import" href="../../../paper-input/paper-input.html">
-    <link rel="import" href="../../h2-grid.html">
-    <link rel="import" href="../../h2-grid-header.html">
-    <link rel="import" href="../../h2-grid-header-cell.html">
-    <link rel="import" href="../../h2-grid-body.html">
-    <link rel="import" href="../../h2-grid-row.html">
-    <link rel="import" href="../../h2-grid-cell.html">
-    <link rel="import" href="../h2-grid-row/h2-test.html">
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../../paper-button/paper-button.html">
+  <link rel="import" href="../../../paper-input/paper-input.html">
+  <link rel="import" href="../../h2-grid.html">
+  <link rel="import" href="../../h2-grid-header.html">
+  <link rel="import" href="../../h2-grid-header-cell.html">
+  <link rel="import" href="../../h2-grid-body.html">
+  <link rel="import" href="../../h2-grid-row.html">
+  <link rel="import" href="../../h2-grid-cell.html">
+  <link rel="import" href="../../h2-button.html">
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
 
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
 
-            .wid-100 {
-                width: 100px;
-            }
-
-            .row-cell-itemsOpen {
-                width: 40px;
-                min-width: 40px;
-                text-indent: 2px;
-                padding-left: 5px;
-            }
-
-            /*控制操作列的宽度*/
-            h2-grid {
-                --operation-column-width: 300px;
-            }
-        </style>
-    </custom-style>
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>Basic h2-grid demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-grid no-paging>
-                <h2-grid-header>
-                    <h2-grid-header-cell>
-                        name
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        age
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        sex
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        操作
-                    </h2-grid-header-cell>
-                    <template is="dom-repeat"></template>
-                </h2-grid-header>
-                <h2-grid-body>
-                    <h2-grid-row>
-                        <h2-grid-cell>
-                            zhang san
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            25
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            man
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <paper-button raised>测试按钮1</paper-button>
-                            <paper-button raised>测试按钮2</paper-button>
-                            <paper-button raised>测试按钮3</paper-button>
-                        </h2-grid-cell>
-                    </h2-grid-row>
-                    <template is="dom-repeat"></template>
-                    <h2-grid-row>
-                        <h2-grid-cell>
-                            li si
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            26
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            woman
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <paper-button raised>测试按钮1</paper-button>
-                            <paper-button raised>测试按钮2</paper-button>
-                            <paper-button raised>测试按钮3</paper-button>
-                        </h2-grid-cell>
-                    </h2-grid-row>
-                    <template is="dom-repeat"></template>
-                    <template is="dom-repeat"></template>
-                </h2-grid-body>
-            </h2-grid>
-        </template>
-    </demo-snippet>
+  <h3>Basic h2-grid with subItem demo</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #grid {
+            width: 100%;
+          }
+        </style>
+      </custom-style>
+      <h2-grid id="grid">
+        <h2-grid-header>
+          <h2-grid-header-cell>Name</h2-grid-header-cell>
+          <h2-grid-header-cell>Age</h2-grid-header-cell>
+          <h2-grid-header-cell>Sex</h2-grid-header-cell>
+        </h2-grid-header>
+
+        <h2-grid-body>
+          <h2-grid-row>
+            <h2-grid-cell>zhang san</h2-grid-cell>
+            <h2-grid-cell>li si</h2-grid-cell>
+            <h2-grid-cell>wang wu</h2-grid-cell>
+          </h2-grid-row>
+
+          <h2-grid-row id="row">
+            <h2-grid-cell>zhang san</h2-grid-cell>
+            <h2-grid-cell>li si</h2-grid-cell>
+            <h2-grid-cell>wang wu</h2-grid-cell>
+          </h2-grid-row>
+
+        </h2-grid-body>
+      </h2-grid>
+      <script>
+        // _openSubItem["onclick"] = () => {
+        //   _openSubItem.openSubItem();
+        // };
+        // _openSubItem2["onclick"] = () => {
+        //   _openSubItem2.openSubItem();
+        // };
+        // rowHaveItem.subParam = {
+        //   mess: "subItem accept row Param"
+        // };
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 
 <div class="vertical-section-container centered">
-    <h3>Basic h2-grid with paging demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-grid>
-                <h2-grid-header>
-                    <h2-grid-header-cell>
-                        name
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        age
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        sex
-                    </h2-grid-header-cell>
-                </h2-grid-header>
-                <h2-grid-body>
-                    <h2-grid-row>
-                        <h2-grid-cell>
-                            zhang san
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            25
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            man
-                        </h2-grid-cell>
-                    </h2-grid-row>
-                    <h2-grid-row>
-                        <h2-grid-cell>
-                            li si
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            26
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            woman
-                        </h2-grid-cell>
-                    </h2-grid-row>
-                </h2-grid-body>
-            </h2-grid>
-        </template>
-    </demo-snippet>
+  <h3>Basic h2-grid demo</h3>
+  <demo-snippet>
+    <template>
+      <h2-grid no-paging>
+        <h2-grid-header>
+          <h2-grid-header-cell>Name</h2-grid-header-cell>
+          <h2-grid-header-cell>Age</h2-grid-header-cell>
+          <h2-grid-header-cell>Sex</h2-grid-header-cell>
+          <h2-grid-header-cell>操作</h2-grid-header-cell>
+        </h2-grid-header>
+        <h2-grid-body>
+          <h2-grid-row>
+            <h2-grid-cell>zhang san</h2-grid-cell>
+            <h2-grid-cell>25</h2-grid-cell>
+            <h2-grid-cell>man</h2-grid-cell>
+            <h2-grid-cell>
+              <h2-button raised>测试按钮1</h2-button>
+              <h2-button raised>测试按钮2</h2-button>
+              <h2-button raised>测试按钮3</h2-button>
+            </h2-grid-cell>
+          </h2-grid-row>
+          <h2-grid-row>
+            <h2-grid-cell>li si</h2-grid-cell>
+            <h2-grid-cell>26</h2-grid-cell>
+            <h2-grid-cell>woman</h2-grid-cell>
+            <h2-grid-cell>
+              <h2-button>测试按钮1</h2-button>
+              <h2-button>测试按钮2</h2-button>
+              <h2-button>测试按钮3</h2-button>
+            </h2-grid-cell>
+          </h2-grid-row>
+        </h2-grid-body>
+      </h2-grid>
+      <script>
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 
 <div class="vertical-section-container centered">
-    <h3>Basic h2-grid with subItem demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-grid>
-                <h2-grid-header>
-                    <h2-grid-header-cell>
-                        name
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        age
-                    </h2-grid-header-cell>
-                    <h2-grid-header-cell>
-                        sex
-                    </h2-grid-header-cell>
-                </h2-grid-header>
-                <h2-grid-body>
-                    <h2-grid-row sub-item="h2-test" id="rowHaveItem" sub-param="{{subParam}}" open>
-                        <h2-grid-cell class="row-cell-itemsOpen" show-sub-item-icon id="_openSubItem">
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <span>zhang san</span>
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <span>li si</span>
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <span>wang wu</span>
-                        </h2-grid-cell>
-                    </h2-grid-row>
-                    <h2-grid-row sub-item="h2-test" id="row">
-                        <h2-grid-cell class="row-cell-itemsOpen" show-sub-item-icon id="_openSubItem2">
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <span>zhang san</span>
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <span>li si</span>
-                        </h2-grid-cell>
-                        <h2-grid-cell>
-                            <span>wang wu</span>
-                        </h2-grid-cell>
-                    </h2-grid-row>
-                </h2-grid-body>
-            </h2-grid>
-            <script>
-                _openSubItem["onclick"] = () => {
-                    _openSubItem.openSubItem();
-                }
-                _openSubItem2["onclick"] = () => {
-                    _openSubItem2.openSubItem();
-                }
-                rowHaveItem.subParam = {
-                    mess: "subItem accept row Param"
-                }
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>Basic h2-grid with paging demo</h3>
+  <demo-snippet>
+    <template>
+      <h2-grid>
+        <h2-grid-header>
+          <h2-grid-header-cell>Name</h2-grid-header-cell>
+          <h2-grid-header-cell>Age</h2-grid-header-cell>
+          <h2-grid-header-cell>Sex</h2-grid-header-cell>
+        </h2-grid-header>
+        <h2-grid-body>
+          <h2-grid-row>
+            <h2-grid-cell>zhang san</h2-grid-cell>
+            <h2-grid-cell>25</h2-grid-cell>
+            <h2-grid-cell>man</h2-grid-cell>
+          </h2-grid-row>
+          <h2-grid-row>
+            <h2-grid-cell>li si
+            </h2-grid-cell>
+            <h2-grid-cell>26</h2-grid-cell>
+            <h2-grid-cell>woman</h2-grid-cell>
+          </h2-grid-row>
+        </h2-grid-body>
+      </h2-grid>
+    </template>
+  </demo-snippet>
 </div>
+
 </body>
 </html>
