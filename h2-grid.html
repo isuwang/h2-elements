@@ -3,9 +3,31 @@
 
 <!--
 
-```javascript
+```html
 
-<h2-grid></h2-grid>
+<h2-grid>
+  <h2-grid-header>
+    <h2-grid-header-cell></h2-grid-header-cell>
+    <h2-grid-header-cell>name</h2-grid-header-cell>
+    <h2-grid-header-cell>age</h2-grid-header-cell>
+    <h2-grid-header-cell>sex</h2-grid-header-cell>
+  </h2-grid-header>
+
+  <h2-grid-body>
+    <h2-grid-row>
+      <h2-grid-cell>zhang san</h2-grid-cell>
+      <h2-grid-cell>li si</h2-grid-cell>
+      <h2-grid-cell>wang wu</h2-grid-cell>
+    </h2-grid-row>
+
+    <h2-grid-row>
+      <h2-grid-cell>zhang san</h2-grid-cell>
+      <h2-grid-cell>li si</h2-grid-cell>
+      <h2-grid-cell>wang wu</h2-grid-cell>
+    </h2-grid-row>
+
+  </h2-grid-body>
+</h2-grid>
 ```
 -->
 
@@ -18,8 +40,8 @@
         font-size: 14px;
         background: #fdfdfd;
         border: 1px solid #f0f0f0;
-        box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.3);
       }
+
     </style>
     <slot></slot>
   </template>
