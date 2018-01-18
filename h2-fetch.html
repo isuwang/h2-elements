@@ -133,8 +133,10 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
 
           __defaultHeaders: {
             type: Object,
-            value: {
-              "content-type": "application/json;charset=utf-8"
+            value: function () {
+              return {
+                "content-type": "application/json;charset=utf-8"
+              }
             },
             readOnly: true
           }
@@ -167,7 +169,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
 
       __responseChange(response) {
         const resClone = response.clone();
-        if(response.ok) {
+        if (response.ok) {
           const handleAs = this.handleResponseAs || "text";
 
           if (response.headers.has('Content-length')
@@ -212,7 +214,7 @@ folder, it can be ``index.html?mock=mockData.js`` or ``index.html?mock=./mockDat
         const collectedReq = this.__getCorrectedRequest(request);
         if (window.__mockEnabled) {
           const matchedRes = MockDataPool.match(collectedReq);
-          if(matchedRes) {
+          if (matchedRes) {
             return Promise.resolve(new Response(matchedRes.body, matchedRes));
           }
         }

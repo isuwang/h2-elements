@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
 
 <!--
 
@@ -25,9 +24,6 @@
 
     </style>
     <div id="row-cell-div-2" class="content">
-      <template is="dom-if" if="[[showSubItemIcon]]">
-        <iron-icon icon="[[getIcon(isOpen)]]"></iron-icon>
-      </template>
       <slot></slot>
     </div>
   </template>
@@ -41,61 +37,11 @@
      */
     class H2GridCell extends Polymer.Element {
       static get properties() {
-        return {
-          /**
-           * The icon when expanded.
-           */
-          expandIcon: {
-            type: String,
-            value: 'add-circle-outline'
-          },
-          /**
-           * The icon when collapsed.
-           */
-          collapseIcon: {
-            type: String,
-            value: 'remove-circle-outline'
-          },
-          isOpen: {
-            type: Boolean,
-            value: false,
-          },
-          /**
-           * show SubItem Iron
-           */
-          showSubItemIcon: {
-            type: Boolean,
-            value: false
-          }
-        };
+        return {};
       }
 
       static get is() {
         return "h2-grid-cell";
-      }
-
-      _optionChange(newValue) {
-        if (newValue) {
-          this.$['row-cell-div-1'].classList.remove('ellipsis');
-          this.$['row-cell-div-2'].classList.remove('ellipsis');
-        }
-      }
-
-      getIcon(isOpen) {
-        return isOpen ? this.collapseIcon : this.expandIcon;
-      }
-
-      openSubItem() {
-        this.set("isOpen", !this.isOpen);
-        this.dispatchEvent(new CustomEvent('open-sub-item', {
-          composed: true,
-          bubbles: true
-        }))
-
-      }
-
-      ready() {
-        super.ready();
       }
     }
 
