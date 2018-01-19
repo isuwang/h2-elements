@@ -7,9 +7,20 @@
 <link rel="import" href="./h2-label.html">
 <!--
 
-```javascript
+```html
+<h2-select label="球员" placeholder="选择球员" items="[[items]]"></h2-select>
+<h2-select label="球员" placeholder="选择球员" multi items="[[items]]" value="1,2"></h2-select>
 
-<h2-select></h2-select>
+<script>
+  items = [
+    {"label": "梅西", "value": 1},
+    {"label": "C罗", "value": 2},
+    {"label": "苏亚雷斯", "value": 3},
+    {"label": "库蒂尼奥", "value": 4},
+    {"label": "特尔斯特根", "value": 5},
+    {"label": "保利尼奥", "value": 6},
+    {"label": "内马尔", "value": 13}
+  ];
 ```
 -->
 
@@ -91,7 +102,9 @@
       .tag-deleter {
         margin-left: 6px;
         font-weight: bold;
-        text-decoration: inherit;
+        text-decoration: none;
+        color: #0099FF;
+        @apply --h2-select-tag-deleter;
       }
 
       .tag-deleter:hover {
@@ -260,7 +273,7 @@
       static get properties() {
         return {
           /**
-           *
+           * The selected value of this select, if multi selection, the value will join with comma.
            * @type {String}
            */
           value: {
@@ -268,6 +281,10 @@
             notify: true
           },
 
+          /**
+           * The selected value objects of this select.
+           * @type {array}
+           */
           selectedValues: {
             type: Array,
             notify: true
@@ -275,11 +292,10 @@
 
           /**
            *
-           * 下拉数据项
-           * eg：[{value:1, label:"全部"}]
+           * The candidate selection of this select.
            *
            * @attribute items
-           * @type {Array}
+           * @type {array}
            */
           items: {
             type: Array
@@ -298,14 +314,16 @@
             type: String
           },
           /**
-           * 占位符
+           * The placeholder of the select.
            * @type {String}
            */
           placeholder: {
             type: String
           },
           /**
-           * 是否多选
+           * If true, multiple selections are allowed.
+           * @type {boolean}
+           * @default false
            */
           multi: {
             type: Boolean,
@@ -313,22 +331,26 @@
           },
 
           /**
-           * 是否必填
+           * Set to true, if the selection is required.
+           * @type {boolean}
+           * @default false
            */
           required: {
             type: Boolean,
             value: false
           },
           /**
-           * 是否只读
+           * Set to true, if the select is readonly.
+           * @type {boolean}
+           * @default false
            */
           readonly: {
             type: Boolean,
             value: false
           },
-
           /**
            * 用来取值的字段，默认为value
+           * @default 'value'
            */
           attrForValue: {
             type: String,
@@ -336,6 +358,7 @@
           },
           /**
            * 用来展示的字段，默认为label
+           * @default 'label'
            */
           attrForLabel: {
             type: String,
@@ -375,7 +398,8 @@
       }
 
       _valueChanged(value, items = []) {
-        const flatValues = [...(new Set(String(value).split(",")))];
+        const values = String(value).split(",").map(str => str.trim());
+        const flatValues = [...(new Set(values))];
 
         const dirty = (this.selectedValues || []).map(selected => selected[this.attrForValue]).join(',');
         if (dirty !== value) {
@@ -384,7 +408,7 @@
               .filter(selected => !!selected);
 
           if (!this.multi) {
-            this.__selected = items.find(item => item[this.attrForValue] == value);
+            this.__selected = items.find(item => item[this.attrForValue] == flatValues[0]);
           }
         }
 
@@ -444,16 +468,25 @@
         this.$.placeholder.hidden = !display;
       }
 
+      /**
+       * Open collapse.
+       */
       openCollapse() {
         this.$["select-collapse"].setAttribute('data-collapse-open', '');
         this.$['caret'].icon = 'icons:arrow-drop-up';
       }
 
+      /**
+       * Close collapse.
+       */
       closeCollapse() {
         this.$["select-collapse"].removeAttribute('data-collapse-open');
         this.$['caret'].icon = 'icons:arrow-drop-down';
       }
 
+      /**
+       * Toggle collapse.
+       */
       toggleCollapse() {
         if (this.$["select-collapse"].hasAttribute('data-collapse-open')) {
           this.$["select-collapse"].removeAttribute('data-collapse-open');
@@ -464,18 +497,18 @@
       }
 
       /**
-       * 模拟点击一次输入框，触发展示下拉面板行为
+       * Set focus to select.
        */
       doFocus() {
         this.__focusOnLast();
       }
 
       /**
-       * 校验
+       * Validate, true if the select is set to be required and this.selectedValues.length > 0, or else false.
        * @returns {boolean}
        */
       validate() {
-        return this.required ? this.value != undefined : true;
+        return this.required ? this.selectedValues.length > 0 : true;
       }
     }
 

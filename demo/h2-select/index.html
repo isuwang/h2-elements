@@ -1,120 +1,120 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-select demo</title>
+  <title>h2-select demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../h2-select.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../h2-select.html">
 
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
 
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
 
-            .flex {
-                display: flex;
-                flex-flow: row wrap;
-            }
-
-            #select7{
-                --select-tags-box-width:170px;
-                --h2-select-dropdown-menu-width:100px;
-            }
-        </style>
-    </custom-style>
+      h2-select {
+        margin-bottom: 10px;
+      }
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>基本用法 h2-select demo</h3>
-    <demo-snippet>
-        <template>
-            <h2-select id="select" label="球员" placeholder="选择球员"></h2-select>
-            <script>
-                const items = [
-                    {"label": "梅西", "value": 1},
-                    {"label": "C罗", "value": 2},
-                    {"label": "苏亚雷斯", "value": 3},
-                    {"label": "库蒂尼奥", "value": 4},
-                    {"label": "特尔斯特根", "value": 5},
-                    {"label": "保利尼奥", "value": 6},
-                    {"label": "内马尔", "value": 13}
-                ];
-                select.items = items;
-            </script>
-        </template>
-    </demo-snippet>
-    <h3>支持单选、多选</h3>
-    <demo-snippet>
-        <template>
-            <h2-select id="select1" label="球员" placeholder="选择球员"></h2-select>
-            <h2-select id="select2" label="球员" placeholder="选择球员" multi></h2-select>
-            <script>
-                select1.items = items;
-                select2.items = items;
-            </script>
-        </template>
-    </demo-snippet>
-    <h3>支持默认选中</h3>
-    <demo-snippet>
-        <template>
-            <h2-select id="select3" label="球员" placeholder="选择球员"></h2-select>
-            <h2-select id="select4" label="球员" placeholder="选择球员" multi></h2-select>
-            <script>
-                select3.items = items;
-                select3.value = "1";
-                select4.items = items;
-                select4.value = "1,2,3";
-            </script>
-        </template>
-    </demo-snippet>
-    <h3>支持设置输入框宽度和组件宽度</h3>
-    <demo-snippet>
-        <template>
-            <h2-select id="select5" label="球员" placeholder="选择球员" multi></h2-select>
-            <h2-select id="select6" label="球员" placeholder="选择球员" multi style="width:200px;"></h2-select>
-            <h2-select id="select7" label="球员" placeholder="选择球员" multi></h2-select>
-            <script>
-                select5.items = items;
-                select5.value = "1,2,3";
-                select6.items = items;
-                select6.value = "1,2,3";
-                /**
-                 * 通过样式钩子控制下拉选择框宽度，和下拉面板宽度
-                 * #select7{
-                 *      --select-tags-box-width:170px;
-                 *      --h2-select-dropdown-menu-width:100px;
-                 * }
-                 */
-                select7.items = items;
-            </script>
-        </template>
-    </demo-snippet>
-    <h3>支持只读、必填模式</h3>
-    <demo-snippet>
-        <template>
-            <h2-select id="select8" label="球员" placeholder="选择球员" multi readonly style="width:200px;"></h2-select>
-            <h2-select id="select9" label="球员" placeholder="选择球员" multi required></h2-select>
-            <script>
-                select8.items = items;
-                select8.value = "1,2,3";
-                select9.items = items;
-                select9.value = "1,2,3";
-            </script>
-        </template>
-    </demo-snippet>
+
+  <h3>支持默认选中</h3>
+  <demo-snippet>
+    <template>
+      <h2-select id="select" label="球员" placeholder="选择球员" value="1,2"></h2-select>
+      <h2-select id="select1" label="球员" placeholder="选择球员" multi value="1, 2, 3, 4"></h2-select>
+      <script>
+        const items = [
+          {"label": "梅西", "value": 1},
+          {"label": "C罗", "value": 2},
+          {"label": "苏亚雷斯", "value": 3},
+          {"label": "库蒂尼奥", "value": 4},
+          {"label": "特尔斯特根", "value": 5},
+          {"label": "保利尼奥", "value": 6},
+          {"label": "内马尔", "value": 13}
+        ];
+        select.items = items;
+        select1.items = items;
+
+      </script>
+    </template>
+  </demo-snippet>
+
+  <h3>Readonly & required</h3>
+  <demo-snippet>
+    <template>
+      <h2-select id="select2" label="球员" placeholder="选择球员" readonly value="1"></h2-select>
+      <h2-select id="select3" label="球员" placeholder="选择球员" required multi></h2-select>
+      <script>
+        select2.items = items;
+        select3.items = items;
+      </script>
+    </template>
+  </demo-snippet>
+
+  <h3>Custom style</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #select4,
+          #select5 {
+            width: 350px;
+            --h2-select-label: {
+              width: 100px;
+            };
+            --h2-select-tag: {
+              background-color: #fff9c4;
+              border: 1px solid #fff9c4;
+              border-radius: 0;
+            };
+            --h2-select-tag-deleter: {
+              color: #000;
+              font-size: 1.2em;
+              line-height: 20px;
+            };
+          }
+        </style>
+      </custom-style>
+      <h2-select id="select4" label="球员" placeholder="选择球员" multi></h2-select>
+      <h2-select id="select5" label="球员球员" placeholder="选择球员" multi value="1, 2, 3"></h2-select>
+      <script>
+        select4.items = items;
+        select5.items = items;
+      </script>
+    </template>
+  </demo-snippet>
+
+  <h3>keyboard shortcut</h3>
+  <demo-snippet>
+    <template>
+      <h2-select id="select6" label="球员" placeholder="选择球员" multi value="1,2,3,4"></h2-select>
+      <p>
+      <ul>
+        <li>键盘Left, Right键 切换光标位置</li>
+        <li>Backspace 可删除选中项</li>
+      </ul>
+      </p>
+      <script>
+        select6.items = items;
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>
