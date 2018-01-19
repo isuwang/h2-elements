@@ -81,14 +81,34 @@
     </template>
   </demo-snippet>
 
-  <h3>Append Light Dom</h3>
+  <h3>Custom style</h3>
   <demo-snippet>
     <template>
-      <style>
-        div .btn {
-          line-height: 40px;
-        }
-      </style>
+      <custom-style>
+        <style>
+          #btnGrp4 {
+            --h2-button-group-button: {
+              background: seagreen;
+              color: white;
+              font-size: 18px;
+            };
+            --h2-button-group-dropdown: {
+              background: #000;
+            }
+          }
+
+          #btnGrp4 > .btn {
+            line-height: 40px;
+            color: white;
+            background: seagreen;
+          }
+          #btnGrp4 > .btn:hover {
+            background: white;
+            color: black;
+          }
+
+        </style>
+      </custom-style>
       <h2-button-group id="btnGrp4" label="测试">
         <div class="btn">按钮1</div>
         <div class="btn">按钮2</div>
