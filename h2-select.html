@@ -273,7 +273,8 @@
       static get properties() {
         return {
           /**
-           * The selected value of this select, if multi selection, the value will join with comma.
+           * The selected value of this select,  if `multi` is true,
+           * the value will join with comma ( `selectedValues.map(selected => selected[this.attrForValue]).join(',')` ).
            * @type {String}
            */
           value: {
