@@ -2,16 +2,25 @@
 <link rel="import" href="h2-input.html">
 
 <!--
+`h2-input-date`
 
+Example:
 ```html
-
 <h2-input-date class="input-date" label="日期"></h2-input-date>
 <h2-input-date class="input-date" label="默认value" value="2017-10-26"></h2-input-date>
 <h2-input-date class="input-date" label="默认time" time="1509008130349"></h2-input-date>
 
 ```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-input-date-label` | Mixin applied to the label of input | {}
+
+
 -->
-<!--日期选择框-->
 <dom-module id="h2-input-date">
   <template>
     <style>
@@ -50,64 +59,69 @@
   </template>
   <script>
     /**
-     * `h2-input-date`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-input-date/index.html
      */
-    class H2InputDate extends Polymer.Element {
+    class H2InputDate extends Polymer.mixinBehaviors([], Polymer.Element) {
       static get properties() {
         return {
           /**
-           * 组件返回的时间字符串，默认格式yyyy-MM-dd
+           * The value of the input, return a date string format to `yyyy-MM-dd`.
+           * @type {string}
            */
           value: {
             type: String,
-            notify: true,
-            observer: "_valueChange"
+            notify: true
           },
           /**
-           * 根据时间字符串返回的时间戳,long型
-           * （建议用time属性进行初始化赋值和取值）
+           * The timestamp of the date selected.
+           * @type {number}
            */
           time: {
             type: Number,
-            notify: true,
-            observer: "_timeChange"
+            notify: true
           },
           /**
-           * 组件标签名
+           * The label of the input.
            */
           label: {
             type: String
           },
           /**
-           * 组件占位符
+           * The placeholder of the input.
            */
           placeholder: {
             type: String
           },
           /**
-           * 是否必填
+           * Set to true, if the input is required.
+           * @type {boolean}
+           * @default false
            */
           required: {
-            type: Boolean
+            type: Boolean,
+            value: false
           },
           /**
-           * 是否只读
+           * Set to true, if the input is readonly.
+           * @type {boolean}
+           * @default false
            */
           readonly: {
-            type: Boolean
+            type: Boolean,
+            value: false
           },
           /**
-           * 最小输入值(数字或日期时间)
+           * The minimum date which can be chosen. It should be a string format to `yyyy-MM-dd`.
+           * @type {string}
            */
           min: {
             type: String
           },
           /**
-           * 最大输入值(数字或日期时间)
+           * The maximum date which can be chosen. It should be a string format to `yyyy-MM-dd`.
+           * @type {string}
            */
           max: {
             type: String
@@ -119,12 +133,17 @@
         return "h2-input-date";
       }
 
+      static get obervers() {
+        return [
+          '_valueChanged(value)',
+          '_timeChanged(time)'
+        ];
+      }
       /**
-       * 返回的时间字符串改变时，设置time为对应的long型的时间戳
        * @param value
        * @private
        */
-      _valueChange(value) {
+      _valueChanged(value) {
         if (!this.value) {
           this.set("time", undefined);
           return;
@@ -134,11 +153,10 @@
       }
 
       /**
-       * long型时间戳改变时，设置value为对应的yyyy-MM-dd格式的时间字符串
        * @param time
        * @private
        */
-      _timeChange(time) {
+      _timeChanged(time) {
         if (!time) {
           this.set("value", undefined);
           return;
@@ -158,14 +176,15 @@
       }
 
       /**
-       * 获取输入框焦点
+       * Set focus to input.
        */
       doFocus() {
         this.$.input.doFocus();
       }
 
       /**
-       * 校验
+       * Validates the input element.
+       * @returns {boolean}
        */
       validate() {
         return this.$.input.validate();

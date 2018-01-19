@@ -6,6 +6,7 @@
 
 <!--
 
+Example:
 ```html
 <h2-input label="文本框"></h2-input>
 <h2-input label="数字框" type="number"></h2-input>
@@ -15,6 +16,17 @@
 <h2-input label="日期框" type="date"></h2-input>
 <h2-input label="日期时间框" type="datetime-local"></h2-input>
 ```
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-input-label` | Mixin applied to the label of input | {}
+|`--h2-input` | Mixin applied to the input | {}
+|`--h2-input-unit` | Mixin applied to unit of the input value | {}
+
 -->
 
 <dom-module id="h2-input">
@@ -66,7 +78,7 @@
         -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
         -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
         transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-        @apply (--h2-input);
+        @apply --h2-input;
       }
 
       :host(:not([readonly])) input:focus {
@@ -166,7 +178,6 @@
         <input id="innerInput"
                placeholder$="[[placeholder]]"
                type$="[[type]]"
-               prevent-invalid-input$="[[preventInvalidInput]]"
                minlength$="[[minlength]]"
                maxlength$="[[maxlength]]"
                min$="[[min]]"
@@ -188,8 +199,6 @@
 
   <script>
     /**
-     * `h2-input`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-input/index.html
@@ -198,114 +207,106 @@
       static get properties() {
         return {
           /**
-           * 组件前面的标签
-           * @type {String}
+           * The label of the input.
            */
           label: {
             type: String
           },
           /**
-           * 占位符
-           * @type {String}
+           * The placeholder of the input.
            */
           placeholder: {
             type: String
           },
           /**
-           * input 类型,支持的类型见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input
-           *
+           * Bound to input' `type` attribute. [Input types](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input)
            * @attribute type
-           * @type {String}
+           * @type {string}
+           * @default 'text'
            */
           type: {
             type: String,
             value: "text"
           },
           /**
-           * 匹配的正则表达式
-           * @type {String}
+           * A regexp to validate user input.
+           * @type {string}
            */
           allowedPattern: {
             type: String
           },
           /**
-           * 判断是否用正则匹配校验输入
-           * @type {Boolean=false}
-           */
-          preventInvalidInput: {
-            type: Boolean,
-            value: false
-          },
-          /**
-           * 组件的value
-           * @type {String}
+           * Value of the input.
+           * @type {string}
            */
           value: {
             type: String,
             notify: true
           },
           /**
-           * 是否必填
-           * @type {Boolean=false}
+           * Set to true, if the input is required.
+           * @type {boolean}
+           * @default false
            */
           required: {
             type: Boolean,
             value: false
           },
           /**
-           * 是否只读
-           * @type {Boolean=false}
+           * Set to true, if the input is readonly.
+           * @type {boolean}
+           * @default false
            */
           readonly: {
             type: Boolean,
             value: false
           },
           /**
-           * 前缀单位（￥$元吨托等等）
-           * @type {String}
+           * Prefix unit to show（i.e. ￥$元吨托）
+           * @type {string}
            */
           prefixUnit: {
             type: String
           },
           /**
-           * 后缀单位（￥$元吨托等等）
-           * @type {String}
+           * Suffix unit to show（i.e. ￥$元吨托）
+           * @type {string}
            */
           suffixUnit: {
             type: String
           },
           /**
-           * 输入的最小长度（暂无实际使用）
-           * @type {Number}
+           * The minimum length user can input.
+           * @type {number}
            */
           minlength: {
             type: Number
           },
           /**
-           * 输入的最大长度
-           * @type {Number}
+           * The maximum length user can input.
+           * @type {number}
            */
           maxlength: {
             type: Number
           },
 
           /**
-           * 最小输入值(数字或日期时间)
-           * @type {String}
+           * The minimum value user can input or choose.
+           * @type {string}
            */
           min: {
             type: String
           },
           /**
-           * 最大输入值(数字或日期时间)
-           * @type {String}
+           * The maximum value user can input or choose
+           * @type {string}
            */
           max: {
             type: String
           },
 
           /**
-           * 校验不通过时的提示语内容
+           * The prompt tip to show when input is invalid.
            * @type {String}
            */
           prompt: {
@@ -342,21 +343,26 @@
       }
 
       /**
-       * 输入框获取焦点
+       * Set focus to input.
        */
       doFocus() {
         this.root.querySelector("#innerInput").focus();
       }
 
       /**
-       * 校验方法
-       * @returns {*}
+       * Validates the input element.
+       *
+       * First check the iron-input.validate(),
+       * Then if required = true check (value != undefined && value !== '')
+       * And if allowPattern is defined , use the regexp to test the value
+       *
+       * @returns {boolean}
        */
       validate() {
         let valid = this.root.querySelector("#input").validate();
 
         if (this.required) {
-          valid = valid && !!this.value;
+          valid = valid && (this.value != undefined && this.value !== '');
         }
 
         if (this._patternRegExp) {

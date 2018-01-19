@@ -3,16 +3,25 @@
 <link rel="import" href="./h2-input.html">
 
 <!--
+`h2-input-datetime`
 
+Example:
 ```html
-
 <h2-input-datetime class="datetime" label="无默认日期"></h2-input-datetime>
 <h2-input-datetime class="datetime" label="默认value" value="2017-10-26T10:20"></h2-input-datetime>
 <h2-input-datetime class="datetime" label="默认time" timestamp="1509008130349"></h2-input-datetime>
-
 ```
+```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-input-datetime-label` | Mixin applied to the label of input | {}
+
+
 -->
-<!--日期时间选择框-->
 <dom-module id="h2-input-datetime">
   <template>
     <style>
@@ -61,53 +70,59 @@
       static get properties() {
         return {
           /**
-           * 组件返回的时间字符串，默认格式yyyy-MM-ddTHH:mm，如2017-10-26T12:20
+           * The value of the input, return a date string format to `yyyy-MM-ddTHH:mm`. i.e. 2017-10-26T12:20
            */
           value: {
             type: String,
-            notify: true,
-            observer: "_valueChange"
+            notify: true
           },
           /**
            * 时间戳
            */
           timestamp: {
             type: Number,
-            notify: true,
-            observer: "_timestampChange"
+            notify: true
           },
           /**
-           * 组件标签名
+           * The label of the input.
            */
           label: {
             type: String
           },
           /**
-           * 组件占位符
+           * The placeholder of the input.
            */
           placeholder: {
             type: String
           },
           /**
-           * 是否必填
+           * Set to true, if the input is required.
+           * @type {boolean}
+           * @default false
            */
           required: {
-            type: Boolean
+            type: Boolean,
+            value: false
           },
           /**
-           * 是否只读
+           * Set to true, if the input is readonly.
+           * @type {boolean}
+           * @default false
            */
           readonly: {
-            type: Boolean
+            type: Boolean,
+            value: false
           },
           /**
-           * 最小输入值(数字或日期时间)
+           * The minimum datetime which can be chosen. It should be a string format to `yyyy-MM-ddTHH:mm`.
+           * @type {string}
            */
           min: {
             type: String
           },
           /**
-           * 最大输入值(数字或日期时间)
+           * The maximum datetime which can be chosen. It should be a string format to `yyyy-MM-ddTHH:mm`.
+           * @type {string}
            */
           max: {
             type: String
@@ -119,11 +134,17 @@
         return "h2-input-datetime";
       }
 
+      static get observers() {
+        return [
+          '_valueChanged(value)',
+          '_timestampChanged(timestamp)'
+        ];
+      }
       /**
        * @param value
        * @private
        */
-      _valueChange(value) {
+      _valueChanged(value) {
         if (!this.value) {
           this.set("timestamp", undefined);
           return;
@@ -136,7 +157,7 @@
        * @param timestamp
        * @private
        */
-      _timestampChange(timestamp) {
+      _timestampChanged(timestamp) {
         if (!timestamp) {
           this.set("value", undefined);
           return;
@@ -146,14 +167,15 @@
       }
 
       /**
-       * 获取输入框焦点
+       * Set focus to input.
        */
       doFocus() {
         this.$.input.doFocus();
       }
 
       /**
-       * 校验
+       * Validates the input element.
+       * @returns {boolean}
        */
       validate() {
         return this.$.input.validate();

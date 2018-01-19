@@ -5,12 +5,23 @@
 <link rel="import" href="./behaviors/base-behavior.html">
 <link rel="import" href="h2-input.html">
 <!--
-```html
+`h2-mask`
 
+Example:
+```html
 <h2-mask label="输入框" class="mask">
   <h2-input placeholder="测试输入" value="Test"></h2-input>
 </h2-mask>
 ```
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-mask-label` | Mixin applied to the label of mask | {}
+
 -->
 
 <dom-module id="h2-mask">
@@ -184,8 +195,6 @@
 
   <script>
     /**
-     * `h2-mask`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-mask/index.html
@@ -193,6 +202,9 @@
     class H2Mask extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
       static get properties() {
         return {
+          /**
+           * The value of the slotted node.
+           */
           value: {
             type: String,
             notify: true
@@ -215,24 +227,29 @@
           },
           
           /**
-           * 标签
+           * The label of the mask.
            */
           label: {
             type: String
           },
           /**
-           * 占位符
+           * The placeholder of the mask.
            */
           placeholder: {
             type: String
           },
           /**
-           * 是否必填
+           * Set to true, if the selection is required.
+           * @type {boolean}
+           * @default false
            */
           required: {
             type: Boolean,
             value: false
           },
+          /**
+           * The attribute name of the item to display on mask.
+           */
           attrForDisplay: {
             type: String,
             value: 'label'
