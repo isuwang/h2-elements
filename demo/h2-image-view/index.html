@@ -35,8 +35,17 @@
   <h3>Basic h2-image-view demo</h3>
   <demo-snippet>
     <template>
+      <custom-style>
+        <style>
+          .seagreen-viewer {
+            --h2-image-upload-button: {
+              background-color: seagreen;
+            }
+          }
+        </style>
+      </custom-style>
       <h2-image-view src="https://d1.awsstatic.com/product-marketing/Elastic%20Beanstalk/ElasticBeanstalk_Benefit_Productivity.5cd0e6aedfa2e3b2c05ed7f5faeb0fd215c9742b.png"></h2-image-view>
-      <h2-image-view src="https://gaopin-preview.bj.bcebos.com/133102233382.jpg@!420"></h2-image-view>
+      <h2-image-view class="seagreen-viewer" src="https://gaopin-preview.bj.bcebos.com/133102233382.jpg@!420"></h2-image-view>
     </template>
   </demo-snippet>
 </div>

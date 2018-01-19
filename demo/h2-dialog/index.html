@@ -46,18 +46,13 @@
           Put your Content here inside an element which with [slot=container]
         </div>
       </h2-dialog>
-      <button id="btn">Click to open the Dialog</button>
-      <script>
-        btn["onclick"] = () => {
-          dialog.open();
-        };
-      </script>
+      <button id="btn" onclick="javascript:dialog.open();">Click to open the Dialog</button>
     </template>
   </demo-snippet>
 </div>
 
 <div class="vertical-section-container centered">
-  <h3>set h2-dialog height and width demo</h3>
+  <h3>One more</h3>
   <demo-snippet>
     <template>
       <style is="custom-style">
@@ -120,12 +115,8 @@
             with you, sooner or later.</p>
         </div>
       </h2-dialog>
-      <button id="btn2">Click to open the Dialog</button>
-      <script>
-        btn2["onclick"] = () => {
-          dialog2.open();
-        };
-      </script>
+      <button id="btn2" onclick="dialog2.open();">Click to open the Dialog</button>
+
     </template>
   </demo-snippet>
 </div>

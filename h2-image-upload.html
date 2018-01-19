@@ -7,14 +7,25 @@
 <link rel="import" href="./h2-button.html">
 
 <!--
+`h2-image-upload`
 
+Example:
 ```html
-
 <h2-image-upload label="上河图" value="{{file}}"></h2-image-upload>
-
 <h2-image-upload size-limit="1.4M" value="{{file}}"></h2-image-upload>
 
 ```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-image-upload-label` | Mixin applied to the label of image uploader | {}
+|`--h2-image-upload-width` | Mixin applied to width of image uploader | 140px
+|`--h2-image-upload-height` | Mixin applied to height of image uploader | 180px
+|`--h2-image-upload-buttons` | Mixin applied to tool buttons of the uploader | {}
+
 -->
 
 <dom-module id="h2-image-upload">
@@ -129,21 +140,21 @@
     <div id="main-container">
       <h2-label value="[[label]]"></h2-label>
       <div id="inner-container">
-        <div id="img__container" on-click="viewZoom">
+        <div id="img__container" on-click="openViewZoom">
           <div id="paste-panel">拖拽或者粘贴图片到这里</div>
         </div>
 
         <div class="toolbar">
-          <h2-button title="点击选择文件" on-click="triggleChooseFile">选择</h2-button>
+          <h2-button title="点击选择文件" on-click="_triggerChooseFile">选择</h2-button>
           <h2-button id="cancel-btn" on-click="cancelSelection">取消</h2-button>
-          <input type="file" on-change="chooseFile" id="file-chooser"
+          <input type="file" on-change="_chooseFile" id="file-chooser"
                  accept$="[[accept]]"/>
         </div>
         <div class="mask"></div>
       </div>
     </div>
     <paper-dialog id="viewer-dialog"
-                  on-click="closeDialog"
+                  on-click="closeViewZoom"
                   with-backdrop>
       <div id="viewer-img"></div>
     </paper-dialog>
@@ -151,8 +162,6 @@
   </template>
   <script>
     /**
-     * `h2-image-upload`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-image-upload/index.html
@@ -161,29 +170,43 @@
       static get properties() {
         return {
           /**
-           *
+           * The remote uri of image.
            */
           src: {
             type: String
           },
           /**
-           *
+           * The file object of the image. It will be `undefined` when image is from remote server.
            */
           value: {
             type: Object,
             notify: true
           },
 
-          readonly: {
-            type: Boolean
-          },
-
+          /**
+           * The label of the uploader.
+           */
           label: {
             type: String
           },
 
+          /**
+           * Set to true, if the select is required.
+           * @type {boolean}
+           * @default false
+           */
           required: {
-            type: Boolean
+            type: Boolean,
+            value: false
+          },
+          /**
+           * Set to true, if the select is readonly.
+           * @type {boolean}
+           * @default false
+           */
+          readonly: {
+            type: Boolean,
+            value: false
           },
 
           /**
@@ -203,10 +226,11 @@
 
           /**
            * Bound to input's `accept` attribute.
+           * @default 'image/gif, image/jpeg, image/png'
            */
           accept: {
             type: String,
-            value: 'image/gif, image/jpeg, image/png, image/svg+xml'
+            value: 'image/gif, image/jpeg, image/png'
           }
         };
       }
@@ -287,12 +311,12 @@
         return bits | 0;
       }
 
-      triggleChooseFile() {
+      _triggerChooseFile() {
         const fileChooser = this.$['file-chooser'];
         fileChooser && fileChooser.click();
       }
 
-      chooseFile(e) {
+      _chooseFile(e) {
         const file = e.target.files[0];
         file && this.__loadFileData(file);
       }
@@ -316,7 +340,7 @@
       }
 
       /**
-       * 取消/删除 已有图片
+       * Cancel selection of the image.It will clear the `src` and `value`.
        * */
       cancelSelection() {
         this.src = null;
@@ -325,18 +349,25 @@
       }
 
       /**
-       * 查看大图
+       * Open the view zoom
        */
-      viewZoom() {
+      openViewZoom() {
         if (this.src) {
           this.$['viewer-dialog'].open();
         }
       }
 
-      closeDialog() {
+      /**
+       * Close the view zoom.
+       */
+      closeViewZoom() {
         this.$['viewer-dialog'].close();
       }
 
+      /**
+       * Validate, true if the select is set to be required and this.value is a truth-value or else false.
+       * @returns {boolean}
+       */
       validate() {
         return this.required ? !!this.value : true;
       }

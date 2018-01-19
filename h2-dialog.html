@@ -6,11 +6,27 @@
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="./behaviors/base-behavior.html">
 <!--
+`h2-dialog`
 
-```javascript
-
-<h2-dialog></h2-dialog>
+Example:
+```html
+<h2-dialog id="dialog">
+  <div slot="container">
+    Put your Content here inside an element which with [slot=container]
+  </div>
+</h2-dialog>
+<button id="btn" onclick="javascript:dialog.open();">Click to open the Dialog</button>
 ```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-dialog-width` | Mixin applied to the width of dialog | 85%
+|`--h2-dialog-height` | Mixin applied to the height of dialog | 90%
+
+
 -->
 
 <dom-module id="h2-dialog">
@@ -77,8 +93,6 @@
   </template>
   <script>
     /**
-     * `h2-dialog`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-dialog/index.html
@@ -86,10 +100,17 @@
     class H2Dialog extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
       static get properties() {
         return {
+          /**
+           * Title of the dialog
+           */
           title: {
             type: String
           },
-          /** True to stop auto dismiss. */
+          /**
+           * Set to True to stop auto dismiss.
+           * @type {boolean}
+           * @default false
+           */
           stopAutoDismiss: {
             type: Boolean,
             value: false

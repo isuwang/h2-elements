@@ -3,7 +3,9 @@
 <link rel="import" href="./h2-fetch.html">
 
 <!--
+`h2-form`
 
+Example:
 ```html
 <h2-form title="demo" action="/test.do">
   <h2-input class="form-input" label="公司名称" name="company"></h2-input>
@@ -14,6 +16,16 @@
   <h2-button slot="form-btn" form-submit>提交</h2-button>
 </h2-form>
 ```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-form-title` | Mixin applied to the head title of form | {}
+|`--h2-form` | Mixin applied to form | {}
+|`--h2-form-button` | Mixin applied to submit button of the form | {}
+
 -->
 
 <dom-module id="h2-form">
@@ -50,12 +62,10 @@
     <div class="btns">
       <slot name=form-btn></slot>
     </div>
-    <h2-fetch id="fetch" handle-response-as="{{handleResponseAs}}"></h2-fetch>
+    <h2-fetch id="fetch" handle-response-as="[[handleResponseAs]]"></h2-fetch>
   </template>
   <script>
     /**
-     * `h2-form`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-form/index.html
@@ -64,7 +74,7 @@
       static get properties() {
         return {
           /**
-           * this form title
+           * Head title of the form
            */
           title: {
             type: String
@@ -86,10 +96,20 @@
             type: String
           },
 
+          /**
+           * Enctype is the MIME type of content that is used to submit the form to the server.
+           * @type {string}
+           * @default 'application/json;charset=utf-8'
+           */
           enctype: {
             type: String,
             value: 'application/json;charset=utf-8'
           },
+          /**
+           * Set to true to indicate that the form is not to be validated when submitted
+           * @type {boolean}
+           * @default false
+           */
           novalidate: {
             type: Boolean,
             value: false
@@ -110,6 +130,9 @@
         });
       }
 
+      /**
+       * Summit the form to server.
+       */
       submit() {
         const namedFieldNode = this.$['form-fields'].assignedNodes()
           .filter(node => node.hasAttribute && node.hasAttribute("name"));

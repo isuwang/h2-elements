@@ -5,6 +5,9 @@
 <link rel="import" href="./h2-label.html">
 <!--
 
+`h2-checkbox-group`
+
+Example:
 ```html
 <h2-checkbox-group label="材料" value="0" items="{{items}}"></h2-checkbox-group>
 
@@ -17,6 +20,16 @@
   ];
 </script>
 ```
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-checkbox-group-label` | Mixin applied to the label of checkbox | {}
+|`--h2-checkbox-group-checked-color` | Mixin applied to color of the checkbox when it is checked | #0099FF
+
 -->
 
 <dom-module id="h2-checkbox-group">
@@ -59,8 +72,6 @@
   </template>
   <script>
     /**
-     * `h2-checkbox-group`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-checkbox-group/index.html
@@ -69,7 +80,7 @@
       static get properties() {
         return {
           /**
-           * Checkbox label
+           * The label of the Checkbox
            *
            * @attribute label
            * @type {string}
@@ -109,7 +120,7 @@
             notify: true
           },
           /**
-           * 值字段名，默认为value
+           * Attribute name for label.
            * @type {string}
            * @default 'value'
            */
@@ -118,7 +129,9 @@
             value: "value"
           },
           /**
-           * 用来展示的字段名，默认为label
+           *
+           * Attribute name for label.
+           *
            * @type {string}
            * @default 'label'
            */
@@ -128,7 +141,7 @@
           },
 
           /**
-           * Required
+           * Set to true if the selection is required.
            * @type {boolean}
            * @default false
            */
@@ -175,6 +188,7 @@
       }
 
       /**
+       * Validate, true if the select is set to be required and this.selectedValues.length > 0, or else false.
        * @returns {boolean}
        */
       validate() {

@@ -2,11 +2,21 @@
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="h2-button.html">
 <!--
+`h2-image-view`
 
+Example: 
 ```html
-
 <h2-image-view src="https://test.com/test.jpg"></h2-image-view>
 ```
+```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-image-upload-button` | Mixin applied to tool button of the viewer | {}
+
 -->
 
 <dom-module id="h2-image-view">
@@ -43,6 +53,7 @@
         height: 26px;
         --h2-button: {
           background-color: #5cb85c;
+          @apply --h2-image-upload-button;
         }
       }
 
@@ -65,46 +76,46 @@
 
     </style>
 
-    <div class="img__container" id="result-img" on-click="viewZoom"></div>
+    <div class="img__container" id="result-img" on-click="openViewZoom"></div>
 
     <div class="toolbar">
-      <h2-button on-click="viewZoom">查看大图</h2-button>
+      <h2-button on-click="openViewZoom">查看大图</h2-button>
     </div>
     <paper-dialog class="img__viewer"
                   id="dialog"
-                  on-click="closeDialog"
+                  on-click="closeViewZoom"
                   with-backdrop>
       <div id="viewer-img"></div>
     </paper-dialog>
   </template>
   <script>
     /**
-     * `h2-image-view`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-image-view/index.html
      */
-    class H2ImageView extends Polymer.Element {
+    class H2ImageView extends Polymer.mixinBehaviors([], Polymer.Element) {
       static get properties() {
         return {
+          /**
+           * The remote uri of image.
+           */
           src: {
             type: String,
-            value: null,
             observer: '_changeSrc'
           },
         };
       }
-
+      
       static get is() {
         return "h2-image-view";
       }
-
+      
       _changeSrc(newValue) {
         if (newValue) {
           const style = this.$["result-img"].style;
           const viewerStyle = this.$['viewer-img'].style;
-
+          
           style.background = `url(${newValue}) no-repeat center`;
           style.backgroundSize = "contain";
           viewerStyle.background = `url(${newValue}) no-repeat center`;
@@ -113,19 +124,23 @@
       }
 
 
-      //查看大图
-      viewZoom() {
+      /**
+       * Open the view zoom
+       */
+      openViewZoom() {
         if (this.src) {
           this.$.dialog.open();
         }
       }
-
-      closeDialog() {
+      /**
+       * Close the view zoom.
+       */
+      closeViewZoom() {
         this.$.dialog.close();
       }
-
+      
     }
-
+    
     window.customElements.define(H2ImageView.is, H2ImageView);
   </script>
 </dom-module>
