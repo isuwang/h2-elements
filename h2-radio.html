@@ -4,9 +4,10 @@
 <link rel="import" href="./behaviors/h2-elements-shared-styles.html">
 <link rel="import" href="./h2-label.html">
 <!--
+`h2-radio`
 
+Example:
 ```html
-
 <h2-radio id="radio" label="性别" value=1></h2-radio>
 <h2-radio id="radio2" label="姓名" attr-for-value="id" attr-for-label="name" value="3"></h2-radio>
 
@@ -94,8 +95,6 @@
   </template>
   <script>
     /**
-     * `h2-radio`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-radio/index.html
@@ -104,10 +103,7 @@
       static get properties() {
         return {
           /**
-           *
-           * 标签名字
-           * eg：1
-           *
+           * The label of the radio.
            * @attribute label
            * @type {string}
            */
@@ -115,10 +111,7 @@
             type: String
           },
           /**
-           *
-           * 初始选择项和items的value值相对应
-           * eg：1
-           *
+           * The selected value of radio group.
            * @attribute selected
            * @type {string}
            */
@@ -127,10 +120,7 @@
             notify: true
           },
           /**
-           *
-           * 需要展示的数据项
-           * eg：[{value:1, label:"全部", count:"19"}]
-           *
+           * Candidates of the radio group.
            * @attribute items
            * @type {array}
            */
@@ -138,25 +128,25 @@
             type: Array
           },
           /**
-           * 是否必填，默认非必填
-           * eg：true
+           * Set to true, if the selection is required.
            * @type {boolean}
+           * @default false
            */
           required: {
             type: Boolean,
             value: false
           },
           /**
-           * 是否可编辑,默认可以编辑
-           * eg：true
+           * Set to true, if the radio is readonly.
            * @type {boolean}
+           * @default false
            */
           readonly: {
             type: Boolean,
             value: false
           },
           /**
-           * 值字段名，默认为value
+           * Attribute name for value.
            * @type {string}
            * @default 'value'
            */
@@ -165,7 +155,7 @@
             value: "value"
           },
           /**
-           * 用来展示的字段名，默认为label
+           * Attribute name for label.
            * @type {string}
            * @default 'label'
            */
@@ -193,6 +183,10 @@
         }
       }
 
+      /**
+       * Always return true.
+       * @returns {boolean}
+       */
       validate() {
         return true;
       }

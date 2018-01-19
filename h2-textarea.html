@@ -3,12 +3,24 @@
 <link rel="import" href="./h2-label.html">
 
 <!--
+`h2-textarea`
 
-```javascript
-
+Example:
+```html
 <h2-textarea label="备注"></h2-textarea>
 <h2-textarea label="备注" required></h2-textarea>
 ```
+
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-textarea` | Mixin applied to the textarea | {}
+|`--h2-textarea-placeholder` | Mixin applied to placeholder of the textarea | {}
+
 -->
 
 <dom-module id="h2-textarea">
@@ -108,6 +120,7 @@
       static get properties() {
         return {
           /**
+           * The value of the textarea.
            * @type {string|number}
            */
           value: {
@@ -129,6 +142,7 @@
 
           /**
            * Bound to the textarea's `autocomplete` attribute.
+           * @default 'off'
            */
           autocomplete: {
             type: String,
@@ -137,6 +151,7 @@
 
           /**
            * Bound to the textarea's `autofocus` attribute.
+           * @default false
            */
           autofocus: {
             type: Boolean,
@@ -257,7 +272,7 @@
       }
 
       /**
-       * Returns true if `value` is valid. Use`textarea`'s validity.
+       * Returns true if `value` is valid. Use`textarea`'s `validity` attribute.
        *
        * @return {boolean} True if the value is valid.
        */

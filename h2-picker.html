@@ -9,14 +9,27 @@
 <script type="text/javascript" src="./resource/plugin/cacheSearchUtil.js"></script>
 
 <!--
+`h2-picker`
 
+Example:
 ```html
 <h2-picker label="公司"
            multi
            src="/init.do"
            keyword-search-src="/more_banks.do?keyword="></h2-picker>
-
 ```
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-picker-label` | Mixin applied to the picker label | {}
+|`--h2-picker-tag` | Mixin applied to the selected tag  | {}
+|`--h2-picker-tag-deleter` | Mixin applied to the deleter of each tag| {}
+|`--h2-picker-input` | Mixin applied to the input of the picker | {}
+|`--h2-picker-dropdown` | Mixin applied to the dropdown snippet of the picker | {}
 -->
 
 <dom-module id="h2-picker">
@@ -56,6 +69,7 @@
 
         border: none;
         outline: none;
+        @apply --h2-picker-input;
       }
 
       /*标签容器*/
@@ -101,7 +115,9 @@
       .tag-deleter {
         margin-left: 6px;
         font-weight: bold;
-        text-decoration: inherit;
+        text-decoration: none;
+        color: #0099FF;
+        @apply --h2-picker-tag-deleter;
       }
 
       .tag-deleter:hover {
@@ -130,7 +146,7 @@
         -o-transition: all 150ms ease-in;
         transition: all 150ms ease-in;
 
-        @apply --h2-picker-collapse;
+        @apply --h2-picker-dropdown;
       }
 
       #picker-collapse[hidden] {
@@ -213,7 +229,7 @@
             </span>
           </template>
           <input id="keywordInput"
-                 value="{{ userInputKeyword::input }}"
+                 value="{{ _userInputKeyword::input }}"
                  autocomplete="off"/>
         </div> <!-- class=tags-input -->
 
@@ -246,8 +262,6 @@
   </template>
   <script>
     /**
-     * `h2-picker`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-picker/index.html
@@ -258,7 +272,7 @@
           /**
            * 中文转拼音插件
            */
-          pinyinUtil: {
+          _pinyinUtil: {
             type: Object,
             readOnly: true,
             value: function () {
@@ -268,7 +282,7 @@
           /**
            * 缓存搜索插件
            */
-          cacheSearchUtil: {
+          _cacheSearchUtil: {
             type: Object,
             readOnly: true,
             value: function () {
@@ -278,76 +292,104 @@
           /**
            * 发送请求和模拟数据的组件
            */
-          fetchUtil: {
+          _fetchUtil: {
             type: Object,
             readOnly: true,
             value: new H2Fetch()
           },
           /**
-           * 标签
+           * The label of the picker.
+           * @type {string}
            */
           label: {
             type: String
           },
           /**
-           * A url to fetch local data
+           *
+           * The selected value of this select,  if `multi` is true,
+           * the value will join with comma ( `selectedValues.map(selected => selected[this.attrForValue]).join(',')` ).
+           * @type {string}
+           */
+          value: {
+            type: String,
+            notify: true
+          },
+          /**
+           * The selected value objects of this select.
+           * @type {array}
+           */
+          selectedValues: {
+            type: Array,
+            notify: true
+          },
+          /**
+           * A url for fetching local data, the response data of the request should be json.
            * @type {string}
            */
           src: {
             type: String
           },
           /**
-           * A url to search data with user input keywords.
+           * A url for searching data with user input keywords, the response data of the request should be json.
            * @type {string}
            */
           keywordSearchSrc: {
             type: String
           },
           /**
-           * （本地查询模式）组件初始数据集
-           * 如：[{"id": 1, "label": "快塑网", "business": "塑料"},{"id": 2, "label": "阿里巴巴", "business": "电商"}]
+           * The candidate selection of this picker.
+           * @type {array}
            */
           items: {
             type: Array
           },
           /**
            * 下拉面板当前展示的数据集（默认显示items的前10条）
+           * @type {array}
            */
           displayItems: {
             type: Array
           },
           /**
            * 用户输入的模糊搜索关键字
+           *
            */
-          userInputKeyword: {
+          _userInputKeyword: {
             type: String
           },
           /**
            * （本地查询模式）模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
+           * @type {array}
            */
           searchFields: {
             type: Array
           },
           /**
            * 下拉面板中展示的字段，默认为[{"field": "label", "label": "选项"}]
+           * @type {array}
+           * @default [{"field": "label", "label": "选项"}]
            */
           collapseTableHead: {
             type: Array,
             value: [{"field": "label", "label": "选项"}]
           },
           /**
-           * 已选数据项标签展示字段,默认为"label"
-           */
-          attrForLabel: {
-            type: String,
-            value: "label"
-          },
-          /**
-           * 取值字段,默认为"value"
+           * Attribute name for value.
+           * @type {string}
+           * @default 'value'
            */
           attrForValue: {
             type: String,
             value: "value"
+          },
+          /**
+           * Attribute name for label.
+           * @type {string}
+           * @default 'label'
+           */
+          attrForLabel: {
+            type: String,
+            value: "label"
           },
           /**
            * 是否禁用拼音搜索
@@ -357,37 +399,28 @@
             value: false
           },
 
-          selectedValues: {
-            type: Array,
-            notify: true
-          },
           /**
-           *
-           * 初始选择项和items的value值相对应
-           *
-           * @attribute value
-           * @type {String}
-           */
-          value: {
-            type: String,
-            notify: true
-          },
-          /**
-           * 是否只读
-           */
-          readonly: {
-            type: Boolean,
-            value: false
-          },
-          /**
-           * 是否必填
+           * Set to true, if the selection is required.
+           * @type {boolean}
+           * @default false
            */
           required: {
             type: Boolean,
             value: false
           },
           /**
-           * 是否支持多选
+           * Set to true, if the picker is readonly.
+           * @type {boolean}
+           * @default false
+           */
+          readonly: {
+            type: Boolean,
+            value: false
+          },
+          /**
+           * If true, multiple selections are allowed.
+           * @type {boolean}
+           * @default false
            */
           multi: {
             type: Boolean,
@@ -411,7 +444,7 @@
         return [
           '_srcChanged(src)',
           '_itemsChanged(items)',
-          '_userInputKeywordChanged(userInputKeyword)',
+          '_userInputKeywordChanged(_userInputKeyword)',
           '_selectedValuesChanged(selectedValues.splices)',
           '_valueChanged(value)'
         ]
@@ -436,7 +469,7 @@
           credentials: "include"
         });
 
-        this.fetchUtil.fetchIt(request)
+        this._fetchUtil.fetchIt(request)
           .then(res => res.json())
           .then(data => {
             this.items = data || [];
@@ -452,17 +485,17 @@
         this._valueChanged(this.value);
 
         // 清空缓存插件的缓存
-        this.cacheSearchUtil.resetCache();
+        this._cacheSearchUtil.resetCache();
 
-        items.forEach(item => this.cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
+        items.forEach(item => this._cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
       }
 
       _userInputKeywordChanged(userInputKeyword) {
-        if (this.userInputKeyword.length > 0) {
+        if (this._userInputKeyword.length > 0) {
           this.displayCollapse(true);
         }
 
-        const matched = this.cacheSearchUtil.search(userInputKeyword);
+        const matched = this._cacheSearchUtil.search(userInputKeyword);
 
         if (matched.length === 0 && this.keywordSearchSrc) {
           const url = this.keywordSearchSrc + userInputKeyword;
@@ -471,7 +504,7 @@
             credentials: "include"
           });
 
-          this.fetchUtil.fetchIt(request)
+          this._fetchUtil.fetchIt(request)
             .then(res => res.json())
             .then(data => {
               this.displayItems = (data || []).slice(0, 9);
@@ -531,7 +564,7 @@
 
         this.displayCollapse(false);
         this.__focusOnKeywordInput();
-        this.userInputKeyword = "";
+        this._userInputKeyword = "";
       }
 
       /**
@@ -616,7 +649,7 @@
 
               break;
             case 'Backspace':
-              if (this.userInputKeyword == undefined || this.userInputKeyword.length === 0) {
+              if (this._userInputKeyword == undefined || this._userInputKeyword.length === 0) {
                 this.deleteLastTag();
               }
 
@@ -640,8 +673,8 @@
             value => {
               keys = keys.concat(
                 String(value),
-                this.pinyinUtil.convert2CompletePinyin(value),
-                this.pinyinUtil.convert2PinyinAbbreviation(value)
+                this._pinyinUtil.convert2CompletePinyin(value),
+                this._pinyinUtil.convert2PinyinAbbreviation(value)
               );
             }
           );
@@ -650,8 +683,9 @@
         return keys;
       }
 
-
-
+      /**
+       * Delete the last selected tag.
+       */
       deleteLastTag() {
         this.pop("selectedValues");
       }
@@ -669,10 +703,17 @@
         return 'Alt+' + (index + 1);
       }
 
+      /**
+       * Open or close the collapse
+       * @param {boolean} display  true to open the collapse.
+       */
       displayCollapse(display) {
         this.$["picker-collapse"].hidden = !display;
       }
 
+      /**
+       * Toggle collapse. Side effect: the picker input will get a focus.
+       */
       toggleCollapse() {
         const hidden = this.$["picker-collapse"].hidden;
         this.$["picker-collapse"].hidden = !hidden;
@@ -680,12 +721,16 @@
       }
 
       /**
-       * 输入框获取焦点
+       * Set focus to picker.
        */
       doFocus() {
         this.__focusOnKeywordInput();
       }
 
+      /**
+       * Validate, true if the select is set to be required and this.selectedValues.length > 0, or else false.
+       * @returns {boolean}
+       */
       validate() {
         return this.required ? this.selectedValues.length > 0 : true;
       }

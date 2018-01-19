@@ -1,6 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <!--
+`h2-pagination`
+
+Example:
 ```html
 <h2-pagination total="30" limit="5" paging="{{paging}}"></h2-pagination>
 ```
@@ -85,13 +88,11 @@
   </template>
   <script>
     /**
-     * `h2-pagination`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-pagination/index.html
      */
-    class H2Pagination extends Polymer.Element {
+    class H2Pagination extends Polymer.mixinBehaviors([], Polymer.Element) {
       static get is() {
         return "h2-pagination";
       }
@@ -124,6 +125,9 @@
             value: 0
           },
 
+          /**
+           * Total page sizes
+           */
           totalPageSize: {
             type: Number,
             computed: '_calTotalPageSize(total, limit)'
@@ -148,6 +152,7 @@
       _calTotalPageSize(total, limit) {
         return Math.ceil((total || 0) / limit);
       }
+
       /**
        * Go to the first page.
        */
@@ -159,7 +164,7 @@
        * Go to previous page.
        */
       prev() {
-        if(this.__pageIndex > 1) {
+        if (this.__pageIndex > 1) {
           this.__pageIndex--;
         }
       }

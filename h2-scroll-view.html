@@ -2,9 +2,10 @@
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 
 <!--
+`h2-scroll-view`
 
+Example:
 ```html
-
 <h2-scroll-view>
   <p>Alice was beginning to get very tired of sitting by her sisteron the bank, and of having nothing to do</p>
 </h2-scroll-view>
@@ -35,13 +36,11 @@
   </template>
   <script>
     /**
-     * `h2-scroll-view`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-scroll-view/index.html
      */
-    class H2ScrollView extends Polymer.Element {
+    class H2ScrollView extends Polymer.mixinBehaviors([], Polymer.Element) {
       static get properties() {
         return {};
       }
