@@ -7,6 +7,7 @@
 <link rel="import" href="./h2-label.html">
 <!--
 
+Example:
 ```html
 <h2-select label="球员" placeholder="选择球员" items="[[items]]"></h2-select>
 <h2-select label="球员" placeholder="选择球员" multi items="[[items]]" value="1,2"></h2-select>
@@ -22,6 +23,18 @@
     {"label": "内马尔", "value": 13}
   ];
 ```
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-select-label` | Mixin applied to the select label | {}
+|`--h2-select-tag` | Mixin applied to the selected tag (the eyeball) | {}
+|`--h2-select-tag-deleter` | Mixin applied to the deleter of each tag| {}
+|`--h2-select-tag-cursor` | Mixin applied to the cursor of the select | {}
+|`--h2-select-dropdown` | Mixin applied to the dropdown snippet of the select | {}
+
 -->
 
 <dom-module id="h2-select">
@@ -263,7 +276,6 @@
   </template>
   <script>
     /**
-     * `h2-select`
      *
      * @customElement
      * @polymer
