@@ -67,6 +67,23 @@
       </script>
     </template>
   </demo-snippet>
+  <h3>自定义样式</h3>
+  <demo-snippet>
+    <template>
+      <custom-style>
+        <style>
+          #radio6 {
+            --h2-radio-selected-color: coral;
+
+          }
+        </style>
+      </custom-style>
+      <h2-radio id="radio6" label="姓名" attr-for-value="id" attr-for-label="name" required></h2-radio>
+      <script>
+        radio6.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>

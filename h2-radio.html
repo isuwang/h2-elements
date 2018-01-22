@@ -16,6 +16,14 @@ Example:
     radio2.items = [{id: 1, name: "张三"}, {id: 2, name: "李四"}, {id: 3, name: "王五"}]
 </script>
 ```
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-radio-selected-color` | Radio color when it is selected | #0099FF
 -->
 
 <dom-module id="h2-radio">
@@ -72,9 +80,9 @@ Example:
 
       .candidate__item:hover,
       .candidate__item.iron-selected {
-        background-color: #0099FF;
+        background-color: var(--h2-radio-selected-color, #0099FF);
         color: #fff;
-        border-color: #0099FF;
+        border-color: var(--h2-radio-selected-color, #0099FF);
       }
 
     </style>
