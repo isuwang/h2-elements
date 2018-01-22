@@ -1,7 +1,7 @@
 {
   "name": "h2-elements",
   "description": "Polymer components for building web apps.",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "main": [
     "h2-button-group.html",
     "h2-button.html",

@@ -1,0 +1,85 @@
+### Changelog（v1.0.0）
+- 所有组件的样式优化
+- h2-button-group.html
+    - 添加 `onItemClick` 属性，用于下拉框中绑定用户自定义点击事件
+    - 添加样式钩子 `--h2-button-group-button`，` --h2-button-group-dropdown`
+- h2-button.html
+- h2-checkbox-group.html
+    - 添加 `selectedValues` 属性，返回选中的数据项
+    - 添加样式钩子 `--h2-checkbox-group-label`， `--h2-checkbox-group-checked-color`
+- h2-dialog.html
+    - 添加样式钩子 `--h2-dialog-width`，`--h2-dialog-height`
+- h2-fetch.html
+- h2-form.html
+    - 重新设计了表单组件API， 更接近原生`<form>`元素的使用方式
+    - 添加样式钩子 `--h2-form-title`，`--h2-form`，`--h2-form-button`
+- h2-grid.html
+    - 基于 `table` 布局重构h2-grid
+- h2-image-upload.html
+    - 删除 `imgWidth`，`imgHeight` 属性， 组件宽高直接通过样式控制
+    - 添加 `sizeLimit` 属性， 提供上传文件大小限制能力
+    - 添加 `accept` 属性，提供上传文件类型限制能力
+    - 优化了内部 `drag` 相关事件的处理
+    - 查看大图方法重命名为 `openViewZoom`
+    - 关闭大图方法重命名为 `closeViewZoom`
+    - 优化 `validate` 方法实现
+    - 添加样式钩子 `--h2-image-upload-label`，`--h2-image-upload-width`，`--h2-image-upload-height`，`--h2-image-upload-buttons`
+- h2-image-view.html
+    - 删除 `imgWidth`，`imgHeight` 属性， 组件宽高直接通过样式控制
+    - 查看大图方法重命名为 `openViewZoom`
+    - 关闭大图方法重命名为 `closeViewZoom`
+    - 添加样式钩子 `--h2-image-upload-button`
+- h2-input.html
+    - 删除 `clazz`、`preventInvalidInput`属性
+    - 提供 `allowedPattern` 属性，提供输入内容正则校验的实现
+    - 优化 `validate` 方法实现逻辑
+    - 添加 `prompt` 属性，提供校验失败时的动画提示
+    - 添加样式钩子 `--h2-input-label`， `--h2-input`， `--h2-input-unit`
+- h2-input-date.html
+    - `time` 属性重命名为 `timestamp`
+    - 添加样式钩子 `--h2-input-date-label`
+- h2-input-datetime.html
+    - `time` 属性重命名为 `timestamp`
+    - 添加样式钩子 `--h2-input-datetime-label`
+- h2-label.html
+    - 删除 `required` 属性
+    - 添加样式钩子 `--h2-label`
+- h2-loading.html
+    - 删除 `imgUrl` 属性
+- h2-mask.html
+    - 私有化 `valueObj` `lastValueObj` 等字段
+    - 添加 `attrForDisplay` 属性， 用以指定显示模式下要显示的字段值
+    - 重构事件处理
+    - 优化代码逻辑
+    - 添加样式钩子 `--h2-mask-label`
+- h2-pagination.html
+    - 添加 `limit` 属性 用以设置单页条数限制
+    - 添加 `totalPageSize` 属性，用以返回总页数
+    - 简化各选页方法逻辑
+- h2-picker.html
+    - 私有化工具插件相关属性字段
+    - 删除 `itemsQueryParams` 
+    - 重命名 `selectedList` 为`selectedValues` ，返回选中的数据项
+    - 重命名 `itemsInitQueryUrl` 为 `src`，`itemsQueryUrl` 为 `keywordSearchSrc` 
+    - 重命名 `searchFields` 为 `fieldsForIndex`， 用以自定义拼音索引字段
+    - 重命名 `displayFields` 为 `pickerMeta`，用以设置下拉框的显示属性
+    - 添加 `disablePinyinSearch` 属性，提供禁用拼音搜索功能
+    - 更多的快捷键操作
+    - 更清晰的数据流动，以及更简单的逻辑实现 
+    - 添加样式钩子 `--h2-picker-label`，`--h2-picker-tag`，`--h2-picker-tag-deleter`，`--h2-picker-input`，`--h2-picker-dropdown`
+- h2-radio.html
+    - 修改必填时处理
+    - 添加样式钩子 `--h2-radio-selected-color`
+- h2-scroll-view.html
+    - 删除 `width` ，`height` 属性，直接使用样式控制宽高
+- h2-select.html
+    - 删除 `selected` ，`selectedList` 属性
+    - 添加 `selectedValues` 属性，返回选中的数据项
+    - 更灵活方便的添加删除操作
+    - 更清晰的数据流动
+    - 添加样式钩子 `--h2-select-label`，`--h2-select-tag`，`--h2-select-tag-deleter`，`--h2-select-tag-cursor`，`--h2-select-dropdown`
+- h2-textarea.html
+    - 重构旧的基于 `iron-autogrow-textarea`的实现， 基于原生的textarea
+    - 添加 `prompt` 属性，提供校验失败时的动画提示
+    - 添加样式钩子 `--h2-textarea` ，`--h2-textarea-placeholder`
+- h2-tip.html
