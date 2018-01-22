@@ -13,19 +13,13 @@
     <style>
       :host {
         display: table-cell;
-        padding: 2px 8px;
-        height: 30px;
-        line-height: 30px;
-      }
-
-      .content {
-
+        padding: 8px;
+        text-align: left;
+        vertical-align: middle;
       }
 
     </style>
-    <div id="row-cell-div-2" class="content">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </template>
   <script>
     /**
