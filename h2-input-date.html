@@ -8,7 +8,7 @@ Example:
 ```html
 <h2-input-date class="input-date" label="日期"></h2-input-date>
 <h2-input-date class="input-date" label="默认value" value="2017-10-26"></h2-input-date>
-<h2-input-date class="input-date" label="默认time" time="1509008130349"></h2-input-date>
+<h2-input-date class="input-date" label="默认time" timestamp="1509008130349"></h2-input-date>
 
 ```
 ## Styling
@@ -78,7 +78,7 @@ The following custom properties and mixins are available for styling:
            * The timestamp of the date selected.
            * @type {number}
            */
-          time: {
+          timestamp: {
             type: Number,
             notify: true
           },
@@ -133,10 +133,10 @@ The following custom properties and mixins are available for styling:
         return "h2-input-date";
       }
 
-      static get obervers() {
+      static get observers() {
         return [
           '_valueChanged(value)',
-          '_timeChanged(time)'
+          '_timestampChanged(timestamp)'
         ];
       }
       /**
@@ -145,18 +145,18 @@ The following custom properties and mixins are available for styling:
        */
       _valueChanged(value) {
         if (!this.value) {
-          this.set("time", undefined);
+          this.set("timestamp", undefined);
           return;
         }
         let time = new Date(`${value} 00:00:00`).getTime();
-        this.set("time", time);
+        this.set("timestamp", time);
       }
 
       /**
        * @param time
        * @private
        */
-      _timeChanged(time) {
+      _timestampChanged(time) {
         if (!time) {
           this.set("value", undefined);
           return;
