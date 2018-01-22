@@ -423,7 +423,7 @@ The following custom properties and mixins are available for styling:
         if (dirty !== value) {
           this.selectedValues =
             flatValues.map(val => items.find(item => item[this.attrForValue] == val))
-              .filter(selected => !!selected);
+              .filter(selected => typeof selected !== 'undefined');
 
           if (!this.multi) {
             this.__selected = items.find(item => item[this.attrForValue] == flatValues[0]);

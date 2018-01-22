@@ -54,7 +54,7 @@
       <h2-picker id="picker" label="单选" value="1" attr-for-value="id"></h2-picker>
       <h2-picker id="picker1" label="多选" value="1,2,3,4" attr-for-value="id" multi></h2-picker>
       <script>
-        const collapseTableHead = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
+        const pickerMeta = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
         const items = [
           {"id": 1, "label": "快塑网", "business": "塑料"},
           {"id": 2, "label": "阿里巴巴", "business": "电商"},
@@ -63,10 +63,10 @@
           {"id": 5, "label": "京东1", "business": "电商"},
           {"id": 6, "label": "京东22", "business": "电商"}
         ];
-        picker.collapseTableHead = collapseTableHead;
+        picker.pickerMeta = pickerMeta;
         picker.items = items;
 
-        picker1.collapseTableHead = collapseTableHead;
+        picker1.pickerMeta = pickerMeta;
         picker1.items = items;
       </script>
     </template>
@@ -79,10 +79,10 @@
       <h2-picker id="picker4" label="公司" value="1,2,3" attr-for-value="id" multi required></h2-picker>
       <script>
 
-        picker3.collapseTableHead = collapseTableHead;
+        picker3.pickerMeta = pickerMeta;
         picker3.items = items;
         
-        picker4.collapseTableHead = collapseTableHead;
+        picker4.pickerMeta = pickerMeta;
         picker4.items = items;
       </script>
     </template>
@@ -102,7 +102,7 @@
       </custom-style>
       <h2-picker id="picker5" label="公司" multi attr-for-value="id" value="1,2,3,4,5"></h2-picker>
       <script>
-        picker5.collapseTableHead = collapseTableHead;
+        picker5.pickerMeta = pickerMeta;
         picker5.items = items;
 
       </script>
@@ -126,11 +126,11 @@
       <h2-picker id="picker6" label="默认" attr-for-value="id"></h2-picker>
       <h2-picker id="picker7" label="自定义搜索字段" attr-for-value="id"></h2-picker>
       <script>
-        picker6.collapseTableHead = collapseTableHead;
+        picker6.pickerMeta = pickerMeta;
         picker6.items = items;
 
-        picker7.collapseTableHead = collapseTableHead;
-        picker7.searchFields = ["business"];
+        picker7.pickerMeta = pickerMeta;
+        picker7.fieldsForIndex = ["business"];
         picker7.items = items;
       </script>
     </template>
@@ -141,7 +141,7 @@
     <template>
       <h2-picker id="picker8" src="/init.do" label="公司" attr-for-value="id"></h2-picker>
       <script>
-        picker8.collapseTableHead = collapseTableHead;
+        picker8.pickerMeta = pickerMeta;
       </script>
     </template>
   </demo-snippet>
@@ -165,7 +165,7 @@
                  multi
                  attr-for-value="id"></h2-picker>
       <script>
-        picker9.collapseTableHead = collapseTableHead;
+        picker9.pickerMeta = pickerMeta;
       </script>
     </template>
   </demo-snippet>
@@ -197,7 +197,7 @@
       </ul>
       </p>
       <script>
-        picker10.collapseTableHead = collapseTableHead;
+        picker10.pickerMeta = pickerMeta;
       </script>
     </template>
   </demo-snippet>

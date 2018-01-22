@@ -78,6 +78,7 @@ The following custom properties and mixins are available for styling:
 
         display: flex;
         flex-wrap: wrap;
+        align-content: flex-start;
 
         background: #FFF;
         padding: 4px;
@@ -240,16 +241,16 @@ The following custom properties and mixins are available for styling:
         <table class="collapse-content__table">
           <thead>
           <tr>
-            <template is="dom-repeat" items="[[collapseTableHead]]">
+            <template is="dom-repeat" items="[[pickerMeta]]">
               <th class="collapse-table__cell">[[item.label]]</th>
             </template>
             <th class="collapse-table__cell table-hotkey">快捷键</th>
           </tr>
           </thead>
           <tbody>
-          <template is="dom-repeat" items="[[displayItems]]" as="row">
+          <template is="dom-repeat" items="[[_displayItems]]" as="row">
             <tr id="candidate-item__[[index]]" on-click="_selectCollapseItem">
-              <template is="dom-repeat" items="[[collapseTableHead]]" as="col">
+              <template is="dom-repeat" items="[[pickerMeta]]" as="col">
                 <td class="collapse-table__cell">[[ getValueByPath(row, col.field) ]]</td>
               </template>
               <td class="collapse-table__cell table-hotkey">[[_getHotKey(index)]]</td>
@@ -347,7 +348,7 @@ The following custom properties and mixins are available for styling:
            * 下拉面板当前展示的数据集（默认显示items的前10条）
            * @type {array}
            */
-          displayItems: {
+          _displayItems: {
             type: Array
           },
           /**
@@ -358,10 +359,10 @@ The following custom properties and mixins are available for styling:
             type: String
           },
           /**
-           * （本地查询模式）模糊搜索的字段字符串数组，无值时，默认将所有字段做成搜索缓存
+           * Fields to build index for pinyin plugin.
            * @type {array}
            */
-          searchFields: {
+          fieldsForIndex: {
             type: Array
           },
           /**
@@ -369,9 +370,11 @@ The following custom properties and mixins are available for styling:
            * @type {array}
            * @default [{"field": "label", "label": "选项"}]
            */
-          collapseTableHead: {
+          pickerMeta: {
             type: Array,
-            value: [{"field": "label", "label": "选项"}]
+            value: function() {
+              return [{"field": "label", "label": "选项"}];
+            }
           },
           /**
            * Attribute name for value.
@@ -479,7 +482,7 @@ The following custom properties and mixins are available for styling:
 
       _itemsChanged(items = []) {
 
-        this.displayItems = items.slice(0, 9);
+        this._displayItems = items.slice(0, 9);
 
         // 初始化一次选中项
         this._valueChanged(this.value);
@@ -487,7 +490,7 @@ The following custom properties and mixins are available for styling:
         // 清空缓存插件的缓存
         this._cacheSearchUtil.resetCache();
 
-        items.forEach(item => this._cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.searchFields)));
+        items.forEach(item => this._cacheSearchUtil.addCacheItem(item, this._loadPinyinKeys(item, this.fieldsForIndex)));
       }
 
       _userInputKeywordChanged(userInputKeyword) {
@@ -507,13 +510,13 @@ The following custom properties and mixins are available for styling:
           this._fetchUtil.fetchIt(request)
             .then(res => res.json())
             .then(data => {
-              this.displayItems = (data || []).slice(0, 9);
+              this._displayItems = (data || []).slice(0, 9);
               this._switchFocusItemAt(0);
             })
             .catch(err => console.error(err));
 
         } else {
-          this.displayItems = matched.slice(0, 9);
+          this._displayItems = matched.slice(0, 9);
           this._switchFocusItemAt(0);
         }
       }
@@ -528,12 +531,12 @@ The following custom properties and mixins are available for styling:
        */
       _valueChanged(value) {
         // 本地模式，或远程数据已经就位
-        if (this.displayItems) {
+        if (this._displayItems) {
           const flatValues = [...(new Set(String(value).split(",")))];
           const selectedValues = this.selectedValues || [];
           const dirty = selectedValues.map(selected => selected[this.attrForValue]).join(',');
           if (dirty !== value) {
-            const tmp = [...selectedValues, ...this.displayItems];
+            const tmp = [...selectedValues, ...this._displayItems];
             this.selectedValues =
               flatValues.map(val => tmp.find(item => item[this.attrForValue] == val))
                 .filter(selected => !!selected);
@@ -542,9 +545,9 @@ The following custom properties and mixins are available for styling:
       }
 
       _selectItemAt(index) {
-        if (index >= 0 && index < this.displayItems.length) {
+        if (index >= 0 && index < this._displayItems.length) {
           this._switchFocusItemAt(index);
-          this._selectItem(this.displayItems[index]);
+          this._selectItem(this._displayItems[index]);
         }
       }
 
@@ -574,7 +577,7 @@ The following custom properties and mixins are available for styling:
        */
       _switchFocusItemAt(index) {
         setTimeout(() => {
-          const maxIndex = (this.displayItems || []).length;
+          const maxIndex = (this._displayItems || []).length;
           const newIndex = (maxIndex + index) % maxIndex;
           this.root.querySelectorAll("tr.candidate-item--focus")
             .forEach(e => e.classList.remove('candidate-item--focus'));
@@ -643,7 +646,7 @@ The following custom properties and mixins are available for styling:
               break;
             case 'Enter':
             case ' ':
-              if (collapseOpend && this.displayItems.length > 0 && this.__focusIndex < this.displayItems.length) {
+              if (collapseOpend && this._displayItems.length > 0 && this.__focusIndex < this._displayItems.length) {
                 this._selectItemAt(this.__focusIndex);
               }
 
@@ -659,10 +662,10 @@ The following custom properties and mixins are available for styling:
       }
 
       /**
-       * 给对象根据searchFields给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
+       * 给对象根据fieldsForIndex给对应的字段做拼音缓存（字段值，字段值全拼和拼音首字母）
        */
-      _loadPinyinKeys(item, searchFields = []) {
-        let keys = [], values = searchFields.map(sf => item[sf]);
+      _loadPinyinKeys(item, fieldsForIndex = []) {
+        let keys = [], values = fieldsForIndex.map(sf => item[sf]);
 
         values = values.length === 0 ? Object.values(item) : values;
 
