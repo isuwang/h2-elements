@@ -1,27 +1,23 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../iron-input/iron-input.html">
-<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="./behaviors/base-behavior.html">
+<link rel="import" href="./h2-button.html">
+<link rel="import" href="./h2-input.html">
 
 <!--
+`h2-tip`
 
-```javascript
+Example:
+```html
+<h2-tip type="success" message="success" id="tip"></h2-tip>
+<h2-button id="btn" onclick="tip.open();">Success</h2-button>
 
-<h2-tip id="tip"></h2-tip>
-<h2-tip type="success" message="success" id="tip2"></h2-tip>
-<h2-tip type="error" message="error" id="tip3"></h2-tip>
-<h2-tip type="confirm" message="confirm?" id="tip4"></h2-tip>
-<h2-tip type="prompt" message="prompt?" id="tip5"></h2-tip>
-<script>
-    tip.open();
-    tip.close();
-    tip4.open(
-        () => {
-            alert("点击确定！");
-        }, () => {
-            alert("点击取消");
-        });
-</script>
+<h2-tip type="warn" message="warn" id="tip2"></h2-tip>
+<h2-button id="btn2" onclick='tip2.open(2000);'>Warn</h2-button>
+
+<h2-tip type="error" message="alert" id="tip3"></h2-tip>
+<h2-button id="btn3" onclick='tip3.open(5000);'>Error</h2-button>
 ```
 -->
 
@@ -29,12 +25,9 @@
   <template>
     <style>
 
-      :host .dialog {
-
+      :host {
         min-height: 25px;
         min-width: 125px;
-        color: #000066;
-
       }
 
       :host #tip {
@@ -43,93 +36,87 @@
         box-sizing: border-box;
       }
 
-      :host .msg {
-        background: blue;
-        color: #fff;
-      }
-
-      :host .alert {
+      :host([type=warn]) #tip {
         background: #ffff00;
         color: red;
       }
 
-      :host .success {
+      :host([type=success]) #tip {
         background: #00b300;
         color: #fff;
       }
 
-      :host .error {
+      :host([type=error]) #tip {
         background: #f60;
         color: #fff;
       }
 
-      :host #operate-panl {
+      :host([type=prompt]) #tip,
+      :host([type=confirm]) #tip {
+        margin-top: 10px;
         width: 250px;
-        height: 50px;
-        text-align: center;
       }
 
-      :host #tip {
+      :host([type=success]) #operate-panel,
+      :host([type=warn]) #operate-panel,
+      :host([type=error]) #operate-panel,
+      :host([type=success]) #remark-input,
+      :host([type=warn]) #remark-input,
+      :host([type=error]) #remark-input,
+      :host([type=confirm]) #remark-input {
+        display: none;
+      }
+
+      #tip {
         text-align: center;
         vertical-align: middle;
         padding: 20px 8px;
-        font-size: 15px;
+        font-size: 16px;
         min-height: 60px;
         min-width: 200px;
-        margin-top: 0px;
+        margin: auto;
+        word-wrap: break-word;
       }
 
       #remark-input {
-        width: 200px;
-        border-radius: 3px;
-        text-align: center;
-        margin-left: 20px;
-        height: 28px;
+        width: 250px;
+        margin: auto auto 15px;
+        --h2-input: {
+          text-align: center;
+        }
       }
 
-      :host .remark-panl {
-        text-align: center;
+      #operate-panel {
+        height: 50px;
+        width: 250px;
+        display: flex;
+        margin: 0;
+        justify-content: space-evenly;
       }
 
-      :host paper-button {
-        background-color: var(--google-grey-300);
+      #operate-panel > h2-button {
+        height: 35px;
       }
 
-      :host paper-button:hover {
-        background-color: var(--paper-light-blue-200);
-      }
-
-      :host dom-if {
-        display: none;
-      }
     </style>
-    <paper-dialog id="dialog" attached="attachedHandler" modal="[[_isConfirm(type)]]">
-      <div id="tip" class$="{{type}}">[[message]]</div>
-      <template is="dom-if" if="{{_isPrompt(type)}}">
-        <div class="remark-panl">
-          <iron-input bind-value="{{remark}}" maxlength="10">
-            <input type="text" class="input-size" id="remark-input">
-          </iron-input>
-        </div>
-      </template>
-      <template is="dom-if" if="{{_isConfirm(type)}}">
-        <div id="operate-panl">
-          <paper-button type="true" on-click="confirmFn">[[okBtn]]</paper-button>
-          <paper-button on-click="cancelFn">[[noBtn]]</paper-button>
-        </div>
-      </template>
 
+    <paper-dialog id="dialog" modal="[[ isOneOf(type, 'confirm', 'prompt') ]]">
+      <div id="tip">[[message]]</div>
+      <h2-input id="remark-input" value="{{ remark }}"></h2-input>
+      <div id="operate-panel">
+        <h2-button on-click="_confirm">确定</h2-button>
+        <h2-button on-click="_cancel">取消</h2-button>
+      </div>
     </paper-dialog>
+
   </template>
   <script>
     /**
-     * `h2-tip`
-     *
      * @customElement
      * @polymer
      * @demo demo/h2-tip/index.html
      */
-    class H2Tip extends Polymer.Element {
+    class H2Tip extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
 
       static get is() {
         return "h2-tip";
@@ -137,147 +124,120 @@
 
       static get properties() {
         return {
-
           /**
-           * 提示框提示信息
+           * Message of the tip.
            */
           message: {
             type: String,
           },
           /**
-           * 提示框的类型
-           * @type {string} type = alert | success | error | confirm | prompt
-           * @default 'alert'
+           * Tip type [success | warn | error | confirm | prompt]
+           * @type {string} type
+           * @default 'success'
            */
           type: {
             type: String,
-            value: 'alert'
+            value: 'success'
           },
           /**
-           * prompt类型，确认弹出框中输入信息
+           * User input when `type` is `prompt`.
            */
           remark: {
             type: String
           },
           /**
-           * 确认按钮文字，默认为“确定”
-           */
-          okBtn: {
-            type: String,
-            value: function () {
-              return "确定"
-            }
-          },
-          /**
-           * 取消按钮文字，默认为“取消”
-           */
-          noBtn: {
-            type: String,
-            value: function () {
-              return "取消"
-            }
-          },
-          /**
            * confirm、prompt信息框确认按钮点击回调函数
            */
-          okFn: {
+          _confirmCallback: {
             type: Object
           },
           /**
            * confirm、prompt信息框取消按钮点击回调函数
            */
-          noFn: {
+          _cancelCallback: {
             type: Object
+          },
+
+          /**
+           * When `type` is `success`, `warn` or `error`, the tip will disappear after [duration] ms.
+           * @type {number}
+           * @default 1500 ms
+           */
+          duration: {
+            type: Number,
+            value: 1500
+          },
+          /**
+           * Set to true, if you want that `h2-tip` can auto detach from its parentElement.
+           * @default false
+           */
+          autoDetach: {
+            type: Boolean,
+            value: false
           }
         };
       }
 
       /**
-       * 判断是否confirm或prompt类型
+       * Cancel handler
        */
-      _isConfirm(type) {
-        return 'confirm' == type || 'prompt' == type;
+      _cancel() {
+        this.close();
+        this.isFunction(this._cancelCallback) && this._cancelCallback();
       }
 
       /**
-       * 判断是否prompt类型
+       * Confirm handler
        */
-      _isPrompt(type) {
-        return 'prompt' == type;
+      _confirm() {
+        this.close();
+        const cbParam = this.type === 'prompt' ? {remark: this.remark} : null;
+        this.isFunction(this._confirmCallback) && this._confirmCallback(cbParam);
       }
 
       /**
-       * 点击取消按钮执行的函数，向外抛出cancel-handler事件
+       * Open the tip dialog.
+       *
+       * 3 ways to use the open api:
+       *
+       *   - open(duration)
+       *   - open(confirmCallback)
+       *   - open(confirmCallback, cancelCallback)
+       * @param args
        */
-      cancelFn() {
-        this.dispatchEvent(new CustomEvent("cancel-handler", {
-          bubbles: true, composed: true
-        }));
+      open(...args) {
+        let confirmCallback, cancelCallback, duration = this.duration;
+        if (args.length > 0 && typeof args[0] === 'function') {
+          confirmCallback = args.shift();
+        }
+
+        if (args.length > 0 && typeof args[0] === 'function') {
+          cancelCallback = args.shift();
+        }
+
+        if (args.length > 0 && (typeof args[0] === 'number' || typeof args[0] === 'string')) {
+          duration = Number(args[0]);
+        }
+
+        this._confirmCallback = confirmCallback;
+        this._cancelCallback = cancelCallback;
+
+        this.$.dialog.open();
+        if (this.type !== 'confirm' && this.type !== 'prompt') {
+          setTimeout(() => {
+            this.close();
+          }, duration);
+        }
       }
 
       /**
-       * 点击确认按钮执行的函数，向外抛出confirm-handler事件
+       * Hide the tip.
        */
-      confirmFn() {
-        if (this.type == 'confirm') {
-          this.dispatchEvent(new CustomEvent("confirm-handler", {
-            bubbles: true, composed: true
-          }));
-        } else if (this.type == 'prompt') {
-          this.dispatchEvent(new CustomEvent("confirm-handler", {
-            bubbles: true, composed: true, detail: {remark: this.remark}
-          }));
-        }
-      }
-
-      __handler(fn) {
-        return (e) => {
-          e.stopPropagation();
-          fn && fn(e);
-          this.close();
-        }
-      }
-
-      open(okFn, noFn, type) {
-        switch (type || this.type) {
-          case "alert":
-          case "error":
-          case "success":
-            this.$.dialog.open();
-            break;
-          case "confirm":
-          case "prompt":
-            this.okFn = okFn || this.okFn;
-            this.noFn = noFn || this.noFn;
-            this.$.dialog.open();
-            break;
-          default:
-            this.$.dialog.open();
-            break;
-
-        }
-      }
-
       close() {
         this.$.dialog.close();
-      }
-
-      ready() {
-        super.ready();
-        this.addEventListener("confirm-handler", (e) => {
-          this.okFn && this.okFn(e);
-          this.close();
-          this.dispatchEvent(new CustomEvent("option-done", {
-            bubbles: true, composed: true
-          }));
-        });
-        this.addEventListener("cancel-handler", (e) => {
-          this.noFn && this.noFn(e);
-          this.close();
-          this.dispatchEvent(new CustomEvent("option-done", {
-            bubbles: true, composed: true
-          }));
-        });
+        if(this.autoDetach && this.parentElement && this.parentElement.removeChild) {
+          this.parentElement.removeChild(this);
+        }
       }
     }
 

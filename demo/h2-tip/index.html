@@ -1,115 +1,86 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>h2-tip demo</title>
+  <title>h2-tip demo</title>
 
-    <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-    <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-    <link rel="import" href="../../../paper-button/paper-button.html">
-    <link rel="import" href="../../h2-tip.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
+  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../../paper-button/paper-button.html">
+  <link rel="import" href="../../h2-tip.html">
+  <link rel="import" href="../../h2-button.html">
 
-    <custom-style>
-        <style is="custom-style" include="demo-pages-shared-styles">
-            .centered {
-                min-width: 800px;
-            }
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+      .centered {
+        min-width: 800px;
+      }
 
-            demo-snippet {
-                --demo-snippet-code: {
-                    max-height: 500px;
-                }
-            }
-        </style>
-    </custom-style>
+      demo-snippet {
+        --demo-snippet-code: {
+          max-height: 500px;
+        }
+      }
+    </style>
+  </custom-style>
 </head>
 <body>
 <div class="vertical-section-container centered">
-    <h3>H2-tip success demo</h3>
-    <demo-snippet>
-        <template>
-            <paper-button id="btn" raised>button</paper-button>
-            <h2-tip type="success" message="success" id="tip"></h2-tip>
-            <script>
-                btn["onclick"] = () => {
-                    tip.open();
-                }
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>H2-tip success demo</h3>
+  <demo-snippet>
+    <template>
+      <h2-tip type="success" message="success" id="tip"></h2-tip>
+      <h2-button id="btn" onclick="tip.open();">Success</h2-button>
+
+      <h2-tip type="warn" message="warn" id="tip2"></h2-tip>
+      <h2-button id="btn2" onclick='tip2.open(2000);'>Warn</h2-button>
+
+      <h2-tip type="error" message="alert" id="tip3"></h2-tip>
+      <h2-button id="btn3" onclick='tip3.open(5000);'>Error</h2-button>
+
+    </template>
+  </demo-snippet>
 </div>
 
 <div class="vertical-section-container centered">
-    <h3>H2-tip alert demo</h3>
-    <demo-snippet>
-        <template>
-            <paper-button id="btn2" raised>button</paper-button>
-            <h2-tip type="alert" message="alert" id="tip2"></h2-tip>
-            <script>
-                btn2["onclick"] = () => {
-                    tip2.open();
-                }
-            </script>
-        </template>
-    </demo-snippet>
+  <h3>H2-tip confirm demo</h3>
+  <demo-snippet>
+    <template>
+      <h2-button id="btn4">Confirm</h2-button>
+      <h2-tip type="confirm" message="Are you sure?"
+              id="tip4"></h2-tip>
+      <script>
+        btn4.onclick = () => {
+          tip4.open(() => {
+            alert("点击确定！");
+          })
+        }
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 
 <div class="vertical-section-container centered">
-    <h3>H2-tip error demo</h3>
-    <demo-snippet>
-        <template>
-            <paper-button id="btn3" raised>button</paper-button>
-            <h2-tip type="error" message="alert" id="tip3"></h2-tip>
-            <script>
-                btn3["onclick"] = () => {
-                    tip3.open();
-                }
-            </script>
-        </template>
-    </demo-snippet>
-</div>
-
-<div class="vertical-section-container centered">
-    <h3>H2-tip confirm demo</h3>
-    <demo-snippet>
-        <template>
-            <paper-button id="btn4" raised>button</paper-button>
-            <h2-tip type="confirm" message="confirm?" id="tip4"></h2-tip>
-            <script>
-                btn4["onclick"] = () => {
-                    tip4.open(() => {
-                        alert("点击确定！");
-                    }, () => {
-                        alert("点击取消");
-                    })
-                }
-            </script>
-        </template>
-    </demo-snippet>
-</div>
-
-<div class="vertical-section-container centered">
-    <h3>H2-tip prompt demo</h3>
-    <demo-snippet>
-        <template>
-            <paper-button id="btn5" raised>button</paper-button>
-            <h2-tip type="prompt" message="prompt?" id="tip5"></h2-tip>
-            <script>
-                btn5["onclick"] = () => {
-                    tip5.open((e) => {
-                        alert("点击确定," + e.detail.remark + "！");
-                    }, () => {
-                        alert("点击取消");
-                    })
-                }
-            </script>
-
-        </template>
-    </demo-snippet>
+  <h3>H2-tip prompt demo</h3>
+  <demo-snippet>
+    <template>
+      <h2-button id="btn5">Prompt</h2-button>
+      <h2-tip type="prompt" message="Are you sure?" id="tip5"></h2-tip>
+      <script>
+        btn5.onclick = () => {
+          tip5.open((e) => {
+            alert("点击确定," + e.remark + "！");
+          }, () => {
+            alert("点击取消");
+          })
+        }
+      </script>
+    </template>
+  </demo-snippet>
 </div>
 </body>
 </html>
