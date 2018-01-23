@@ -13,7 +13,7 @@
     isOneOf(...args) {
       if (Array.isArray(args) && args.length > 0) {
         const target = args[0];
-        return args.slice(1).filter(arg => Object.is(arg, target)).length > 0;
+        return args.slice(1).some(arg => Object.is(arg, target));
       }
 
       return false;
