@@ -142,11 +142,22 @@ Example:
       static get observers() {
         return [
           '_pageIndexChanged(__pageIndex)',
+          '_pageStartChanged(paging.start)'
         ];
       }
 
+      _pageStartChanged(start) {
+        const pageIndex = Math.floor(start / this.limit) + 1;
+        if (pageIndex !== this.__pageIndex) {
+          this.__pageIndex = pageIndex;
+        }
+      }
+
       _pageIndexChanged() {
-        this.paging = {start: this.__pageIndex - 1, limit: this.limit};
+        const start = (this.__pageIndex - 1) * this.limit;
+        if(!this.paging || this.paging.start !== start) {
+          this.paging = {start, limit: this.limit};
+        }
       }
 
       _calTotalPageSize(total, limit) {
