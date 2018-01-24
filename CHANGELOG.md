@@ -79,7 +79,12 @@
     - 更清晰的数据流动
     - 添加样式钩子 `--h2-select-label`，`--h2-select-tag`，`--h2-select-tag-deleter`，`--h2-select-tag-cursor`，`--h2-select-dropdown`
 - h2-textarea.html
-    - 重构旧的基于 `iron-autogrow-textarea`的实现， 基于原生的textarea
+    - 重构旧的基于 `iron-autogrow-textarea`的实现， 新的基于原生的textarea
     - 添加 `prompt` 属性，提供校验失败时的动画提示
     - 添加样式钩子 `--h2-textarea` ，`--h2-textarea-placeholder`
 - h2-tip.html
+    - 删除 `okBtn`，`noBtn`，`okFn`，`noFn`属性
+    - 添加 `duration`，用以设置 `tip` 多久后自动隐藏
+    - 添加 `autoDetach` 属性， 用以设置 `tip` 关闭后是否自动从父组件中移除
+    - 重写 `open` 方法
+    
