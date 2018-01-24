@@ -7026,334 +7026,6 @@
       "tagname": "h2-textarea"
     },
     {
-      "description": "`h2-tip`\n\nExample:\n```html\n<h2-tip type=\"success\" message=\"success\" id=\"tip\"></h2-tip>\n<h2-button id=\"btn\" onclick=\"tip.open();\">Success</h2-button>\n\n<h2-tip type=\"warn\" message=\"warn\" id=\"tip2\"></h2-tip>\n<h2-button id=\"btn2\" onclick='tip2.open(2000);'>Warn</h2-button>\n\n<h2-tip type=\"error\" message=\"alert\" id=\"tip3\"></h2-tip>\n<h2-button id=\"btn3\" onclick='tip3.open(5000);'>Error</h2-button>\n```",
-      "summary": "",
-      "path": "h2-tip.html",
-      "properties": [
-        {
-          "name": "message",
-          "type": "string",
-          "description": "Message of the tip.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 129,
-              "column": 10
-            },
-            "end": {
-              "line": 131,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "type",
-          "type": "string",
-          "description": "Tip type [success | warn | error | confirm | prompt]",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 137,
-              "column": 10
-            },
-            "end": {
-              "line": 140,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "\"success\""
-        },
-        {
-          "name": "remark",
-          "type": "string",
-          "description": "User input when `type` is `prompt`.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 144,
-              "column": 10
-            },
-            "end": {
-              "line": 146,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "_confirmCallback",
-          "type": "Object",
-          "description": "confirm、prompt信息框确认按钮点击回调函数",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 150,
-              "column": 10
-            },
-            "end": {
-              "line": 152,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "_cancelCallback",
-          "type": "Object",
-          "description": "confirm、prompt信息框取消按钮点击回调函数",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 156,
-              "column": 10
-            },
-            "end": {
-              "line": 158,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "duration",
-          "type": "number",
-          "description": "When `type` is `success`, `warn` or `error`, the tip will disappear after [duration] ms.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 165,
-              "column": 10
-            },
-            "end": {
-              "line": 168,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "1500"
-        },
-        {
-          "name": "autoDetach",
-          "type": "boolean",
-          "description": "Set to true, if you want that `h2-tip` can auto detach from its parentElement.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 173,
-              "column": 10
-            },
-            "end": {
-              "line": 176,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "false"
-        }
-      ],
-      "methods": [
-        {
-          "name": "_cancel",
-          "description": "Cancel handler",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 183,
-              "column": 6
-            },
-            "end": {
-              "line": 186,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "_confirm",
-          "description": "Confirm handler",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 191,
-              "column": 6
-            },
-            "end": {
-              "line": 195,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "open",
-          "description": "Open the tip dialog.\n\n3 ways to use the open api:\n\n  - open(duration)\n  - open(confirmCallback)\n  - open(confirmCallback, cancelCallback)",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 207,
-              "column": 6
-            },
-            "end": {
-              "line": 230,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "args",
-              "rest": true
-            }
-          ]
-        },
-        {
-          "name": "close",
-          "description": "Hide the tip.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 235,
-              "column": 6
-            },
-            "end": {
-              "line": 240,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
-        }
-      ],
-      "staticMethods": [],
-      "demos": [
-        {
-          "url": "demo/h2-tip/index.html",
-          "description": ""
-        }
-      ],
-      "metadata": {},
-      "sourceRange": {
-        "start": {
-          "line": 118,
-          "column": 4
-        },
-        "end": {
-          "line": 241,
-          "column": 5
-        }
-      },
-      "privacy": "public",
-      "superclass": "HTMLElement",
-      "name": "H2Tip",
-      "attributes": [
-        {
-          "name": "message",
-          "description": "Message of the tip.",
-          "sourceRange": {
-            "start": {
-              "line": 129,
-              "column": 10
-            },
-            "end": {
-              "line": 131,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        },
-        {
-          "name": "type",
-          "description": "Tip type [success | warn | error | confirm | prompt]",
-          "sourceRange": {
-            "start": {
-              "line": 137,
-              "column": 10
-            },
-            "end": {
-              "line": 140,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        },
-        {
-          "name": "remark",
-          "description": "User input when `type` is `prompt`.",
-          "sourceRange": {
-            "start": {
-              "line": 144,
-              "column": 10
-            },
-            "end": {
-              "line": 146,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        },
-        {
-          "name": "duration",
-          "description": "When `type` is `success`, `warn` or `error`, the tip will disappear after [duration] ms.",
-          "sourceRange": {
-            "start": {
-              "line": 165,
-              "column": 10
-            },
-            "end": {
-              "line": 168,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "number"
-        },
-        {
-          "name": "auto-detach",
-          "description": "Set to true, if you want that `h2-tip` can auto detach from its parentElement.",
-          "sourceRange": {
-            "start": {
-              "line": 173,
-              "column": 10
-            },
-            "end": {
-              "line": 176,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "boolean"
-        }
-      ],
-      "events": [],
-      "styling": {
-        "cssVariables": [],
-        "selectors": []
-      },
-      "slots": [],
-      "tagname": "h2-tip"
-    },
-    {
       "description": "`h2-button`\n\nExample:\n```html\n<h2-button>enable</h2-button>\n<h2-button disabled>disabled</h2-button>\n<h2-button><iron-icon icon=\"check\"></iron-icon>link</h2-button>\n\n```\n\n## Styling\n\nThe following custom properties and mixins are available for styling:\n\n|Custom property | Description | Default|\n|----------------|-------------|----------|\n|`--h2-button` | Mixin applied to the button | {}",
       "summary": "",
       "path": "h2-button.html",
@@ -7365,11 +7037,11 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 84,
+              "line": 82,
               "column": 10
             },
             "end": {
-              "line": 87,
+              "line": 85,
               "column": 11
             }
           },
@@ -7390,11 +7062,11 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 76,
+          "line": 74,
           "column": 4
         },
         "end": {
-          "line": 94,
+          "line": 92,
           "column": 5
         }
       },
@@ -7407,11 +7079,11 @@
           "description": "Set to true, if the button is disabled.",
           "sourceRange": {
             "start": {
-              "line": 84,
+              "line": 82,
               "column": 10
             },
             "end": {
-              "line": 87,
+              "line": 85,
               "column": 11
             }
           },
@@ -7431,11 +7103,11 @@
           "range": {
             "file": "h2-button.html",
             "start": {
-              "line": 67,
+              "line": 65,
               "column": 6
             },
             "end": {
-              "line": 67,
+              "line": 65,
               "column": 19
             }
           }
@@ -10122,6 +9794,334 @@
         }
       ],
       "tagname": "h2-dialog"
+    },
+    {
+      "description": "`h2-tip`\n\nExample:\n```html\n<h2-tip type=\"success\" message=\"success\" id=\"tip\"></h2-tip>\n<h2-button id=\"btn\" onclick=\"tip.open();\">Success</h2-button>\n\n<h2-tip type=\"warn\" message=\"warn\" id=\"tip2\"></h2-tip>\n<h2-button id=\"btn2\" onclick='tip2.open(2000);'>Warn</h2-button>\n\n<h2-tip type=\"error\" message=\"alert\" id=\"tip3\"></h2-tip>\n<h2-button id=\"btn3\" onclick='tip3.open(5000);'>Error</h2-button>\n```",
+      "summary": "",
+      "path": "h2-tip.html",
+      "properties": [
+        {
+          "name": "message",
+          "type": "string",
+          "description": "Message of the tip.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 125,
+              "column": 10
+            },
+            "end": {
+              "line": 127,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "description": "Tip type [success | warn | error | confirm | prompt]",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 133,
+              "column": 10
+            },
+            "end": {
+              "line": 136,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"success\""
+        },
+        {
+          "name": "remark",
+          "type": "string",
+          "description": "User input when `type` is `prompt`.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 140,
+              "column": 10
+            },
+            "end": {
+              "line": 142,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "_confirmCallback",
+          "type": "Object",
+          "description": "confirm、prompt信息框确认按钮点击回调函数",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 10
+            },
+            "end": {
+              "line": 148,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "_cancelCallback",
+          "type": "Object",
+          "description": "confirm、prompt信息框取消按钮点击回调函数",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 152,
+              "column": 10
+            },
+            "end": {
+              "line": 154,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "description": "When `type` is `success`, `warn` or `error`, the tip will disappear after [duration] ms.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 161,
+              "column": 10
+            },
+            "end": {
+              "line": 164,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "1500"
+        },
+        {
+          "name": "autoDetach",
+          "type": "boolean",
+          "description": "Set to true, if you want that `h2-tip` can auto detach from its parentElement.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 169,
+              "column": 10
+            },
+            "end": {
+              "line": 172,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [
+        {
+          "name": "_cancel",
+          "description": "Cancel handler",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 179,
+              "column": 6
+            },
+            "end": {
+              "line": 182,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_confirm",
+          "description": "Confirm handler",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 187,
+              "column": 6
+            },
+            "end": {
+              "line": 191,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "open",
+          "description": "Open the tip dialog.\n\n3 ways to use the open api:\n\n  - open(duration)\n  - open(confirmCallback)\n  - open(confirmCallback, cancelCallback)",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 203,
+              "column": 6
+            },
+            "end": {
+              "line": 226,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "args",
+              "rest": true
+            }
+          ]
+        },
+        {
+          "name": "close",
+          "description": "Hide the tip.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 231,
+              "column": 6
+            },
+            "end": {
+              "line": 236,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/h2-tip/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 114,
+          "column": 4
+        },
+        "end": {
+          "line": 237,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "H2Tip",
+      "attributes": [
+        {
+          "name": "message",
+          "description": "Message of the tip.",
+          "sourceRange": {
+            "start": {
+              "line": 125,
+              "column": 10
+            },
+            "end": {
+              "line": 127,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "description": "Tip type [success | warn | error | confirm | prompt]",
+          "sourceRange": {
+            "start": {
+              "line": 133,
+              "column": 10
+            },
+            "end": {
+              "line": 136,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "remark",
+          "description": "User input when `type` is `prompt`.",
+          "sourceRange": {
+            "start": {
+              "line": 140,
+              "column": 10
+            },
+            "end": {
+              "line": 142,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "duration",
+          "description": "When `type` is `success`, `warn` or `error`, the tip will disappear after [duration] ms.",
+          "sourceRange": {
+            "start": {
+              "line": 161,
+              "column": 10
+            },
+            "end": {
+              "line": 164,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "auto-detach",
+          "description": "Set to true, if you want that `h2-tip` can auto detach from its parentElement.",
+          "sourceRange": {
+            "start": {
+              "line": 169,
+              "column": 10
+            },
+            "end": {
+              "line": 172,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        }
+      ],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "h2-tip"
     },
     {
       "description": "`h2-button-group`\n\nExample:\n```html\n<h2-button-group label=\"测试\">\n  <div bind-item=\"1\">测试1</div>\n  <div bind-item=\"2\">测试2</div>\n  <div bind-item=\"3\">测试3</div>\n</h2-button-group>\n\n\n<h2-button-group items=\"[[ items ]]\" label=\"测试\" attr-for-label=\"label\"></h2-button-group>\n\nitems = [\n    {label: \"测试1\", value: \"1\"},\n    {label: \"测试2\", value: \"2\"},\n    {label: \"测试3\", value: \"3\"}\n]\n\n```\n\n## Styling\n\nThe following custom properties and mixins are available for styling:\n\n|Custom property | Description | Default|\n|----------------|-------------|----------|\n|`--h2-button-group-button` | Mixin applied to the group button | {}\n|`--h2-button-group-dropdown` | Mixin applied to the group dropdown | {}",
@@ -14029,7 +14029,7 @@
       "tagname": "h2-grid"
     },
     {
-      "description": "```javascript\n\n<h2-grid-row></h2-grid-row>\n```\n\n`h2-grid-row`",
+      "description": "```html\n\n<h2-grid-row></h2-grid-row>\n```",
       "summary": "",
       "path": "h2-grid-row.html",
       "properties": [
@@ -14791,148 +14791,6 @@
             }
           },
           "inheritedFrom": "Polymer.ElementMixin"
-        },
-        {
-          "name": "subParam",
-          "type": "Object",
-          "description": "子页面参数",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 74,
-              "column": 10
-            },
-            "end": {
-              "line": 79,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "{}"
-        },
-        {
-          "name": "open",
-          "type": "boolean",
-          "description": "子页面是否默认开启",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 84,
-              "column": 10
-            },
-            "end": {
-              "line": 88,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {
-              "observer": "\"__defaultOpenChange\""
-            }
-          },
-          "defaultValue": "false"
-        },
-        {
-          "name": "isOpen",
-          "type": "boolean",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 89,
-              "column": 10
-            },
-            "end": {
-              "line": 92,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "false"
-        },
-        {
-          "name": "subItemDoc",
-          "type": "Object",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 93,
-              "column": 10
-            },
-            "end": {
-              "line": 98,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "{}"
-        },
-        {
-          "name": "loadItem",
-          "type": "boolean",
-          "description": "当前子页面是否已经加载",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 102,
-              "column": 10
-            },
-            "end": {
-              "line": 105,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "true"
-        },
-        {
-          "name": "expandIcon",
-          "type": "string",
-          "description": "The icon when expanded.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 109,
-              "column": 10
-            },
-            "end": {
-              "line": 112,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "\"add-circle-outline\""
-        },
-        {
-          "name": "collapseIcon",
-          "type": "string",
-          "description": "The icon when collapsed.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 116,
-              "column": 10
-            },
-            "end": {
-              "line": 119,
-              "column": 11
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          },
-          "defaultValue": "\"remove-circle-outline\""
         }
       ],
       "methods": [
@@ -15593,20 +15451,22 @@
         },
         {
           "name": "ready",
-          "description": "",
+          "description": "Stamps the element template.",
           "privacy": "protected",
           "sourceRange": {
+            "file": "bower_components/polymer/lib/mixins/element-mixin.html",
             "start": {
-              "line": 186,
+              "line": 651,
               "column": 6
             },
             "end": {
-              "line": 191,
+              "line": 657,
               "column": 7
             }
           },
           "metadata": {},
-          "params": []
+          "params": [],
+          "inheritedFrom": "Polymer.ElementMixin"
         },
         {
           "name": "_propertiesChanged",
@@ -16843,127 +16703,6 @@
             "desc": "Rewritten URL relative to base"
           },
           "inheritedFrom": "Polymer.ElementMixin"
-        },
-        {
-          "name": "openChangeItem",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 134,
-              "column": 6
-            },
-            "end": {
-              "line": 136,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
-        },
-        {
-          "name": "getIcon",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 138,
-              "column": 6
-            },
-            "end": {
-              "line": 140,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "isOpen"
-            }
-          ]
-        },
-        {
-          "name": "__defaultOpenChange",
-          "description": "",
-          "privacy": "private",
-          "sourceRange": {
-            "start": {
-              "line": 142,
-              "column": 6
-            },
-            "end": {
-              "line": 147,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "open"
-            }
-          ]
-        },
-        {
-          "name": "addSubItems",
-          "description": "向子页面传递参数",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 154,
-              "column": 6
-            },
-            "end": {
-              "line": 158,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "subItemDoc"
-            },
-            {
-              "name": "subParam"
-            }
-          ]
-        },
-        {
-          "name": "isEmptyObject",
-          "description": "",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 160,
-              "column": 6
-            },
-            "end": {
-              "line": 169,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": [
-            {
-              "name": "obj"
-            }
-          ]
-        },
-        {
-          "name": "openSubItem",
-          "description": "打开子页面",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 174,
-              "column": 6
-            },
-            "end": {
-              "line": 184,
-              "column": 7
-            }
-          },
-          "metadata": {},
-          "params": []
         }
       ],
       "staticMethods": [
@@ -17739,131 +17478,18 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 67,
+          "line": 47,
           "column": 4
         },
         "end": {
-          "line": 192,
+          "line": 55,
           "column": 5
         }
       },
       "privacy": "public",
       "superclass": "HTMLElement",
       "name": "H2GridRow",
-      "attributes": [
-        {
-          "name": "sub-param",
-          "description": "子页面参数",
-          "sourceRange": {
-            "start": {
-              "line": 74,
-              "column": 10
-            },
-            "end": {
-              "line": 79,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "Object"
-        },
-        {
-          "name": "open",
-          "description": "子页面是否默认开启",
-          "sourceRange": {
-            "start": {
-              "line": 84,
-              "column": 10
-            },
-            "end": {
-              "line": 88,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "boolean"
-        },
-        {
-          "name": "is-open",
-          "description": "",
-          "sourceRange": {
-            "start": {
-              "line": 89,
-              "column": 10
-            },
-            "end": {
-              "line": 92,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "boolean"
-        },
-        {
-          "name": "sub-item-doc",
-          "description": "",
-          "sourceRange": {
-            "start": {
-              "line": 93,
-              "column": 10
-            },
-            "end": {
-              "line": 98,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "Object"
-        },
-        {
-          "name": "load-item",
-          "description": "当前子页面是否已经加载",
-          "sourceRange": {
-            "start": {
-              "line": 102,
-              "column": 10
-            },
-            "end": {
-              "line": 105,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "boolean"
-        },
-        {
-          "name": "expand-icon",
-          "description": "The icon when expanded.",
-          "sourceRange": {
-            "start": {
-              "line": 109,
-              "column": 10
-            },
-            "end": {
-              "line": 112,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        },
-        {
-          "name": "collapse-icon",
-          "description": "The icon when collapsed.",
-          "sourceRange": {
-            "start": {
-              "line": 116,
-              "column": 10
-            },
-            "end": {
-              "line": 119,
-              "column": 11
-            }
-          },
-          "metadata": {},
-          "type": "string"
-        }
-      ],
+      "attributes": [],
       "events": [],
       "styling": {
         "cssVariables": [],
@@ -17876,27 +17502,12 @@
           "range": {
             "file": "h2-grid-row.html",
             "start": {
-              "line": 51,
+              "line": 39,
               "column": 4
             },
             "end": {
-              "line": 51,
+              "line": 39,
               "column": 17
-            }
-          }
-        },
-        {
-          "description": "",
-          "name": "subItem",
-          "range": {
-            "file": "h2-grid-row.html",
-            "start": {
-              "line": 55,
-              "column": 8
-            },
-            "end": {
-              "line": 55,
-              "column": 36
             }
           }
         }
