@@ -11,8 +11,8 @@
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
   <link rel="import" href="../../../paper-button/paper-button.html">
-  <link rel="import" href="../../h2-tip.html">
   <link rel="import" href="../../h2-button.html">
+  <link rel="import" href="../../h2-tip.html">
 
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -68,6 +68,7 @@
   <h3>H2-tip prompt demo</h3>
   <demo-snippet>
     <template>
+      <link rel="import" href="../../behaviors/tip-behavior.html">
       <h2-button id="btn5">Prompt</h2-button>
       <h2-tip type="prompt" message="Are you sure?" id="tip5"></h2-tip>
       <script>
