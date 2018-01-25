@@ -167,7 +167,8 @@ The following custom properties and mixins are available for styling:
       }
 
       __checkedChangeHandler() {
-        this.value = this._items.filter(item => !!item.checked).map(item => item[this.attrForValue]).join(',');
+        const selectValues = this._items.filter(item => !!item.checked).map(item => item[this.attrForValue]);
+        this.value = selectValues.length > 0 ? selectValues.join(',') : undefined;
       }
 
       /**

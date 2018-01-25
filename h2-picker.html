@@ -523,7 +523,11 @@ The following custom properties and mixins are available for styling:
       }
 
       _selectedValuesChanged() {
-        this.value = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+        if(this.selectedValues.length > 0) {
+          this.value = this.selectedValues.map(selected => selected[this.attrForValue]).join(',');
+        } else {
+          this.value = undefined;
+        }
         this.displayCollapse(false);
       }
 
