@@ -57,7 +57,7 @@ The following custom properties and mixins are available for styling:
       #select__container {
         flex: 1;
         display: flex;
-        height: inherit;
+        /*height: inherit;*/
         border: 1px solid #CCC;
         border-radius: 4px;
         position: relative;
@@ -528,7 +528,7 @@ The following custom properties and mixins are available for styling:
        * @returns {boolean}
        */
       validate() {
-        return this.required ? this.selectedValues.length > 0 : true;
+        return this.required ? (this.selectedValues && this.selectedValues.length > 0) : true;
       }
     }
 

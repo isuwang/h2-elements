@@ -190,7 +190,7 @@ The following custom properties and mixins are available for styling:
        * @returns {boolean}
        */
       validate() {
-        return this.required ? this.selectedValues.length > 0 : true;
+        return this.required ? (this.selectedValues && this.selectedValues.length > 0) : true;
       }
 
     }
