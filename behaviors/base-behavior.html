@@ -53,7 +53,7 @@
      */
     orElse(...args) {
       const [first, ...rest] = args;
-      return rest.length === 0 ? first: (first || this.orElse(...rest));
+      return rest.length === 0 ? first : (first || this.orElse(...rest));
     },
 
     /**
@@ -88,6 +88,16 @@
       return this.getValueByKey(model, key, null);
     },
     /**
+     * 等价于 model[key1 || key2 || ...] 如果找不到值，返回 undefined
+     * @param {Object} model
+     * @param {...String} keys
+     * @returns {*}
+     */
+    getValueOrElseUndefined(model, ...keys) {
+      const key = this.orElse(...keys);
+      return (model && (key in model)) ? model[key] : undefined;
+    },
+    /**
      * 通过路径获取对象字段值
      * @param {Object} model eg. { foo: { bar: 1} }
      * @param {String} path  eg. "foo.bar"
@@ -119,22 +129,18 @@
      * 添加loading
      */
     showLoading() {
-      const loadingDiv = document.body.querySelector("#h2-loading");
+      let loadingDiv = document.body.querySelector("#h2-loading");
       if (!loadingDiv) {
-        this.async(function () {
-          const _loadingDiv = document.createElement("h2-loading");
-          _loadingDiv.setAttribute("id", "h2-loading");
-          _loadingDiv.noCancelOnOutsideClick = true;
-          _loadingDiv.noCancelOnEscKey = true;
-          _loadingDiv.withBackdrop = true;
-          document.body.appendChild(_loadingDiv);
-          _loadingDiv.open();
-        }, 100);
-      } else {
-        this.async(function () {
-          loadingDiv.open();
-        }, 100);
+        loadingDiv = document.createElement("h2-loading");
+        loadingDiv.setAttribute("id", "h2-loading");
+        loadingDiv.noCancelOnOutsideClick = true;
+        loadingDiv.noCancelOnEscKey = true;
+        loadingDiv.withBackdrop = true;
+        document.body.appendChild(loadingDiv);
       }
+      this.async(function () {
+        loadingDiv.open();
+      }, 100);
     },
 
     /**
@@ -163,7 +169,7 @@
 
     /**
      * 每隔wait时间执行fn
-      */
+     */
     throttle(fn, wait, options) {
 
     },
