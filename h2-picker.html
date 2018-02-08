@@ -564,7 +564,7 @@ The following custom properties and mixins are available for styling:
        */
       _selectItem(item) {
         // not yet selected
-        if (!~this.selectedValues.findIndex(selected => selected[this.attrForValue] == item[this.attrForValue])) {
+        if (!~(this.selectedValues || []).findIndex(selected => selected[this.attrForValue] == item[this.attrForValue])) {
           if (this.multi) {
             this.push('selectedValues', item);
           } else {
