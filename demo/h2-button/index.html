@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-
+  
   <title>h2-button demo</title>
-
-  <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-
-  <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../../iron-icons/iron-icons.html">
-  <link rel="import" href="../../../paper-styles/color.html">
-  <link rel="import" href="../../h2-button.html">
-
-  <custom-style>
+  
+  <script type="module">
+    import '../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js';
+    import '../../node_modules/@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
+    import '../../node_modules/@polymer/iron-demo-helpers/demo-snippet.js';
+    import '../../node_modules/@polymer/iron-icons/iron-icons.js';
+    import '../../node_modules/@polymer/paper-styles/color.js';
+    import '../../h2-button'
+  </script>
+  
+  <script type="module">
+    const $_documentContainer = document.createElement('template');
+    
+    $_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -26,7 +30,10 @@
         }
       }
     </style>
-  </custom-style>
+  </custom-style>`;
+    
+    document.body.appendChild($_documentContainer.content);
+  </script>
 </head>
 <body>
 <div class="vertical-section-container centered">
@@ -38,7 +45,7 @@
           h2-button {
             margin: 10px;
           }
-
+          
           #btn2 {
             --h2-button: {
               background-color: red;
@@ -46,8 +53,8 @@
           }
         </style>
       </custom-style>
-
-      <h2-button onclick='javascript:alert("click")'>Enable</h2-button>
+      
+      <h2-button>Enable</h2-button>
       <h2-button disabled>Disabled</h2-button>
       <h2-button id="btn1">Click</h2-button>
       <h2-button>
@@ -55,6 +62,10 @@
         Link
       </h2-button>
       <h2-button id="btn2">Button</h2-button>
+      <script>
+        console.log(btn1);
+        btn1["on-click"] = console.log;
+      </script>
     </template>
   </demo-snippet>
 </div>

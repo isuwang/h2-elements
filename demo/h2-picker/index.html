@@ -6,11 +6,12 @@
 
   <title>h2-picker demo</title>
 
-  <script>
-    if (!window.location.href.endsWith("?mock=mockData.js")) {
-      window.location.href = window.location.href + "?mock=mockData.js";
-    }
-  </script>
+  <script type="module">
+import '../../h2-picker.js';
+if (!window.location.href.endsWith("?mock=mockData.js")) {
+  window.location.href = window.location.href + "?mock=mockData.js";
+}
+</script>
 
   <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
@@ -19,10 +20,21 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-picker.html">
+  <script type="module" src="../../h2-picker.js"></script>
 
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -44,15 +56,21 @@
       }
 
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>支持单选、多选、输入关键字过滤下拉选项</h3>
   <demo-snippet>
     <template>
       <h2-picker id="picker" label="单选" value="1" attr-for-value="id"></h2-picker>
-      <h2-picker id="picker1" label="多选" value="1,2,3,4" attr-for-value="id" multi></h2-picker>
+      <h2-picker id="picker1" label="多选" value="1,2,3,4" attr-for-value="id" multi=""></h2-picker>
       <script>
         const pickerMeta = [{field: 'label', label: '选项'}, {field: 'business', label: '业务范围'}];
         const items = [
@@ -68,15 +86,15 @@
 
         picker1.pickerMeta = pickerMeta;
         picker1.items = items;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
   <h3>支持只读、必填属性</h3>
   <demo-snippet>
     <template>
-      <h2-picker id="picker3" label="公司" value="1,2,3" attr-for-value="id" multi readonly></h2-picker>
-      <h2-picker id="picker4" label="公司" value="1,2,3" attr-for-value="id" multi required></h2-picker>
+      <h2-picker id="picker3" label="公司" value="1,2,3" attr-for-value="id" multi="" readonly=""></h2-picker>
+      <h2-picker id="picker4" label="公司" value="1,2,3" attr-for-value="id" multi="" required=""></h2-picker>
       <script>
 
         picker3.pickerMeta = pickerMeta;
@@ -84,7 +102,7 @@
         
         picker4.pickerMeta = pickerMeta;
         picker4.items = items;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -100,12 +118,12 @@
           }
         </style>
       </custom-style>
-      <h2-picker id="picker5" label="公司" multi attr-for-value="id" value="1,2,3,4,5"></h2-picker>
+      <h2-picker id="picker5" label="公司" multi="" attr-for-value="id" value="1,2,3,4,5"></h2-picker>
       <script>
         picker5.pickerMeta = pickerMeta;
         picker5.items = items;
 
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -132,7 +150,7 @@
         picker7.pickerMeta = pickerMeta;
         picker7.fieldsForIndex = ["business"];
         picker7.items = items;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -142,7 +160,7 @@
       <h2-picker id="picker8" src="/init.do" label="公司" attr-for-value="id"></h2-picker>
       <script>
         picker8.pickerMeta = pickerMeta;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -157,16 +175,10 @@
           }
         </style>
       </custom-style>
-      <h2-picker id="picker9"
-                 label="公司"
-                 src="/init.do"
-                 keyword-search-src="/more_banks.do?limit=10&code=business&keyword="
-                 value="1,2,3"
-                 multi
-                 attr-for-value="id"></h2-picker>
+      <h2-picker id="picker9" label="公司" src="/init.do" keyword-search-src="/more_banks.do?limit=10&amp;code=business&amp;keyword=" value="1,2,3" multi="" attr-for-value="id"></h2-picker>
       <script>
         picker9.pickerMeta = pickerMeta;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -181,25 +193,24 @@
           }
         </style>
       </custom-style>
-      <h2-picker id="picker10"
-                 label="公司"
-                 src="/init.do"
-                 keyword-search-src="/more_banks.do?limit=10&code=business&keyword="
-                 value="1,2,3"
-                 multi
-                 attr-for-value="id"></h2-picker>
+      <h2-picker id="picker10" label="公司" src="/init.do" keyword-search-src="/more_banks.do?limit=10&amp;code=business&amp;keyword=" value="1,2,3" multi="" attr-for-value="id"></h2-picker>
       <p>
-      <ul>
+      </p><ul>
         <li>下拉选择框打开是，键盘UP, DOWN键 切换选项</li>
         <li>Space 或 Enter 选择选项</li>
         <li>光标闪烁，且下拉框收起时，DOWN键 可以重新打开下拉框</li>
         <li>没有输入内容时，Backspace 可删除选中项</li>
       </ul>
-      </p>
+      <p></p>
       <script>
         picker10.pickerMeta = pickerMeta;
-      </script>
+      &lt;/script>
     </template>
+  </demo-snippet>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>template>
   </demo-snippet>
 </div>
 </body>

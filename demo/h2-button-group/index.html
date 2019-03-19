@@ -10,9 +10,20 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-button-group.html">
+  <script type="module" src="../../h2-button-group.js"></script>
   <link rel="import" href="../../../paper-button/paper-button.html">
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -30,10 +41,16 @@
       }
 
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>Basic h2-button-group demo</h3>
   <demo-snippet>
     <template>
@@ -44,7 +61,7 @@
           {label: "测试2", value: "2"},
           {label: "测试3", value: "3"}
         ]
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -61,7 +78,7 @@
         btnGrp2.onItemClick = ({target, bindItem}) => {
           console.log(target, bindItem);
         }
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -77,7 +94,7 @@
         btnGrp3.onItemClick = ({target, bindItem}) => {
           console.log(target, bindItem);
         }
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -117,8 +134,13 @@
       <script>
         document.querySelectorAll('.btn')
           .forEach(btn => btn.onclick = console.log);
-      </script>
+      &lt;/script>
     </template>
+  </demo-snippet>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>te>
   </demo-snippet>
 </div>
 </body>

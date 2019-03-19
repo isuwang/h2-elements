@@ -6,11 +6,17 @@
 
   <title>h2-mask demo</title>
 
-  <script>
-    if (!window.location.href.endsWith("?mock=mockData.js")) {
-      window.location.href = window.location.href + "?mock=mockData.js";
-    }
-  </script>
+  <script type="module">
+import '../../h2-mask.js';
+import '../../h2-input.js';
+import '../../h2-input-date.js';
+import '../../h2-input-datetime.js';
+import '../../h2-select.js';
+import '../../h2-picker.js';
+if (!window.location.href.endsWith("?mock=mockData.js")) {
+  window.location.href = window.location.href + "?mock=mockData.js";
+}
+</script>
 
   <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
@@ -18,14 +24,25 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-mask.html">
-  <link rel="import" href="../../h2-input.html">
-  <link rel="import" href="../../h2-input-date.html">
-  <link rel="import" href="../../h2-input-datetime.html">
-  <link rel="import" href="../../h2-select.html">
-  <link rel="import" href="../../h2-picker.html">
+  <script type="module" src="../../h2-mask.js"></script>
+  <script type="module" src="../../h2-input.js"></script>
+  <script type="module" src="../../h2-input-date.js"></script>
+  <script type="module" src="../../h2-input-datetime.js"></script>
+  <script type="module" src="../../h2-select.js"></script>
+  <script type="module" src="../../h2-picker.js"></script>
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -38,10 +55,16 @@
       }
 
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>Basic demo</h3>
   <demo-snippet>
     <template>
@@ -69,11 +92,11 @@
       </h2-mask>
 
       <h2-mask label="Select下拉框">
-        <h2-select placeholder="测试输入" id="select" value="1,2,3" multi></h2-select>
+        <h2-select placeholder="测试输入" id="select" value="1,2,3" multi=""></h2-select>
       </h2-mask>
 
       <h2-mask label="Picker多选框">
-        <h2-picker id="picker" multi attr-for-value="id"></h2-picker>
+        <h2-picker id="picker" multi="" attr-for-value="id"></h2-picker>
       </h2-mask>
 
       <script>
@@ -94,7 +117,15 @@
           {"id": 3, "label": "腾讯", "business": "游戏"},
           {"id": 4, "label": "京东", "business": "电商"}
         ];
-      </script>
+      &lt;/script>
+    </template>
+  </demo-snippet>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>s": "电商"}
+];
+</script>
     </template>
   </demo-snippet>
 </div>

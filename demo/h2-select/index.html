@@ -10,9 +10,20 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-select.html">
+  <script type="module" src="../../h2-select.js"></script>
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -28,16 +39,22 @@
         margin-bottom: 10px;
       }
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
 
   <h3>支持默认选中</h3>
   <demo-snippet>
     <template>
       <h2-select id="select" label="球员" placeholder="选择球员" value="1,2"></h2-select>
-      <h2-select id="select1" label="球员" placeholder="选择球员" multi value="1, 2, 3, 4"></h2-select>
+      <h2-select id="select1" label="球员" placeholder="选择球员" multi="" value="1, 2, 3, 4"></h2-select>
       <script>
         const items = [
           {"label": "梅西", "value": 1},
@@ -51,19 +68,19 @@
         select.items = items;
         select1.items = items;
 
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
-  <h3>Readonly & required</h3>
+  <h3>Readonly &amp; required</h3>
   <demo-snippet>
     <template>
-      <h2-select id="select2" label="球员" placeholder="选择球员" readonly value="1"></h2-select>
-      <h2-select id="select3" label="球员" placeholder="选择球员" required multi></h2-select>
+      <h2-select id="select2" label="球员" placeholder="选择球员" readonly="" value="1"></h2-select>
+      <h2-select id="select3" label="球员" placeholder="选择球员" required="" multi=""></h2-select>
       <script>
         select2.items = items;
         select3.items = items;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -91,30 +108,34 @@
           }
         </style>
       </custom-style>
-      <h2-select id="select4" label="球员" placeholder="选择球员" multi></h2-select>
-      <h2-select id="select5" label="球员球员" placeholder="选择球员" multi value="1, 2, 3"></h2-select>
+      <h2-select id="select4" label="球员" placeholder="选择球员" multi=""></h2-select>
+      <h2-select id="select5" label="球员球员" placeholder="选择球员" multi="" value="1, 2, 3"></h2-select>
       <script>
         select4.items = items;
         select5.items = items;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
   <h3>keyboard shortcut</h3>
   <demo-snippet>
     <template>
-      <h2-select id="select6" label="球员" placeholder="选择球员" multi value="1,2,3,4"></h2-select>
+      <h2-select id="select6" label="球员" placeholder="选择球员" multi="" value="1,2,3,4"></h2-select>
       <p>
-      <ul>
+      </p><ul>
         <li>键盘Left, Right键 切换光标位置</li>
         <li>Backspace 可删除选中项</li>
       </ul>
-      </p>
+      <p></p>
       <script>
         select6.items = items;
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>emo-snippet>
 </div>
 </body>
 </html>

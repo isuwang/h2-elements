@@ -10,9 +10,20 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-input-datetime.html">
+  <script type="module" src="../../h2-input-datetime.js"></script>
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -29,10 +40,16 @@
       }
 
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>基本用法</h3>
   <demo-snippet>
     <template>
@@ -55,8 +72,8 @@
   <h3>支持必填、只读</h3>
   <demo-snippet>
     <template>
-      <h2-input-datetime label="日期必填" required></h2-input-datetime>
-      <h2-input-datetime label="日期只读" value="2017-10-26T23:20" readonly></h2-input-datetime>
+      <h2-input-datetime label="日期必填" required=""></h2-input-datetime>
+      <h2-input-datetime label="日期只读" value="2017-10-26T23:20" readonly=""></h2-input-datetime>
     </template>
   </demo-snippet>
 
@@ -68,6 +85,9 @@
       <h2-input-datetime label="最大值和最小值" min="2017-10-10T12:20" max="2017-10-30T12:20"></h2-input-datetime>
     </template>
   </demo-snippet>
-</div>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </body>
 </html>

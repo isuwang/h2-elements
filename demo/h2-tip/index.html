@@ -11,10 +11,21 @@
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
   <link rel="import" href="../../../paper-button/paper-button.html">
-  <link rel="import" href="../../h2-button.html">
-  <link rel="import" href="../../h2-tip.html">
+  <script type="module" src="../../h2-button.js"></script>
+  <script type="module" src="../../h2-tip.js"></script>
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -26,10 +37,16 @@
         }
       }
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>H2-tip success demo</h3>
   <demo-snippet>
     <template>
@@ -37,34 +54,46 @@
       <h2-button id="btn" onclick="tip.open();">Success</h2-button>
 
       <h2-tip type="warn" message="warn" id="tip2"></h2-tip>
-      <h2-button id="btn2" onclick='tip2.open(2000);'>Warn</h2-button>
+      <h2-button id="btn2" onclick="tip2.open(2000);">Warn</h2-button>
 
       <h2-tip type="error" message="alert" id="tip3"></h2-tip>
-      <h2-button id="btn3" onclick='tip3.open(5000);'>Error</h2-button>
+      <h2-button id="btn3" onclick="tip3.open(5000);">Error</h2-button>
 
     </template>
   </demo-snippet>
-</div>
+</div>`;
 
-<div class="vertical-section-container centered">
+document.body.appendChild($_documentContainer.content);
+</script>
+
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>H2-tip confirm demo</h3>
   <demo-snippet>
     <template>
       <h2-button id="btn4">Confirm</h2-button>
-      <h2-tip type="confirm" message="Are you sure?"
-              id="tip4"></h2-tip>
+      <h2-tip type="confirm" message="Are you sure?" id="tip4"></h2-tip>
       <script>
         btn4.onclick = () => {
           tip4.open(() => {
             alert("点击确定！");
           })
         }
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script> </demo-snippet>
 </div>
 
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>H2-tip prompt demo</h3>
   <demo-snippet>
     <template>
@@ -79,9 +108,13 @@
             alert("点击取消");
           })
         }
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </div>
 </body>
 </html>

@@ -1,0 +1,263 @@
+/*
+
+`h2-button-group`
+
+Example:
+```html
+<h2-button-group label="测试">
+  <div bind-item="1">测试1</div>
+  <div bind-item="2">测试2</div>
+  <div bind-item="3">测试3</div>
+</h2-button-group>
+
+
+<h2-button-group items="[[ items ]]" label="测试" attr-for-label="label"></h2-button-group>
+
+items = [
+    {label: "测试1", value: "1"},
+    {label: "测试2", value: "2"},
+    {label: "测试3", value: "3"}
+]
+
+```
+
+## Styling
+
+The following custom properties and mixins are available for styling:
+
+|Custom property | Description | Default|
+|----------------|-------------|----------|
+|`--h2-button-group-button` | Mixin applied to the group button | {}
+|`--h2-button-group-dropdown` | Mixin applied to the group dropdown | {}
+
+*/
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
+import './behaviors/base-behavior.js';
+
+/**
+ * @customElement
+ * @polymer
+ * @demo demo/h2-button-group/index.html
+ */
+class H2ButtonGroup extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+  static get template() {
+    return Polymer.html`
+    <style>
+      :host {
+        position: relative;
+        font: inherit;
+        display: block;
+        min-width: 80px;
+      }
+
+      .trigger {
+        min-width: 80px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        height: inherit;
+        display: flex;
+      }
+
+      .trigger > .btn {
+        margin-left: 0;
+        width: 85%;
+        height: inherit;
+        @apply --h2-button-group-button;
+      }
+
+      .trigger > .icon {
+        min-width: 15px;
+        padding: 0;
+        margin-left: -2px;
+        margin-right: 0;
+        width: 15%;
+        height: inherit;
+        @apply --h2-button-group-button;
+      }
+
+      .icon div iron-icon {
+        width: 100%;
+        height: inherit;
+      }
+
+      paper-button {
+        background: #fff;
+      }
+
+      /*下拉列表*/
+      :host .dropdown-menu {
+        position: absolute;
+        display: flex;
+        flex-flow: column nowrap;
+        top: 100%;
+        left: 0;
+        z-index: 99;
+        width: 100%;
+        margin: 2px 0 0;
+        list-style: none;
+        font-size: 1em;
+        text-align: center;
+        background: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                    0 1px 5px 0 rgba(0, 0, 0, 0.12),
+                    0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        background-clip: padding-box;
+
+        @apply --h2-button-group-dropdown;
+      }
+
+      .dropdown-menu .item,
+      ::slotted(*) {
+        cursor: pointer;
+        line-height: 30px;
+        margin: 1px 0;
+        white-space: nowrap;
+        font-size: 0.9em;
+        text-align: center;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.175);
+      }
+
+      /*hover*/
+      .dropdown-menu .item:hover,
+      ::slotted(:hover) {
+        color: #0099FF;
+      }
+
+    </style>
+
+    <div class="trigger" on-tap="toggle">
+      <paper-button class="btn" raised="">
+        [[ label ]]
+      </paper-button>
+      <paper-button class="icon" raised="">
+        <div>
+          <iron-icon icon="[[ __getIcon(opened) ]]"></iron-icon>
+        </div>
+      </paper-button>
+    </div>
+
+    <iron-collapse id="collapse" class="dropdown-menu" opened="[[ opened ]]" on-click="_onButtonDropdownClick">
+      <template is="dom-repeat" items="[[ items ]]">
+        <span class="item" bind-item="[[ item ]]">[[ getValueByKey(item, attrForLabel, 'Unknown') ]]</span>
+      </template>
+      <slot></slot>
+    </iron-collapse>
+`;
+  }
+
+  static get properties() {
+    return {
+      /**
+       * Label of the action group.
+       */
+      label: {
+        type: String
+      },
+      /**
+       * Return true if the action group is expanded.
+       * @type {boolean}
+       * @default false
+       */
+      opened: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * The icon to show when expanded.
+       * @type {string}
+       * @default 'arrow-drop-up'
+       */
+      expandIcon: {
+        type: String,
+        value: 'arrow-drop-up'
+      },
+      /**
+       * The icon to show when collapsed.
+       * @type {string}
+       * @default 'arrow-drop-down'
+       */
+      collapseIcon: {
+        type: String,
+        value: 'arrow-drop-down'
+      },
+      /**
+       * The dropdown items.
+       * @type Array
+       */
+      items: {
+        type: Array
+      },
+
+      /**
+       * Attribute name for label.
+       * @type {string}
+       * @default 'label'
+       */
+      attrForLabel: {
+        type: String,
+        value: "label"
+      },
+      /**
+       * The Function called when user click on every item on dropdownlist.
+       */
+      onItemClick: {
+        type: Object
+      }
+    };
+  }
+
+  static get is() {
+    return "h2-button-group";
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('blur', e => {
+      // make sure other event can happen on slotted element before the iron-collapse closed.
+      setTimeout(this.close.bind(this), 100);
+    });
+  }
+
+  /**
+   * Expand the group.
+   */
+  open() {
+    this.opened = true;
+  }
+
+  /**
+   * Collpase the group.
+   */
+  close() {
+    this.opened = false;
+  }
+
+  /**
+   * Toggle the group.
+   */
+  toggle() {
+    this.opened = !this.opened;
+  }
+
+  __getIcon(opened) {
+    return opened ? this.expandIcon : this.collapseIcon;
+  }
+
+  _onButtonDropdownClick(e) {
+    const target = e.target,
+      bindItem = e.target.bindItem || e.target.getAttribute('bind-item');
+    this.onItemClick && this.onItemClick({target, bindItem});
+  }
+}
+
+window.customElements.define(H2ButtonGroup.is, H2ButtonGroup);

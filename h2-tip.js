@@ -1,0 +1,240 @@
+/*
+`h2-tip`
+
+Example:
+```html
+<h2-tip type="success" message="success" id="tip"></h2-tip>
+<h2-button id="btn" onclick="tip.open();">Success</h2-button>
+
+<h2-tip type="warn" message="warn" id="tip2"></h2-tip>
+<h2-button id="btn2" onclick='tip2.open(2000);'>Warn</h2-button>
+
+<h2-tip type="error" message="alert" id="tip3"></h2-tip>
+<h2-button id="btn3" onclick='tip3.open(5000);'>Error</h2-button>
+```
+*/
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
+import './behaviors/base-behavior.js';
+
+import './h2-button.js';
+import './h2-input.js';
+/**
+ * @customElement
+ * @polymer
+ * @demo demo/h2-tip/index.html
+ */
+class H2Tip extends Polymer.mixinBehaviors([BaseBehavior], Polymer.Element) {
+  static get template() {
+    return Polymer.html`
+    <style>
+
+      :host {
+        min-height: 25px;
+        min-width: 125px;
+      }
+
+      :host #tip {
+        text-align: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+      }
+
+      :host([type=warn]) #tip {
+        background: #ffff00;
+        color: red;
+      }
+
+      :host([type=success]) #tip {
+        background: #00b300;
+        color: #fff;
+      }
+
+      :host([type=error]) #tip {
+        background: #f60;
+        color: #fff;
+      }
+
+      :host([type=prompt]) #tip,
+      :host([type=confirm]) #tip {
+        margin-top: 10px;
+        width: 250px;
+      }
+
+      :host([type=success]) #operate-panel,
+      :host([type=warn]) #operate-panel,
+      :host([type=error]) #operate-panel,
+      :host([type=success]) #remark-input,
+      :host([type=warn]) #remark-input,
+      :host([type=error]) #remark-input,
+      :host([type=confirm]) #remark-input {
+        display: none;
+      }
+
+      #tip {
+        text-align: center;
+        vertical-align: middle;
+        padding: 20px 8px;
+        font-size: 16px;
+        min-height: 60px;
+        min-width: 200px;
+        margin: auto;
+        word-wrap: break-word;
+      }
+
+      #remark-input {
+        width: 250px;
+        margin: auto auto 15px;
+        --h2-input: {
+          text-align: center;
+        }
+      }
+
+      #operate-panel {
+        height: 50px;
+        width: 250px;
+        display: flex;
+        margin: 0;
+        justify-content: space-evenly;
+      }
+
+    </style>
+
+    <paper-dialog id="dialog" modal="[[ isOneOf(type, 'confirm', 'prompt') ]]">
+      <div id="tip">[[message]]</div>
+      <h2-input id="remark-input" value="{{ remark }}"></h2-input>
+      <div id="operate-panel">
+        <h2-button on-click="_confirm">确定</h2-button>
+        <h2-button on-click="_cancel">取消</h2-button>
+      </div>
+    </paper-dialog>
+`;
+  }
+
+  static get is() {
+    return "h2-tip";
+  }
+
+  static get properties() {
+    return {
+      /**
+       * Message of the tip.
+       */
+      message: {
+        type: String,
+      },
+      /**
+       * Tip type [success | warn | error | confirm | prompt]
+       * @type {string} type
+       * @default 'success'
+       */
+      type: {
+        type: String,
+        value: 'success'
+      },
+      /**
+       * User input when `type` is `prompt`.
+       */
+      remark: {
+        type: String
+      },
+      /**
+       * confirm、prompt信息框确认按钮点击回调函数
+       */
+      _confirmCallback: {
+        type: Object
+      },
+      /**
+       * confirm、prompt信息框取消按钮点击回调函数
+       */
+      _cancelCallback: {
+        type: Object
+      },
+
+      /**
+       * When `type` is `success`, `warn` or `error`, the tip will disappear after [duration] ms.
+       * @type {number}
+       * @default 1500 ms
+       */
+      duration: {
+        type: Number,
+        value: 1500
+      },
+      /**
+       * Set to true, if you want that `h2-tip` can auto detach from its parentElement.
+       * @default false
+       */
+      autoDetach: {
+        type: Boolean,
+        value: false
+      }
+    };
+  }
+
+  /**
+   * Cancel handler
+   */
+  _cancel() {
+    this.close();
+    this.isFunction(this._cancelCallback) && this._cancelCallback();
+  }
+
+  /**
+   * Confirm handler
+   */
+  _confirm() {
+    this.close();
+    const cbParam = this.type === 'prompt' ? {remark: this.remark} : null;
+    this.isFunction(this._confirmCallback) && this._confirmCallback(cbParam);
+  }
+
+  /**
+   * Open the tip dialog.
+   *
+   * 3 ways to use the open api:
+   *
+   *   - open(duration)
+   *   - open(confirmCallback)
+   *   - open(confirmCallback, cancelCallback)
+   * @param args
+   */
+  open(...args) {
+    let confirmCallback, cancelCallback, duration = this.duration;
+    if (args.length > 0 && typeof args[0] === 'function') {
+      confirmCallback = args.shift();
+    }
+
+    if (args.length > 0 && typeof args[0] === 'function') {
+      cancelCallback = args.shift();
+    }
+
+    if (args.length > 0 && (typeof args[0] === 'number' || typeof args[0] === 'string')) {
+      duration = Number(args[0]);
+    }
+
+    this._confirmCallback = confirmCallback;
+    this._cancelCallback = cancelCallback;
+
+    this.$.dialog.open();
+    if (this.type !== 'confirm' && this.type !== 'prompt') {
+      setTimeout(() => {
+        this.close();
+      }, duration);
+    }
+  }
+
+  /**
+   * Hide the tip.
+   */
+  close() {
+    this.$.dialog.close();
+    if(this.autoDetach && this.parentElement && this.parentElement.removeChild) {
+      this.parentElement.removeChild(this);
+    }
+  }
+}
+
+window.customElements.define(H2Tip.is, H2Tip);

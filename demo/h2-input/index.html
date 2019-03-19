@@ -10,9 +10,20 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-input.html">
+  <script type="module" src="../../h2-input.js"></script>
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -28,10 +39,16 @@
         margin-bottom: 10px;
       }
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>支持不同类型（H5的input元素所有类型，除file类型）</h3>
   <demo-snippet>
     <template>
@@ -46,8 +63,7 @@
         </style>
       </custom-style>
       <h2-input class="typed-input" label="文本框" placeholder="Please input something..."></h2-input>
-      <h2-input class="typed-input" label="数字框" type="number" required min="10" max="20"
-                prompt="请输入10到20之间的数字"></h2-input>
+      <h2-input class="typed-input" label="数字框" type="number" required="" min="10" max="20" prompt="请输入10到20之间的数字"></h2-input>
       <h2-input class="typed-input" label="电话" type="tel" maxlength="11"></h2-input>
       <h2-input class="typed-input" label="密码框" type="password"></h2-input>
       <h2-input class="typed-input" label="颜色框" type="color"></h2-input>
@@ -83,7 +99,7 @@
         </style>
       </custom-style>
       <div class="container">
-        <h2-input class="unit-input" label="存款" prefix-unit="$"></h2-input>
+        <h2-input class="unit-input" label="存款" prefix-unit="\$"></h2-input>
         <h2-input class="unit-input" label="单价" prefix-unit="元/吨"></h2-input>
         <h2-input class="unit-input" label="数量" prefix-unit="吨"></h2-input>
       </div>
@@ -94,7 +110,7 @@
   <h3>支持增加输入框后缀（单位等）</h3>
   <demo-snippet>
     <template>
-      <h2-input label="存款" suffix-unit="$"></h2-input>
+      <h2-input label="存款" suffix-unit="\$"></h2-input>
       <h2-input label="单价" suffix-unit="元/吨"></h2-input>
       <h2-input label="数量" suffix-unit="吨"></h2-input>
     </template>
@@ -111,9 +127,9 @@
           }
         </style>
       </custom-style>
-      <h2-input label="有值必填框" value="梅西" required></h2-input>
-      <h2-input id="required-input" label="无值必填框" required prompt="必填项"></h2-input>
-      <h2-input label="只读输入框" value="梅西" readonly></h2-input>
+      <h2-input label="有值必填框" value="梅西" required=""></h2-input>
+      <h2-input id="required-input" label="无值必填框" required="" prompt="必填项"></h2-input>
+      <h2-input label="只读输入框" value="梅西" readonly=""></h2-input>
     </template>
   </demo-snippet>
 
@@ -129,9 +145,9 @@
   <h3>支持最大输入长度</h3>
   <demo-snippet>
     <template>
-      <h2-input label="数量" type="number" maxlength=2></h2-input>
-      <h2-input label="名字" maxlength=5></h2-input>
-      <h2-input label="URL" type="url" maxlength=10 minlength=1></h2-input>
+      <h2-input label="数量" type="number" maxlength="2"></h2-input>
+      <h2-input label="名字" maxlength="5"></h2-input>
+      <h2-input label="URL" type="url" maxlength="10" minlength="1"></h2-input>
     </template>
   </demo-snippet>
 
@@ -142,10 +158,13 @@
         <style is="custom-style">
         </style>
       </custom-style>
-      <h2-input label="标签" allowed-pattern="[A-Za-z]\d{3}"></h2-input>
+      <h2-input label="标签" allowed-pattern="[A-Za-z]\\d{3}"></h2-input>
       <h2-input label="标签" class="h2-input--invalid"></h2-input>
     </template>
   </demo-snippet>
-</div>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </body>
 </html>

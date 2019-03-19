@@ -7,21 +7,33 @@
 
   <title>h2-fetch demo</title>
 
-  <script>
-    if(!window.location.href.endsWith("?mock=mockData.js")) {
-      window.location.href = window.location.href + "?mock=mockData.js";
-    }
-  </script>
+  <script type="module">
+import '../../h2-fetch.js';
+if(!window.location.href.endsWith("?mock=mockData.js")) {
+  window.location.href = window.location.href + "?mock=mockData.js";
+}
+</script>
 
   <script type="text/javascript" src="../../utils/mock_setup.js"></script>
 
   <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../h2-fetch.html">
+  <script type="module" src="../../h2-fetch.js"></script>
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -33,10 +45,16 @@
         }
       }
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>Basic h2-fetch demo</h3>
   <demo-snippet>
     <template>
@@ -54,9 +72,9 @@
         fetchDemo.addEventListener("response-body-changed", (e) => {
           responseDiv.innerHTML = JSON.stringify(e.detail.value);
         });
-      </script>
+      &lt;/script>
     </template>
-    </template>
+    
   </demo-snippet>
   <h3>Basic h2-fetch demo</h3>
   <demo-snippet>
@@ -75,7 +93,7 @@
         fetchDemo1.addEventListener("response-body-changed", (e) => {
           responseDiv1.innerHTML = JSON.stringify(e.detail.value);
         });
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -96,7 +114,7 @@
         fetchDemo2.addEventListener("response-body-changed", (e) => {
           responseDiv2.innerHTML = JSON.stringify(e.detail.value);
         });
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -117,9 +135,9 @@
         });
         fetchDemo3.addEventListener("response-changed", (e) => {
           const {type, status, statusText} = e.detail.value;
-          responseDiv3.innerHTML = `${type} ${status} ${statusText}`;
+          responseDiv3.innerHTML = \`\${type} \${status} \${statusText}\`;
         });
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
 
@@ -143,9 +161,10 @@
           .then(data => responseDiv4_1.innerHTML = JSON.stringify(data))
           .catch(err => responseDiv4_1_err.innerHTML = err);
 
-      </script>
+      &lt;/script>
     </template>
   </demo-snippet>
-</div>
-</body>
-</html>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>

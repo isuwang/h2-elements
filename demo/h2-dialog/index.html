@@ -10,9 +10,20 @@
 
   <link rel="import" href="../../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../../h2-dialog.html">
+  <script type="module" src="../../h2-dialog.js"></script>
 
-  <custom-style>
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
       .centered {
         min-width: 800px;
@@ -24,10 +35,16 @@
         }
       }
     </style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 <body>
-<div class="vertical-section-container centered">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>Basic h2-dialog demo</h3>
   <demo-snippet>
     <template>
@@ -49,9 +66,15 @@
       <button id="btn" onclick="javascript:dialog.open();">Click to open the Dialog</button>
     </template>
   </demo-snippet>
-</div>
+</div>`;
 
-<div class="vertical-section-container centered">
+document.body.appendChild($_documentContainer.content);
+</script>
+
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<div class="vertical-section-container centered">
   <h3>One more</h3>
   <demo-snippet>
     <template>
@@ -63,7 +86,7 @@
           margin: 0 0 10px;
         }
       </style>
-      <h2-dialog id="dialog2" stop-auto-dismiss title="Dialog demo">
+      <h2-dialog id="dialog2" stop-auto-dismiss="" title="Dialog demo">
         <div slot="container">
           <p>It was all very well to say 'Drink me,' but the wise little
             Alice was not going to do <i>that</i> in a hurry. 'No, I'll look
@@ -119,6 +142,9 @@
 
     </template>
   </demo-snippet>
-</div>
+</div>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </body>
 </html>
